@@ -1,7 +1,7 @@
 part of http_api;
 
 class ApiRequest {
-  Uri uri;
+  Uri url;
   HttpMethod method;
   Encoding encoding;
   bool multipart;
@@ -13,7 +13,7 @@ class ApiRequest {
   final Map<String, String> headers = {};
 
   ApiRequest(
-    this.uri,
+    this.url,
     this.method, {
     Map<String, String> headers,
     List<FileField> fileFields,
@@ -51,7 +51,7 @@ class ApiRequest {
 
   /// Builds [MultipartRequest]
   Future<http.BaseRequest> _buildMultipartHttpRequest() async {
-    final request = http.MultipartRequest(method.value, uri)
+    final request = http.MultipartRequest(method.value, url)
       ..headers.addAll(headers);
 
     /// Assign body if it is map
@@ -74,7 +74,7 @@ class ApiRequest {
 
   /// Buils [Request]
   Future<http.BaseRequest> _buildHttpRequest() async {
-    final request = http.Request(method.value, uri);
+    final request = http.Request(method.value, url);
 
     if (headers != null) request.headers.addAll(headers);
     if (encoding != null) request.encoding = encoding;
@@ -93,7 +93,7 @@ class ApiRequest {
 
   @override
   String toString() => <String, dynamic>{
-        "uri": uri,
+        "url": url,
         "body": body,
         "encoding": encoding,
         "fileFields": fileFields,

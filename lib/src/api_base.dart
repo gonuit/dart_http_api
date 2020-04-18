@@ -8,17 +8,17 @@ part of http_api;
 ///
 /// Use call method to hand
 abstract class ApiBase {
-  final Uri _uri;
-  Uri get uri => _uri;
+  final Uri _url;
+  Uri get url => _url;
   final Map<String, String> _defaultHeaders;
   final ApiLink _link;
 
   ApiBase({
-    @required Uri uri,
+    @required Uri url,
     ApiLink link,
     Map<String, String> defaultHeaders,
-  })  : assert(uri != null, "Uri argument cannot be null"),
-        _uri = uri,
+  })  : assert(url != null, "url argument cannot be null"),
+        _url = url,
         _defaultHeaders = defaultHeaders ?? const <String, String>{},
         _link = link._firstLink ?? link ?? HttpLink() {
     assert(
@@ -35,10 +35,10 @@ abstract class ApiBase {
   T getFirstLinkOfType<T>() =>
       _link?._firstWhere((ApiLink link) => link is T) as T;
 
-  /// Builds [Uri] object based on current Api uri
+  /// Builds [Uri] object based on current Api url
   Uri getUrl(String endpoint, Map<String, String> queryParameters) => Uri(
-        scheme: _uri.scheme,
-        host: _uri.host,
+        scheme: _url.scheme,
+        host: _url.host,
         path: endpoint,
         queryParameters: queryParameters,
       );
@@ -61,19 +61,19 @@ abstract class ApiBase {
     dynamic body,
     Map<String, String> headers = const <String, String>{},
     Map<String, String> queryParameters,
-    HttpMethod method = HttpMethod.post,
+    HttpMethod method = HttpMethod.get,
     List<FileField> fileFields,
     Encoding encoding,
     bool multipart,
   }) async {
     /// Builds url object
-    Uri uri = getUrl(endpoint, queryParameters);
+    Uri url = getUrl(endpoint, queryParameters);
 
     /// Builds request headers
     Map<String, String> requestHeaders = getHeaders(headers);
 
     final ApiRequest apiRequest = ApiRequest(
-      uri,
+      url,
       method,
       headers: requestHeaders,
       body: body,
