@@ -32,13 +32,18 @@ class DebugLink extends ApiLink {
   int _requestsCount = 0;
   int get requestsCount => _requestsCount;
 
+  static int _requestIdCounter = 0;
+
   final _durations = <int, DateTime>{};
 
-  void _printRequest(ApiRequest request) {
+  void _printRequest(int id, ApiRequest request) {
     /// print request only in debug mode
     assert((() {
       if (requestBody || requestHeaders || countRequests || url) {
         print("\n==== REQUEST ====\n");
+
+        print("request id: $id\n");
+
         if (label != null) {
           print("label: $label\n");
         }
@@ -66,7 +71,7 @@ class DebugLink extends ApiLink {
     })());
   }
 
-  void _printResponse(ApiResponse response) {
+  void _printResponse(int id, ApiResponse response) {
     /// print request only in debug mode
     assert((() {
       if (responseBody ||
@@ -75,6 +80,8 @@ class DebugLink extends ApiLink {
           responseDuration ||
           url) {
         print("\n==== RESPONSE ====\n");
+
+        print("request id: $id\n");
 
         if (label != null) {
           print("label: $label\n");
@@ -115,8 +122,9 @@ class DebugLink extends ApiLink {
   @override
   Future<ApiResponse> next(ApiRequest request) async {
     _requestsCount++;
+    final currentRequestId = ++_requestIdCounter;
 
-    _printRequest(request);
+    _printRequest(currentRequestId, request);
 
     if (responseDuration) {
       _durations[_requestsCount] = DateTime.now();
@@ -124,7 +132,7 @@ class DebugLink extends ApiLink {
 
     final response = await super.next(request);
 
-    _printResponse(response);
+    _printResponse(currentRequestId, response);
 
     return response;
   }
