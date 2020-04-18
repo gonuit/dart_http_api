@@ -1,6 +1,8 @@
 part of http_api;
 
 class DebugLink extends ApiLink {
+  final String label;
+  final bool url;
   final bool responseBody;
   final bool responseHeaders;
   final bool requestBody;
@@ -9,6 +11,8 @@ class DebugLink extends ApiLink {
   final bool countRequests;
   final bool responseDuration;
   DebugLink({
+    this.label,
+    this.url = false,
     this.requestBody = false,
     this.requestHeaders = false,
     this.responseBody = false,
@@ -19,6 +23,7 @@ class DebugLink extends ApiLink {
   }) : assert(requestBody != null &&
             requestHeaders != null &&
             responseBody != null &&
+            url != null &&
             responseHeaders != null &&
             statusCode != null &&
             responseDuration != null &&
@@ -35,21 +40,26 @@ class DebugLink extends ApiLink {
 
     if (requestBody || requestHeaders || countRequests) {
       print("\n==== REQUEST ====\n");
+      if (label != null) {
+        print("label: $label\n");
+      }
+
+      if (url) {
+        print("url:\n${request.url}\n");
+      }
+
       if (countRequests) {
-        print("request count: ");
-        print(_requestsCount);
-        print("");
+        print("request count: $_requestsCount\n");
       }
+
       if (requestHeaders) {
-        print("headers:\n");
-        print(request?.headers);
-        print("");
+        print("headers:\n${request?.headers}\n");
       }
+
       if (requestBody) {
-        print("body:\n");
-        print(request?.body);
-        print("");
+        print("body:\n${request?.body}\n");
       }
+
       print("=================\n");
     }
 
@@ -59,30 +69,38 @@ class DebugLink extends ApiLink {
 
     final response = await super.next(request);
 
-    if (responseBody || responseHeaders || statusCode || responseDuration) {
+    if (responseBody ||
+        responseHeaders ||
+        statusCode ||
+        responseDuration ||
+        url) {
       print("\n==== RESPONSE ====\n");
+
+      if (label != null) {
+        print("label: $label\n");
+      }
+
+      if (url) {
+        print("url:\n${request.url}\n");
+      }
+
+      if (responseDuration) {
+        final responseDuration =
+            DateTime.now().difference(_durations[_requestsCount]);
+        print("response duration: ${responseDuration.inMilliseconds} ms\n");
+        _durations.remove(_requestsCount);
+      }
       if (response != null) {
-        if (responseDuration) {
-          final responseDuration =
-              _durations[_requestsCount].difference(DateTime.now());
-          print("response duration: ${responseDuration.inMilliseconds}");
-          _durations.remove(_requestsCount);
-          print("");
-        }
         if (responseHeaders) {
-          print("headers:");
-          print(response.headers);
-          print("");
+          print("headers:\n${response.headers}\n");
         }
+
         if (responseBody) {
-          print("body:");
-          print(response.body);
-          print("");
+          print("body:\n${response.body}\n");
         }
+
         if (statusCode) {
-          print("status code:");
-          print(response.statusCode);
-          print("");
+          print("status code: ${response.statusCode}\n");
         }
       } else {
         print("NULL\n");
