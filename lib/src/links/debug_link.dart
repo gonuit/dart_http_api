@@ -92,10 +92,9 @@ class DebugLink extends ApiLink {
         }
 
         if (responseDuration) {
-          final responseDuration =
-              DateTime.now().difference(_durations[_requestsCount]);
+          final responseDuration = DateTime.now().difference(_durations[id]);
           print("response duration: ${responseDuration.inMilliseconds} ms\n");
-          _durations.remove(_requestsCount);
+          _durations.remove(id);
         }
         if (response != null) {
           if (responseHeaders) {
@@ -127,7 +126,7 @@ class DebugLink extends ApiLink {
     _printRequest(currentRequestId, request);
 
     if (responseDuration) {
-      _durations[_requestsCount] = DateTime.now();
+      _durations[currentRequestId] = DateTime.now();
     }
 
     final response = await super.next(request);

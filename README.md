@@ -54,7 +54,8 @@ class MyApp extends StatelessWidget {
           url: Uri.parse("https://picsum.photos"),
           /// Assign middleware by providing ApiLinks (to provide more than one middleware, chain them)
           link: HeadersMapperLink(["authorization"])
-              .chain(DebugLink(printResponseBody: true)),
+              .chain(DebugLink(responseBody: true)),
+              .chain(HttpLink()),
         ),
         /// Your app
         child: MaterialApp(
@@ -71,7 +72,7 @@ class MyApp extends StatelessWidget {
 class _ApiExampleScreenState extends State<ApiExampleScreen> {
 
   void _fetchPhoto() async {
-    final api = Provider.of<Api>(context);
+    final api = Provider.of<Api>(context, listen: false);
     ExamplePhotoModel photo = await api.getRandomPhoto();
     // Do sth with response
   }
@@ -82,7 +83,7 @@ class _ApiExampleScreenState extends State<ApiExampleScreen> {
       body: Center(
         child: RaisedButton(
           child: const Text("Fetch photo"),
-          onPressed: _fetchPhotos,
+          onPressed: _fetchPhoto,
         ),
       ),
     );
