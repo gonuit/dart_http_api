@@ -34,34 +34,89 @@ class DebugLink extends ApiLink {
 
   final _durations = <int, DateTime>{};
 
+  void _printRequest(ApiRequest request) {
+    /// print request only in debug mode
+    assert((() {
+      if (requestBody || requestHeaders || countRequests || url) {
+        print("\n==== REQUEST ====\n");
+        if (label != null) {
+          print("label: $label\n");
+        }
+
+        if (url) {
+          print("url: ${request.url}\n");
+        }
+
+        if (countRequests) {
+          print("request count: $_requestsCount\n");
+        }
+
+        if (requestHeaders) {
+          print("headers: ${request?.headers}\n");
+        }
+
+        if (requestBody) {
+          print("body: ${request?.body}\n");
+        }
+
+        print("=================\n");
+      }
+
+      return true;
+    })());
+  }
+
+  void _printResponse(ApiResponse response) {
+    /// print request only in debug mode
+    assert((() {
+      if (responseBody ||
+          responseHeaders ||
+          statusCode ||
+          responseDuration ||
+          url) {
+        print("\n==== RESPONSE ====\n");
+
+        if (label != null) {
+          print("label: $label\n");
+        }
+
+        if (url) {
+          print("url: ${response.request.url}\n");
+        }
+
+        if (responseDuration) {
+          final responseDuration =
+              DateTime.now().difference(_durations[_requestsCount]);
+          print("response duration: ${responseDuration.inMilliseconds} ms\n");
+          _durations.remove(_requestsCount);
+        }
+        if (response != null) {
+          if (responseHeaders) {
+            print("headers: ${response.headers}\n");
+          }
+
+          if (responseBody) {
+            print("body: ${response.body}\n");
+          }
+
+          if (statusCode) {
+            print("status code: ${response.statusCode}\n");
+          }
+        } else {
+          print("NULL\n");
+        }
+        print("=================\n");
+      }
+
+      return true;
+    })());
+  }
+
   @override
   Future<ApiResponse> next(ApiRequest request) async {
     _requestsCount++;
 
-    if (requestBody || requestHeaders || countRequests) {
-      print("\n==== REQUEST ====\n");
-      if (label != null) {
-        print("label: $label\n");
-      }
-
-      if (url) {
-        print("url:\n${request.url}\n");
-      }
-
-      if (countRequests) {
-        print("request count: $_requestsCount\n");
-      }
-
-      if (requestHeaders) {
-        print("headers:\n${request?.headers}\n");
-      }
-
-      if (requestBody) {
-        print("body:\n${request?.body}\n");
-      }
-
-      print("=================\n");
-    }
+    _printRequest(request);
 
     if (responseDuration) {
       _durations[_requestsCount] = DateTime.now();
@@ -69,44 +124,8 @@ class DebugLink extends ApiLink {
 
     final response = await super.next(request);
 
-    if (responseBody ||
-        responseHeaders ||
-        statusCode ||
-        responseDuration ||
-        url) {
-      print("\n==== RESPONSE ====\n");
+    _printResponse(response);
 
-      if (label != null) {
-        print("label: $label\n");
-      }
-
-      if (url) {
-        print("url:\n${request.url}\n");
-      }
-
-      if (responseDuration) {
-        final responseDuration =
-            DateTime.now().difference(_durations[_requestsCount]);
-        print("response duration: ${responseDuration.inMilliseconds} ms\n");
-        _durations.remove(_requestsCount);
-      }
-      if (response != null) {
-        if (responseHeaders) {
-          print("headers:\n${response.headers}\n");
-        }
-
-        if (responseBody) {
-          print("body:\n${response.body}\n");
-        }
-
-        if (statusCode) {
-          print("status code: ${response.statusCode}\n");
-        }
-      } else {
-        print("NULL\n");
-      }
-      print("=================\n");
-    }
     return response;
   }
 }
