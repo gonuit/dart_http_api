@@ -6,7 +6,7 @@ Simple yet powerful wrapper around http package inspired by apollo graphql links
 This library is under development, breaking API changes might still happen. If you would like to make use of this library please make sure to provide which version you want to use e.g:
 ```yaml
 dependencies:
-  http_api: 0.1.0
+  http_api: 0.3.0
 ```
 
 ## Getting Started
@@ -14,7 +14,7 @@ dependencies:
 ### 1. First create your Api class by extending `BaseApi` class
 ```dart
 // define your api class
-class Api extends ApiBase {
+class Api extends BaseApi {
 
   Api({
     @required Uri url,
@@ -29,11 +29,11 @@ class Api extends ApiBase {
   /// Implement api request methods 
   Future<ExamplePhotoModel> getRandomPhoto() async {
 
-    /// Use [call] method to make api request
-    final response = await call(
+    /// Use [send] method to make api request
+    final response = await send(ApiRequest(
       endpoint: "/id/${Random().nextInt(50)}/info",
       method: HttpMethod.get,
-    );
+    ));
 
     /// Parse http response
     return ExamplePhotoModel.fromJson(json.decode(response.body));

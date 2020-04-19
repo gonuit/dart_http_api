@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         url: Uri.parse("https://picsum.photos"),
 
         /// Assign middleware by providing ApiLinks (to provide more than one middleware, chain them)
-        link: DebugLink(responseDuration: true).chain(HttpLink()),
+        link: DebugLink(responseDuration: true, url: true).chain(HttpLink()),
       ),
       child: MaterialApp(
         title: 'http_api example',
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
 }
 
 // define your api class
-class Api extends ApiBase {
+class Api extends BaseApi {
   Api({
     @required Uri url,
     ApiLink link,
@@ -45,11 +45,11 @@ class Api extends ApiBase {
 
   /// Implement api request methods
   Future<ExamplePhotoModel> getRandomPhoto() async {
-    /// Use [call] method to make api request
-    final response = await call(
+    /// Use [send] method to make api request
+    final response = await send(ApiRequest(
       endpoint: "/id/${Random().nextInt(50)}/info",
       method: HttpMethod.get,
-    );
+    ));
 
     /// Parse http response
     return ExamplePhotoModel.fromJson(json.decode(response.body));

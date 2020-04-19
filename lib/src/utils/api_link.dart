@@ -57,7 +57,7 @@ abstract class ApiLink {
     if (closed || nextLink.closed)
       throw ApiException(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
-        "You cannot chain links after attaching to ApiBase",
+        "You cannot chain links after attaching to BaseApi",
       );
 
     if (disposed || nextLink.disposed)
@@ -90,7 +90,7 @@ abstract class ApiLink {
   /// Calling `super.next` will cause invocation of `next` method in the next ApiLink
   /// in the chain (if present)
   @protected
-  Future<ApiResponse> next(ApiRequest request) {
+  Future<ApiResponse> next(BaseApiRequest request) {
     return _nextLink?.next(request);
   }
 
