@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 
 /// BaseApi
 part './src/base_api.dart';
+part './src/base_graphql_api.dart';
 
 /// Utils
 part './src/utils/exceptions.dart';
