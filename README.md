@@ -91,3 +91,9 @@ class _ApiExampleScreenState extends State<ApiExampleScreen> {
 
 }
 ```
+
+## TODO:
+- Unit tests
+- Caching based on [ApiRequest]
+- Improve readme (provide more examples)
+- Simple graphQL client (without subscriptions support)
