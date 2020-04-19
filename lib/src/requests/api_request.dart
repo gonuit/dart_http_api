@@ -5,7 +5,9 @@ class ApiRequest {
   Uri _apiUrl;
   Uri get apiUrl => _apiUrl;
   Uri get url {
-    assert(apiUrl != null, "url is not available before sending a request");
+    if (apiUrl == null)
+      throw ApiException("url is not available before sending a request");
+
     return Uri(
       scheme: apiUrl.scheme,
       host: apiUrl.host,
