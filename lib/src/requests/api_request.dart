@@ -8,11 +8,15 @@ class ApiRequest {
     if (apiUrl == null)
       throw ApiException("url is not available before sending a request");
 
+    final queryParameters = Map<String, dynamic>.from(apiUrl.queryParameters)
+      ..addAll(this.queryParameters);
+
     return Uri(
       scheme: apiUrl.scheme,
       host: apiUrl.host,
-      path: endpoint,
+      path: apiUrl.path + endpoint,
       queryParameters: queryParameters.isNotEmpty ? queryParameters : null,
+      port: apiUrl.port,
     );
   }
 

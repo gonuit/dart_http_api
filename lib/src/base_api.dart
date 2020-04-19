@@ -15,14 +15,17 @@ abstract class BaseApi {
     @required Uri url,
     ApiLink link,
     Map<String, String> defaultHeaders,
-  })  : assert(url != null, "url argument cannot be null"),
+  })  : assert(url != null, "url $runtimeType argument cannot be null"),
         _url = url,
         this.defaultHeaders = defaultHeaders ?? <String, String>{},
         _link = link._firstLink ?? link ?? HttpLink() {
-    assert(
-      _link._firstWhere((apiLink) => (apiLink is HttpLink)) != null,
-      "ApiLinks chain should contain HttpLink",
-    );
+    if (_link._firstWhere((apiLink) => (apiLink is HttpLink)) == null) {
+      throw ApiException("ApiLinks chain should contain HttpLink");
+    }
+
+    if (_link._firstWhere((apiLink) => apiLink.closed) != null) {
+      throw ApiException("Cannot assign closed ApiLinks chain to $runtimeType");
+    }
 
     /// Close link chain
     _link._closeChain();
