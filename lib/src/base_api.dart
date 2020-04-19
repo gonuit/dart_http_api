@@ -34,7 +34,7 @@ abstract class BaseApi {
       _link?._firstWhere((ApiLink link) => link is T) as T;
 
   /// Make API request by triggering [ApiLink]s [next] methods
-  Future<ApiResponse> send(BaseApiRequest request) {
+  Future<ApiResponse> send(ApiRequest request) {
     /// Adds default headers to the request, but does not overrides existing ones
     request.headers.addAll(
       Map<String, String>.from(defaultHeaders)..addAll(request.headers),

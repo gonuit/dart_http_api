@@ -36,7 +36,7 @@ class DebugLink extends ApiLink {
 
   final _durations = <int, DateTime>{};
 
-  void _printRequest(int id, BaseApiRequest request) {
+  void _printRequest(int id, ApiRequest request) {
     /// print request only in debug mode
     assert((() {
       if (requestBody || requestHeaders || countRequests || url) {
@@ -119,7 +119,7 @@ class DebugLink extends ApiLink {
   }
 
   @override
-  Future<ApiResponse> next(BaseApiRequest request) async {
+  Future<ApiResponse> next(ApiRequest request) async {
     _requestsCount++;
     final currentRequestId = ++_requestIdCounter;
 

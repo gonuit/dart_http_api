@@ -12,7 +12,7 @@ class HttpLink with ApiLink {
 
   @override
   @protected
-  Future<ApiResponse> next(BaseApiRequest apiRequest) async {
+  Future<ApiResponse> next(ApiRequest apiRequest) async {
     /// Builds a http request
     final httpRequest = await apiRequest.buildRequest();
 

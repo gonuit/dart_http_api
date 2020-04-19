@@ -23,7 +23,6 @@ part './src/links/debug_link.dart';
 part './src/links/http_link.dart';
 
 /// Requests
-part './src/requests/base_api_request.dart';
 part './src/requests/api_request.dart';
 
 /// Data

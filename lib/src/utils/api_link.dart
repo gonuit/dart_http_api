@@ -90,7 +90,7 @@ abstract class ApiLink {
   /// Calling `super.next` will cause invocation of `next` method in the next ApiLink
   /// in the chain (if present)
   @protected
-  Future<ApiResponse> next(BaseApiRequest request) {
+  Future<ApiResponse> next(ApiRequest request) {
     return _nextLink?.next(request);
   }
 
