@@ -1,12 +1,16 @@
 # http_api
-
+  
+[![Codemagic build status](https://api.codemagic.io/apps/5e9c9c7a7af7f3ae2a99d6a0/5e9c9c7a7af7f3ae2a99d69f/status_badge.svg)](https://codemagic.io/apps/5e9c9c7a7af7f3ae2a99d6a0/5e9c9c7a7af7f3ae2a99d69f/latest_build)
+![Pub Version](https://img.shields.io/pub/v/http_api?color=%230175c2)
+[![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
+  
 Simple yet powerful wrapper around http package inspired by apollo graphql links. This package provides you a simple way of adding middlewares to your app http requests.
 
 ## IMPORTANT
 This library is under development, breaking API changes might still happen. If you would like to make use of this library please make sure to provide which version you want to use e.g:
 ```yaml
 dependencies:
-  http_api: 0.3.0
+  http_api: 0.4.0
 ```
 
 ## Getting Started

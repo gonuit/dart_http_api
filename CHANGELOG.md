@@ -1,3 +1,6 @@
+## [0.4.0] - 19 April 2020.
+* `BaseApi` now uses Uri path from `url` argument (not only host) also port and queryParameters are coppied.
+* Added unit tests
 ## [0.3.0] - 19 April 2020.
 ### Breaking changes
 * Renamed `ApiBase` to `BaseApi`
