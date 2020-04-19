@@ -33,8 +33,8 @@ class ApiRequest {
   bool get isMultipart => multipart == true || fileFields.isNotEmpty;
 
   ApiRequest({
-    @required this.method,
     @required this.endpoint,
+    this.method = HttpMethod.get,
     Map<String, String> headers,
     List<FileField> fileFields,
     Map<String, dynamic> queryParameters,
