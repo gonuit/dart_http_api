@@ -23,24 +23,64 @@ class HttpMethod {
 
 /// Represents File that can be attached to [BaseApiRequest] so can be sent to API
 /// with [MultipartRequest]
-class FileField {
-  final File file;
+abstract class FileField {
   final String field;
   final String fileName;
   final MediaType contentType;
 
-  const FileField({
+  const FileField._({
     @required this.field,
-    @required this.file,
     this.fileName,
     this.contentType,
-  }) : assert(
-          file != null && field != null,
-          "file and field arguments cannot be null",
-        );
+  }) : assert(field != null, "field argument cannot be null");
 
   /// Convert FileField to multipart file
-  Future<http.MultipartFile> toMultipartFile() => http.MultipartFile.fromPath(
+  Future<http.MultipartFile> toMultipartFile();
+
+  factory FileField({
+    File file,
+    String field,
+    String fileName,
+    MediaType contentType,
+  }) = _FileField;
+
+  factory FileField.fromStream({
+    @required String field,
+    @required Stream<List<int>> stream,
+    @required int length,
+    String fileName,
+    MediaType contentType,
+  }) = _StreamFileField;
+
+  Map<String, dynamic> toMap();
+
+  @override
+  String toString() => "$runtimeType(${toMap()})";
+}
+
+class _FileField extends FileField {
+  final File file;
+
+  _FileField({
+    @required String field,
+    @required this.file,
+    String fileName,
+    MediaType contentType,
+  })  : assert(
+          file != null,
+          "file argument cannot be null",
+        ),
+        super._(
+          field: field,
+          fileName: fileName,
+          contentType: contentType,
+        );
+
+  @override
+
+  /// Convert FileField to multipart file
+  Future<http.MultipartFile> toMultipartFile() async =>
+      http.MultipartFile.fromPath(
         field,
         file.path,
         contentType: contentType,
@@ -56,4 +96,42 @@ class FileField {
 
   @override
   String toString() => "FileField(${toMap()})";
+}
+
+class _StreamFileField extends FileField {
+  final Stream<List<int>> stream;
+  final int length;
+
+  _StreamFileField({
+    @required String field,
+    @required this.stream,
+    @required this.length,
+    MediaType contentType,
+    String fileName,
+  })  : assert(
+          stream != null && length != null,
+          "stream and length arguments cannot be null",
+        ),
+        super._(
+          fileName: fileName,
+          contentType: contentType,
+          field: field,
+        );
+
+  Future<http.MultipartFile> toMultipartFile() async => http.MultipartFile(
+        field,
+        stream,
+        length,
+        filename: fileName,
+        contentType: contentType,
+      );
+
+  @override
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        "field": field,
+        "stream": stream,
+        "length": length,
+        "fileName": fileName,
+        "contentType": contentType,
+      };
 }

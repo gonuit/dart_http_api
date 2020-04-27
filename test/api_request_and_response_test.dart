@@ -67,11 +67,7 @@ void main() {
       endpoint: '/file',
       method: HttpMethod.post,
       fileFields: [
-        MockFileField(
-          field: "file",
-          file: File.fromUri(Uri.parse("/file/path")),
-          fileName: "my_file.png",
-        ),
+        MockFileField(),
       ],
     );
 
