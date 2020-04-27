@@ -1,3 +1,5 @@
+## [0.4.1] - 27 April 2020.
+* Added `FileField.fromStream` constructor.
 ## [0.4.0] - 19 April 2020.
 * `BaseApi` now uses Uri path from `url` argument (not only host) also port and queryParameters are coppied.
 * Added unit tests

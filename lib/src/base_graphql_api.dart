@@ -1,5 +1,4 @@
 part of http_api;
-// TODO: Graphql api
 
 class GraphQlRequest extends ApiRequest {}
 

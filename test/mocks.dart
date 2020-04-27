@@ -1,31 +1,19 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:http_api/http_api.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 import 'package:mockito/mockito.dart';
 
-const testResponseHeaders = <String, String>{
-  'authorization': 'token',
-};
+const testResponseHeaders = <String, String>{'authorization': 'token'};
 
 final Uri testUrl = Uri.parse("https://example.com/api");
 
-class MockFileField extends FileField {
-  MockFileField({
-    @required String field,
-    @required File file,
-    String fileName,
-    MediaType contentType,
-  }) : super(
-          field: field,
-          file: file,
-          fileName: fileName,
-          contentType: contentType,
-        );
-
+class MockFileField extends Mock implements FileField {
   Future<http.MultipartFile> toMultipartFile() async {
+    return null;
+  }
+
+  @override
+  Map<String, dynamic> toMap() {
     return null;
   }
 }
