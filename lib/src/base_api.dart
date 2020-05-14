@@ -6,6 +6,9 @@ part of http_api;
 /// Override this class in order to
 /// add your own request methods
 abstract class BaseApi {
+  @experimental
+  final BaseApiCache _cache;
+
   final Uri _url;
   Uri get url => _url;
   final Map<String, String> defaultHeaders;
@@ -15,7 +18,9 @@ abstract class BaseApi {
     @required Uri url,
     ApiLink link,
     Map<String, String> defaultHeaders,
-  })  : assert(url != null, "url $runtimeType argument cannot be null"),
+    @experimental BaseApiCache cache,
+  })  : _cache = cache ?? ApiInMemoryCache(),
+        assert(url != null, "url $runtimeType argument cannot be null"),
         _url = url,
         this.defaultHeaders = defaultHeaders ?? <String, String>{},
         _link = link._firstLink ?? link ?? HttpLink() {
@@ -37,7 +42,7 @@ abstract class BaseApi {
       _link?._firstWhere((ApiLink link) => link is T) as T;
 
   /// Make API request by triggering [ApiLink]s [next] methods
-  Future<ApiResponse> send(ApiRequest request) {
+  Future<ApiResponse> send(ApiRequest request) async {
     /// Adds default headers to the request, but does not overrides existing ones
     request.headers.addAll(
       Map<String, String>.from(defaultHeaders)..addAll(request.headers),
@@ -47,6 +52,42 @@ abstract class BaseApi {
     request._apiUrl = url;
 
     return _link.next(request);
+  }
+
+  Stream<ApiResponse> sendWithCache(
+    ApiRequest request, {
+    @experimental bool updateCache = true,
+  }) async* {
+    assert(request.key != null, "request key cannot be null");
+
+    final cacheFuture = loadCache(request.key);
+    final networkFuture = send(request);
+
+    if (cacheFuture != null) {
+      final cache = await cacheFuture;
+      if (cache != null) yield cache;
+    }
+
+    final response = await networkFuture;
+    yield response;
+
+    if (updateCache && request.key != null) {
+      saveCache(request.key, response);
+    }
+  }
+
+  @experimental
+  FutureOr<ApiResponse> loadCache(Key key) {
+    print("CACHE LOAD");
+    return _cache.load(key);
+  }
+
+  @experimental
+  @protected
+  @visibleForTesting
+  void saveCache(Key key, ApiResponse response) {
+    print("CACHE SAVE");
+    _cache.save(key, response);
   }
 
   /// closes http client

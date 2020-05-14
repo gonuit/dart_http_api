@@ -1,6 +1,15 @@
 part of http_api;
 
+// ignore_for_file: unnecessary_getters_setters
+
 class ApiRequest {
+  // TODO: Add automatic key generation
+  Key _key;
+
+  /// Key is used to match requests
+  Key get key => _key;
+  set key(Key value) => _key = value;
+
   /// Url is set by BaseApi class
   Uri _apiUrl;
   Uri get apiUrl => _apiUrl;
@@ -45,7 +54,9 @@ class ApiRequest {
     this.body,
     this.encoding,
     this.multipart,
-  }) : assert(
+    @experimental Key key,
+  })  : _key = key,
+        assert(
           endpoint != null && method != null,
           "endpoint and method arguments cannot be null",
         ) {
