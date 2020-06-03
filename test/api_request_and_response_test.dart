@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_api/http_api.dart';
@@ -24,15 +22,6 @@ void main() {
     expect(testApi, isInstanceOf<BaseApi>());
     expect(testApi.url, equals(testUrl));
     expect(testApi.defaultHeaders, equals(testDefaultHeaders));
-  });
-
-  test("HttpMethod returns correct values", () {
-    expect(HttpMethod.get.value, equals("GET"));
-    expect(HttpMethod.post.value, equals("POST"));
-    expect(HttpMethod.delete.value, equals("DELETE"));
-    expect(HttpMethod.head.value, equals("HEAD"));
-    expect(HttpMethod.patch.value, equals("PATCH"));
-    expect(HttpMethod.put.value, equals("PUT"));
   });
 
   test("BaseApi sets requests url correctly", () async {
@@ -91,5 +80,17 @@ void main() {
     final httpRequest = await apiRequest.buildRequest();
 
     expect(httpRequest, isInstanceOf<http.Request>());
+  });
+
+  test("ApiResponse ok field is true for response with status code 200",
+      () async {
+    final apiRequest = ApiRequest(
+      endpoint: '/file',
+      method: HttpMethod.post,
+    );
+
+    final response = await testApi.send(apiRequest);
+
+    expect(response.ok, isTrue);
   });
 }
