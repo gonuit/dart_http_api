@@ -1,3 +1,5 @@
+## [0.5.0-dev.1] - 24 July 2020.
+* Added experimental cache support.
 ## [0.4.2] - 03 June 2020.
 * Added `ok` property to `ApiResponse`
 * Added `redirect` property to `ApiResponse`

@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
@@ -27,3 +28,7 @@ part './src/requests/api_request.dart';
 /// Data
 part './src/data/data.dart';
 part './src/data/api_response.dart';
+
+/// Cache
+part './src/cache/cache.dart';
+part './src/cache/in_memory_cache.dart';

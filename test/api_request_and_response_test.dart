@@ -11,7 +11,7 @@ final ApiLink testLink = HttpLink(testClient);
 
 void main() {
   TestApi testApi;
-  test('Creates test api succesfully', () {
+  test('Creates test api successfully', () {
     testApi = TestApi(
       url: testUrl,
       defaultHeaders: testDefaultHeaders,
