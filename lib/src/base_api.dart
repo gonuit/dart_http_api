@@ -88,25 +88,26 @@ abstract class BaseApi {
 
   /// Retrive response from cache if available and then from network.
   @experimental
-  Stream<ApiResponse> cacheIfAvailable(
+  Future<ApiResponse> cacheIfAvailable(
     ApiRequest request, {
     @experimental bool updateCache = true,
-  }) async* {
+  }) async {
     if (request.key == null) throw ApiException('Request key cannot be null');
 
     /// get cache
     final cachedResponse = await readCache(request.key);
 
     if (cachedResponse != null) {
-      yield cachedResponse;
+      return cachedResponse;
     } else {
       /// get response from network
       final networkResponse = await send(request);
-      yield networkResponse;
 
       /// save cache when response is successful
       if (updateCache && networkResponse.ok)
         saveCache(request.key, networkResponse);
+
+      return networkResponse;
     }
   }
 
