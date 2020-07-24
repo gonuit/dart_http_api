@@ -31,3 +31,4 @@ part './src/data/api_response.dart';
 
 /// Cache
 part './src/cache/cache.dart';
+part './src/cache/in_memory_cache.dart';

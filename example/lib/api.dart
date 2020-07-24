@@ -20,7 +20,7 @@ class Api extends BaseApi {
         );
 
   Stream<ExamplePhotoModel> getPhotoWithCache() async* {
-    yield* sendWithCache(ApiRequest(
+    yield* cacheAndNetwork(ApiRequest(
       key: Key("TEST"),
       endpoint: "/id/${129}/info",
       method: HttpMethod.get,

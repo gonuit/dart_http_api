@@ -7,7 +7,7 @@ part of http_api;
 /// add your own request methods
 abstract class BaseApi {
   @experimental
-  final BaseApiCache _cache;
+  final CacheManager _cache;
 
   final Uri _url;
   Uri get url => _url;
@@ -18,8 +18,10 @@ abstract class BaseApi {
     @required Uri url,
     ApiLink link,
     Map<String, String> defaultHeaders,
-    @experimental BaseApiCache cache,
-  })  : _cache = cache ?? ApiInMemoryCache(),
+
+    /// Cache menager that will be used for cache storing.
+    @experimental CacheManager cache,
+  })  : _cache = cache ?? InMemoryCache(),
         assert(url != null, "url $runtimeType argument cannot be null"),
         _url = url,
         this.defaultHeaders = defaultHeaders ?? <String, String>{},
@@ -54,39 +56,67 @@ abstract class BaseApi {
     return _link.next(request);
   }
 
-  Stream<ApiResponse> sendWithCache(
+  /// Retrive response from cache if available and then from network.
+  @experimental
+  Stream<ApiResponse> cacheAndNetwork(
     ApiRequest request, {
     @experimental bool updateCache = true,
   }) async* {
-    assert(request.key != null, "request key cannot be null");
+    if (request.key == null) throw ApiException('Request key cannot be null');
 
-    final cacheFuture = loadCache(request.key);
+    /// read cache
+    final cacheFuture = readCache(request.key);
+
+    /// start network fetch
     final networkFuture = send(request);
 
-    if (cacheFuture != null) {
-      final cache = await cacheFuture;
-      if (cache != null) yield cache;
-    }
+    /// wait for cache response
+    final cachedResponse = await cacheFuture;
 
-    final response = await networkFuture;
-    yield response;
+    /// return cache if available
+    if (cachedResponse != null) yield cachedResponse;
 
-    if (updateCache && request.key != null) {
-      saveCache(request.key, response);
+    /// wait for network response
+    final networkResponse = await networkFuture;
+
+    /// yield network response
+    yield networkResponse;
+
+    if (updateCache) saveCache(request.key, networkResponse);
+  }
+
+  /// Retrive response from cache if available and then from network.
+  @experimental
+  Stream<ApiResponse> cacheIfAvailable(
+    ApiRequest request, {
+    @experimental bool updateCache = true,
+  }) async* {
+    if (request.key == null) throw ApiException('Request key cannot be null');
+
+    /// get cache
+    final cachedResponse = await readCache(request.key);
+
+    if (cachedResponse != null) {
+      yield cachedResponse;
+    } else {
+      /// get response from network
+      final networkResponse = await send(request);
+      yield networkResponse;
+
+      /// save cache
+      if (updateCache) saveCache(request.key, networkResponse);
     }
   }
 
   @experimental
-  FutureOr<ApiResponse> loadCache(Key key) {
-    print("CACHE LOAD");
+  FutureOr<ApiResponse> readCache(Key key) {
+    print("CACHE READED; KEY: $key");
     return _cache.load(key);
   }
 
   @experimental
-  @protected
-  @visibleForTesting
   void saveCache(Key key, ApiResponse response) {
-    print("CACHE SAVE");
+    print("CACHE SAVED; KEY: $key");
     _cache.save(key, response);
   }
 
