@@ -82,6 +82,7 @@ abstract class BaseApi {
     /// yield network response
     yield networkResponse;
 
+    /// save cache when response is successful
     if (updateCache) saveCache(request.key, networkResponse);
   }
 
@@ -103,8 +104,9 @@ abstract class BaseApi {
       final networkResponse = await send(request);
       yield networkResponse;
 
-      /// save cache
-      if (updateCache) saveCache(request.key, networkResponse);
+      /// save cache when response is successful
+      if (updateCache && networkResponse.ok)
+        saveCache(request.key, networkResponse);
     }
   }
 
