@@ -24,15 +24,6 @@ void main() {
     expect(testApi.defaultHeaders, equals(testDefaultHeaders));
   });
 
-  test("HttpMethod returns correct values", () {
-    expect(HttpMethod.get.value, equals("GET"));
-    expect(HttpMethod.post.value, equals("POST"));
-    expect(HttpMethod.delete.value, equals("DELETE"));
-    expect(HttpMethod.head.value, equals("HEAD"));
-    expect(HttpMethod.patch.value, equals("PATCH"));
-    expect(HttpMethod.put.value, equals("PUT"));
-  });
-
   test("BaseApi sets requests url correctly", () async {
     final apiRequest = ApiRequest(endpoint: '/test');
     testApi.send(apiRequest);
@@ -89,5 +80,17 @@ void main() {
     final httpRequest = await apiRequest.buildRequest();
 
     expect(httpRequest, isInstanceOf<http.Request>());
+  });
+
+  test("ApiResponse ok field is true for response with status code 200",
+      () async {
+    final apiRequest = ApiRequest(
+      endpoint: '/file',
+      method: HttpMethod.post,
+    );
+
+    final response = await testApi.send(apiRequest);
+
+    expect(response.ok, isTrue);
   });
 }
