@@ -32,17 +32,15 @@ class DebugLink extends ApiLink {
   int _requestsCount = 0;
   int get requestsCount => _requestsCount;
 
-  static int _requestIdCounter = 0;
+  final _durations = <ObjectId, DateTime>{};
 
-  final _durations = <int, DateTime>{};
-
-  void _printRequest(int id, ApiRequest request) {
+  void _printRequest(ApiRequest request) {
     /// print request only in debug mode
     assert((() {
       if (requestBody || requestHeaders || countRequests || url) {
         print("\n==== REQUEST ====\n");
 
-        print("request id: $id\n");
+        print("request id: ${request.id}\n");
 
         if (label != null) {
           print("label: $label\n");
@@ -71,7 +69,7 @@ class DebugLink extends ApiLink {
     })());
   }
 
-  void _printResponse(int id, ApiResponse response) {
+  void _printResponse(ApiResponse response) {
     /// print request only in debug mode
     assert((() {
       if (responseBody ||
@@ -81,7 +79,7 @@ class DebugLink extends ApiLink {
           url) {
         print("\n==== RESPONSE ====\n");
 
-        print("request id: $id\n");
+        print("request id: ${response.id}\n");
 
         if (label != null) {
           print("label: $label\n");
@@ -92,9 +90,10 @@ class DebugLink extends ApiLink {
         }
 
         if (responseDuration) {
-          final responseDuration = DateTime.now().difference(_durations[id]);
+          final responseDuration =
+              DateTime.now().difference(_durations[response.id]);
           print("response duration: ${responseDuration.inMilliseconds} ms\n");
-          _durations.remove(id);
+          _durations.remove(response.id);
         }
         if (response != null) {
           if (responseHeaders) {
@@ -121,17 +120,16 @@ class DebugLink extends ApiLink {
   @override
   Future<ApiResponse> next(ApiRequest request) async {
     _requestsCount++;
-    final currentRequestId = ++_requestIdCounter;
 
-    _printRequest(currentRequestId, request);
+    _printRequest(request);
 
     if (responseDuration) {
-      _durations[currentRequestId] = DateTime.now();
+      _durations[request.id] = DateTime.now();
     }
 
     final response = await super.next(request);
 
-    _printResponse(currentRequestId, response);
+    _printResponse(response);
 
     return response;
   }
