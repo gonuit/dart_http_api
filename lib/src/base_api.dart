@@ -25,7 +25,7 @@ abstract class BaseApi {
         assert(url != null, "url $runtimeType argument cannot be null"),
         _url = url,
         this.defaultHeaders = defaultHeaders ?? <String, String>{},
-        _link = link._firstLink ?? link ?? HttpLink() {
+        _link = link._firstLink ?? HttpLink() {
     if (_link._firstWhere((apiLink) => (apiLink is HttpLink)) == null) {
       throw ApiException("ApiLinks chain should contain HttpLink");
     }

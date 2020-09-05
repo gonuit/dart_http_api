@@ -7,8 +7,13 @@ abstract class NotifierApiLink extends ApiLink with ChangeNotifier {}
 ///
 /// Each link should extend this method
 abstract class ApiLink {
-  /// [ApiLink]s keeps reference to the first [ApiLink] in chain to simplify chaining
-  ApiLink _firstLink;
+  /// [ApiLink]s keeps reference to the first [ApiLink] in chain to simplify chaining.
+  ///
+  /// Initialy set to this.
+  /// Can be changed by [chain] method.
+  ApiLink get _firstLink => __firstLink ?? this;
+  @protected
+  ApiLink __firstLink;
   ApiLink _nextLink;
   bool _disposed = false;
   bool get disposed => false;
@@ -37,9 +42,9 @@ abstract class ApiLink {
 
   /// Closes all links
   void _closeChain() {
-    /// If [_firstLink] is not set, it will be set with [this].
-    /// Close link chain.
-    _firstLink ??= this;
+    // /// If [_firstLink] is not set, it will be set with [this].
+    // /// Close link chain.
+    // _firstLink ??= this;
     _forEach((ApiLink link) {
       link._closed = true;
     });
@@ -76,15 +81,41 @@ abstract class ApiLink {
     assert(!(isReleaseBuild = false));
 
     /// Do not chain (skip) [DebugLink] in release build.
-    if (nextLink is DebugLink && isReleaseBuild) return this;
+    if (this is DebugLink && isReleaseBuild) return nextLink;
 
-    /// If there is no chain, start it with current
-    if (_firstLink == null) {
-      _firstLink = this;
-    }
+    // /// Do not chain (skip) [DebugLink] in release build.
+    // ///
+    // /// If release build and at least one link is a debug link
+    // if (isReleaseBuild && (this is DebugLink || nextLink is DebugLink)) {
+    //   /// if both api links are debug links skip them.
+    //   /// but return one to support futher chaining.
+    //   /// ```
+    //   /// Link.chain(link).chain(link);
+    //   /// ```
+    //   if (this is DebugLink && nextLink is DebugLink) {
+    //     return nextLink;
+
+    //     /// this link is a DebugLink
+    //   } else if (this is DebugLink) {
+    //     /// If this link is a DebugLink. Chain was not started.
+    //     /// Start chain with nextLink
+    //     nextLink._firstLink = nextLink;
+
+    //     return nextLink;
+
+    //     /// nextLink is a DebugLink
+    //   } else {
+    //     /// If there is no chain, start it with this
+    //     _firstLink ??= this;
+    //     return _firstLink;
+    //   }
+    // }
+
+    // /// If there is no chain, start it with this api link
+    // _firstLink ??= this;
 
     /// set [_firstLink] reference in [nextLink]
-    nextLink._firstLink = _firstLink;
+    nextLink.__firstLink = _firstLink;
 
     /// set reference to next link
     _nextLink = nextLink;
