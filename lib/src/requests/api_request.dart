@@ -6,9 +6,16 @@ class ApiRequest {
   // TODO: Add automatic key generation
   Key _key;
 
-  /// Key is used to match requests
+  /// Identifies (groups) requests.
+  ///
+  /// Used for caching purposes - as cache key.
   Key get key => _key;
   set key(Key value) => _key = value;
+
+  final _id = ObjectId();
+
+  /// Id of current ApiRequest
+  ObjectId get id => _id;
 
   /// Url is set by BaseApi class
   Uri _apiUrl;

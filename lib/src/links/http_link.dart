@@ -28,9 +28,9 @@ class HttpLink with ApiLink {
 
     /// Returns the api response
     return ApiResponse.fromHttp(
+      apiRequest,
       httpRequest,
       httpResponse,
-      apiRequest.linkData,
     );
   }
 
