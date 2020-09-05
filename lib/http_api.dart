@@ -11,7 +11,7 @@ import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:objectid/objectid.dart';
 
-/// objectid
+/// ObjectId
 export 'package:objectid/objectid.dart' show ObjectId;
 
 /// BaseApi

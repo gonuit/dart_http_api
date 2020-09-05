@@ -10,7 +10,7 @@ Simple yet powerful wrapper around http package inspired by apollo graphql links
 This library is under development, breaking API changes might still happen. If you would like to make use of this library please make sure to provide which version you want to use e.g:
 ```yaml
 dependencies:
-  http_api: 0.4.0
+  http_api: 0.5.0
 ```
 
 ## Getting Started
@@ -41,6 +41,36 @@ class Api extends BaseApi {
 
     /// Parse http response
     return ExamplePhotoModel.fromJson(json.decode(response.body));
+  }
+
+  /// Implement api request methods 
+  Future<ExamplePhotoModel> getRandomPhoto() async {
+
+    /// Use [send] method to make api request
+    final response = await send(ApiRequest(
+      endpoint: "/id/${Random().nextInt(50)}/info",
+      method: HttpMethod.get,
+    ));
+
+    /// Parse http response
+    return ExamplePhotoModel.fromJson(json.decode(response.body));
+  }
+
+    /// Cache and network requests returns Stream instead of Future.
+    Stream<ExamplePhotoModel> getPhoto() async* {
+    yield* cacheAndNetwork(ApiRequest(
+      /// Provide key that will be used as cache key.
+      /// key property is required for cache functionality.
+      key: Key("TEST"),
+      endpoint: "/id/${129}/info",
+      method: HttpMethod.get,
+    ))
+    /// Make use of your ApiResponse stream.
+    /// e.g: We are transforming ApiResponses to ExamplePhotoModel.
+    .transform<ExamplePhotoModel>(StreamTransformer.fromHandlers(
+        handleData: (ApiResponse response, sink) {
+      sink.add(ExamplePhotoModel.fromJson(json.decode(response.body)));
+    }));
   }
 }
 
@@ -96,8 +126,6 @@ class _ApiExampleScreenState extends State<ApiExampleScreen> {
 }
 ```
 
-## TODO:
-- Unit tests
-- Caching based on [ApiRequest]
-- Improve readme (provide more examples)
-- Simple graphQL client (without subscriptions support)
+### TODO:
+- Independed from Flutter
+- Readme (Add examples + documentation)
