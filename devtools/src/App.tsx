@@ -1,4 +1,5 @@
 import React from "react";
+import { Provider } from "mobx-react";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
@@ -7,6 +8,12 @@ import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { RequestListDrawer } from "./Components/RequestListDrawer";
 import { Editors } from "./Components/Editors";
 import { CustomAppBar } from "./Components/CustomAppBar";
+import { RequestStore } from "./Stores/requestStore";
+
+const requestStore = new RequestStore();
+
+// connect to socketio
+// TODO:
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,15 +43,17 @@ export default function ClippedDrawer() {
   });
 
   return (
-    <ThemeProvider theme={darkTheme}>
-      <div className={classes.root}>
-        <CssBaseline />
-        <CustomAppBar />
-        <RequestListDrawer />
-        <main className={classes.content}>
-          <Editors />
-        </main>
-      </div>
-    </ThemeProvider>
+    <Provider requestStore={requestStore}>
+      <ThemeProvider theme={darkTheme}>
+        <div className={classes.root}>
+          <CssBaseline />
+          <CustomAppBar />
+          <RequestListDrawer />
+          <main className={classes.content}>
+            <Editors />
+          </main>
+        </div>
+      </ThemeProvider>
+    </Provider>
   );
 }
