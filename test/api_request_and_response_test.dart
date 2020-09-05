@@ -27,7 +27,7 @@ void main() {
   test("BaseApi sets requests url correctly", () async {
     final apiRequest = ApiRequest(endpoint: '/test');
     testApi.send(apiRequest);
-    final httpRequest = await apiRequest.buildRequest();
+    final httpRequest = await apiRequest.build();
 
     expect(httpRequest.url, equals(Uri.parse("https://example.com/api/test")));
   });
@@ -35,7 +35,7 @@ void main() {
   test("Build ApiRequest with default method", () async {
     final apiRequest = ApiRequest(endpoint: '/test');
     testApi.send(apiRequest);
-    final httpRequest = await apiRequest.buildRequest();
+    final httpRequest = await apiRequest.build();
 
     expect(httpRequest.method, apiRequest.method.value);
     expect(httpRequest.method, HttpMethod.get.value);
@@ -63,7 +63,7 @@ void main() {
     expect(apiRequest.isMultipart, isTrue);
 
     await testApi.send(apiRequest);
-    final httpRequest = await apiRequest.buildRequest();
+    final httpRequest = await apiRequest.build();
 
     expect(httpRequest, isInstanceOf<http.MultipartRequest>());
   });
@@ -77,7 +77,7 @@ void main() {
     expect(apiRequest.isMultipart, isFalse);
 
     await testApi.send(apiRequest);
-    final httpRequest = await apiRequest.buildRequest();
+    final httpRequest = await apiRequest.build();
 
     expect(httpRequest, isInstanceOf<http.Request>());
   });
