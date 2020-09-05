@@ -1,6 +1,6 @@
 part of http_api;
 
-class DebugLink extends ApiLink {
+class LoggerLink extends DebugLink {
   final String label;
   final bool url;
   final bool responseBody;
@@ -10,7 +10,7 @@ class DebugLink extends ApiLink {
   final bool statusCode;
   final bool countRequests;
   final bool responseDuration;
-  DebugLink({
+  LoggerLink({
     this.label,
     this.url = false,
     this.requestBody = false,

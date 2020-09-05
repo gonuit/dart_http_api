@@ -72,6 +72,12 @@ abstract class ApiLink {
         "Adding link after http link will take no effect",
       );
 
+    bool isReleaseBuild = true;
+    assert(!(isReleaseBuild = false));
+
+    /// Do not chain (skip) [DebugLink] in release build.
+    if (nextLink is DebugLink && isReleaseBuild) return this;
+
     /// If there is no chain, start it with current
     if (_firstLink == null) {
       _firstLink = this;
