@@ -1,6 +1,11 @@
 part of http_api;
 
 class ApiResponse extends http.Response {
+  final ObjectId _id;
+
+  /// Id of current ApiRequest
+  ObjectId get id => _id;
+
   /// Here you can assing your data that will be passed to the next link
   final Map<String, dynamic> linkData;
 
@@ -22,10 +27,11 @@ class ApiResponse extends http.Response {
       statusCode == 307 ||
       statusCode == 308;
 
-  ApiResponse.fromHttp(http.BaseRequest request, http.Response response,
-      Map<String, dynamic> linkData)
-      : this.linkData = linkData ?? <String, dynamic>{},
+  ApiResponse.fromHttp(
+      ApiRequest apiRequest, http.BaseRequest request, http.Response response)
+      : linkData = apiRequest.linkData ?? <String, dynamic>{},
         received = DateTime.now(),
+        _id = apiRequest.id,
         super(
           response.body,
           response.statusCode,
