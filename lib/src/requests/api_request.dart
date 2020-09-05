@@ -65,7 +65,8 @@ class ApiRequest {
     if (queryParameters != null) this.queryParameters.addAll(queryParameters);
   }
 
-  FutureOr<http.BaseRequest> buildRequest() {
+  /// Builds http request from ApiRequest data
+  FutureOr<http.BaseRequest> build() {
     if (url == null) {
       throw ApiException("$runtimeType url cannot be null");
     }

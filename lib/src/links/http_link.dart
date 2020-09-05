@@ -14,7 +14,7 @@ class HttpLink with ApiLink {
   @protected
   Future<ApiResponse> next(ApiRequest apiRequest) async {
     /// Builds a http request
-    final httpRequest = await apiRequest.buildRequest();
+    final httpRequest = await apiRequest.build();
 
     /// Sends a request
     http.StreamedResponse streamedResponse = await client.send(
