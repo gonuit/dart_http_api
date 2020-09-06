@@ -1,8 +1,5 @@
 part of http_api;
 
-/// ApiLink that is mixed witch ChangeNotifier
-abstract class NotifierApiLink extends ApiLink with ChangeNotifier {}
-
 /// An abstract class that lets you create your own link
 ///
 /// Each link should extend this method
@@ -22,7 +19,7 @@ abstract class ApiLink {
   bool get chained => _nextLink != null;
 
   /// calls [callback] for every link in chain
-  void _forEach(ValueChanged<ApiLink> callback) {
+  void _forEach(void Function(ApiLink) callback) {
     ApiLink lastLink = _firstLink ?? this;
     do {
       callback(lastLink);

@@ -21,7 +21,7 @@ class Api extends BaseApi {
 
   Stream<ExamplePhotoModel> getPhotoWithCache() async* {
     yield* cacheAndNetwork(ApiRequest(
-      key: Key("TEST"),
+      key: CacheKey("TEST"),
       endpoint: "/id/${129}/info",
       method: HttpMethod.get,
     )).transform<ExamplePhotoModel>(StreamTransformer.fromHandlers(
@@ -34,7 +34,7 @@ class Api extends BaseApi {
   Future<ExamplePhotoModel> getRandomPhoto() async {
     /// Use [send] method to make api request
     final response = await send(ApiRequest(
-      key: Key("TEST"),
+      key: CacheKey("TEST"),
       endpoint: "/id/${Random().nextInt(50)}/info",
       method: HttpMethod.get,
     ));

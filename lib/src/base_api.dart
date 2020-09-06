@@ -114,13 +114,13 @@ abstract class BaseApi {
   }
 
   @experimental
-  FutureOr<ApiResponse> readCache(Key key) {
+  FutureOr<ApiResponse> readCache(CacheKey key) {
     print("CACHE READED; KEY: $key");
     return _cache.load(key);
   }
 
   @experimental
-  void saveCache(Key key, ApiResponse response) {
+  void saveCache(CacheKey key, ApiResponse response) {
     print("CACHE SAVED; KEY: $key");
     _cache.save(key, response);
   }

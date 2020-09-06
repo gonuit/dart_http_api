@@ -4,13 +4,13 @@ part of http_api;
 
 class ApiRequest {
   // TODO: Add automatic key generation
-  Key _key;
+  CacheKey _key;
 
   /// Identifies (groups) requests.
   ///
   /// Used for caching purposes - as cache key.
-  Key get key => _key;
-  set key(Key value) => _key = value;
+  CacheKey get key => _key;
+  set key(CacheKey value) => _key = value;
 
   final _id = ObjectId();
 
@@ -61,7 +61,7 @@ class ApiRequest {
     this.body,
     this.encoding,
     this.multipart,
-    @experimental Key key,
+    @experimental CacheKey key,
   })  : _key = key,
         assert(
           endpoint != null && method != null,
@@ -75,7 +75,8 @@ class ApiRequest {
   /// Builds http request from ApiRequest data
   FutureOr<http.BaseRequest> build() {
     if (url == null) {
-      throw ApiError("$runtimeType url cannot be null. Instead of calling build method, pass ApiRequest to BaseApi: 'send' method.");
+      throw ApiError(
+          "$runtimeType url cannot be null. Instead of calling build method, pass ApiRequest to BaseApi: 'send' method.");
     }
     return isMultipart ? _buildMultipartHttpRequest() : _buildHttpRequest();
   }
