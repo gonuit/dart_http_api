@@ -27,11 +27,11 @@ abstract class BaseApi {
         this.defaultHeaders = defaultHeaders ?? <String, String>{},
         _link = link._firstLink ?? HttpLink() {
     if (_link._firstWhere((apiLink) => (apiLink is HttpLink)) == null) {
-      throw ApiException("ApiLinks chain should contain HttpLink");
+      throw ApiError("ApiLinks chain should contain HttpLink");
     }
 
     if (_link._firstWhere((apiLink) => apiLink.closed) != null) {
-      throw ApiException("Cannot assign closed ApiLinks chain to $runtimeType");
+      throw ApiError("Cannot assign closed ApiLinks chain to $runtimeType");
     }
 
     /// Close link chain
@@ -62,7 +62,8 @@ abstract class BaseApi {
     ApiRequest request, {
     @experimental bool updateCache = true,
   }) async* {
-    if (request.key == null) throw ApiException('Request key cannot be null');
+    if (request.key == null)
+      throw ApiError('CacheKey is required for requests with cache.');
 
     /// read cache
     final cacheFuture = readCache(request.key);
@@ -92,7 +93,8 @@ abstract class BaseApi {
     ApiRequest request, {
     @experimental bool updateCache = true,
   }) async {
-    if (request.key == null) throw ApiException('Request key cannot be null');
+    if (request.key == null)
+      throw ApiError('CacheKey is required for requests with cache.');
 
     /// get cache
     final cachedResponse = await readCache(request.key);

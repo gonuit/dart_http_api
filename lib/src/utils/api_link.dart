@@ -40,39 +40,38 @@ abstract class ApiLink {
     return null;
   }
 
-  /// Closes all links
+  /// Marks all ApiLinks in chain as closed by setting `closed` property to true.
+  /// Closed links cannot be chained.
   void _closeChain() {
-    // /// If [_firstLink] is not set, it will be set with [this].
-    // /// Close link chain.
-    // _firstLink ??= this;
     _forEach((ApiLink link) {
       link._closed = true;
     });
   }
 
   /// Chain multiple links into one.
+  /// throws [ApiError] when error occurs
   @nonVirtual
   ApiLink chain(ApiLink nextLink) {
     if (nextLink == null)
-      throw ApiException(
+      throw ApiError(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
         "nextLink cannot be null",
       );
 
     if (closed || nextLink.closed)
-      throw ApiException(
+      throw ApiError(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
         "You cannot chain links after attaching to BaseApi",
       );
 
     if (disposed || nextLink.disposed)
-      throw ApiException(
+      throw ApiError(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
         "You cannot chain disposed links",
       );
 
     if (this is HttpLink)
-      throw ApiException(
+      throw ApiError(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
         "Adding link after http link will take no effect",
       );
@@ -81,38 +80,10 @@ abstract class ApiLink {
     assert(!(isReleaseBuild = false));
 
     /// Do not chain (skip) [DebugLink] in release build.
-    if (this is DebugLink && isReleaseBuild) return nextLink;
-
-    // /// Do not chain (skip) [DebugLink] in release build.
-    // ///
-    // /// If release build and at least one link is a debug link
-    // if (isReleaseBuild && (this is DebugLink || nextLink is DebugLink)) {
-    //   /// if both api links are debug links skip them.
-    //   /// but return one to support futher chaining.
-    //   /// ```
-    //   /// Link.chain(link).chain(link);
-    //   /// ```
-    //   if (this is DebugLink && nextLink is DebugLink) {
-    //     return nextLink;
-
-    //     /// this link is a DebugLink
-    //   } else if (this is DebugLink) {
-    //     /// If this link is a DebugLink. Chain was not started.
-    //     /// Start chain with nextLink
-    //     nextLink._firstLink = nextLink;
-
-    //     return nextLink;
-
-    //     /// nextLink is a DebugLink
-    //   } else {
-    //     /// If there is no chain, start it with this
-    //     _firstLink ??= this;
-    //     return _firstLink;
-    //   }
-    // }
-
-    // /// If there is no chain, start it with this api link
-    // _firstLink ??= this;
+    if (isReleaseBuild) {
+      if (this is DebugLink) return nextLink;
+      if (nextLink is DebugLink) return this;
+    }
 
     /// set [_firstLink] reference in [nextLink]
     nextLink.__firstLink = _firstLink;

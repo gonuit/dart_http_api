@@ -22,7 +22,7 @@ class ApiRequest {
   Uri get apiUrl => _apiUrl;
   Uri get url {
     if (apiUrl == null)
-      throw ApiException("url is not available before sending a request");
+      throw ApiError("url is not available before sending a request");
 
     final queryParameters = Map<String, dynamic>.from(apiUrl.queryParameters)
       ..addAll(this.queryParameters);
@@ -75,7 +75,7 @@ class ApiRequest {
   /// Builds http request from ApiRequest data
   FutureOr<http.BaseRequest> build() {
     if (url == null) {
-      throw ApiException("$runtimeType url cannot be null");
+      throw ApiError("$runtimeType url cannot be null. Instead of calling build method, pass ApiRequest to BaseApi: 'send' method.");
     }
     return isMultipart ? _buildMultipartHttpRequest() : _buildHttpRequest();
   }

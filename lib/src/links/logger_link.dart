@@ -1,5 +1,8 @@
 part of http_api;
 
+/// LoggerLink is DebugLink that prints request details to console.
+/// 
+/// {@macro http_api.debug_link}
 class LoggerLink extends DebugLink {
   final String label;
   final bool url;
