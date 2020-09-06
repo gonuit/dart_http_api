@@ -1,3 +1,7 @@
+## [0.7.0] - 07 September 2020.
+- Removed flutter from dependency (add crossplatform support).
+  - Replaced Flutter `Key` class with `CacheKey`.
+- Fix example app compilation error.
 ## [0.6.0] - 06 September 2020.
 - Renamed current `DebugLink` class to `LoggerLink`.
 - Added abstract `DebugLink` class. DebugLinks are special types of links that will never be chained (will be skipped) in release builds. 
