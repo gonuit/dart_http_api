@@ -7,8 +7,13 @@ abstract class NotifierApiLink extends ApiLink with ChangeNotifier {}
 ///
 /// Each link should extend this method
 abstract class ApiLink {
-  /// [ApiLink]s keeps reference to the first [ApiLink] in chain to simplify chaining
-  ApiLink _firstLink;
+  /// [ApiLink]s keeps reference to the first [ApiLink] in chain to simplify chaining.
+  ///
+  /// Initialy set to this.
+  /// Can be changed by [chain] method.
+  ApiLink get _firstLink => __firstLink ?? this;
+  @protected
+  ApiLink __firstLink;
   ApiLink _nextLink;
   bool _disposed = false;
   bool get disposed => false;
@@ -35,50 +40,53 @@ abstract class ApiLink {
     return null;
   }
 
-  /// Closes all links
+  /// Marks all ApiLinks in chain as closed by setting `closed` property to true.
+  /// Closed links cannot be chained.
   void _closeChain() {
-    /// If [_firstLink] is not set, it will be set with [this].
-    /// Close link chain.
-    _firstLink ??= this;
     _forEach((ApiLink link) {
       link._closed = true;
     });
   }
 
   /// Chain multiple links into one.
+  /// throws [ApiError] when error occurs
   @nonVirtual
   ApiLink chain(ApiLink nextLink) {
     if (nextLink == null)
-      throw ApiException(
+      throw ApiError(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
         "nextLink cannot be null",
       );
 
     if (closed || nextLink.closed)
-      throw ApiException(
+      throw ApiError(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
         "You cannot chain links after attaching to BaseApi",
       );
 
     if (disposed || nextLink.disposed)
-      throw ApiException(
+      throw ApiError(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
         "You cannot chain disposed links",
       );
 
     if (this is HttpLink)
-      throw ApiException(
+      throw ApiError(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
         "Adding link after http link will take no effect",
       );
 
-    /// If there is no chain, start it with current
-    if (_firstLink == null) {
-      _firstLink = this;
+    bool isReleaseBuild = true;
+    assert(!(isReleaseBuild = false));
+
+    /// Do not chain (skip) [DebugLink] in release build.
+    if (isReleaseBuild) {
+      if (this is DebugLink) return nextLink;
+      if (nextLink is DebugLink) return this;
     }
 
     /// set [_firstLink] reference in [nextLink]
-    nextLink._firstLink = _firstLink;
+    nextLink.__firstLink = _firstLink;
 
     /// set reference to next link
     _nextLink = nextLink;

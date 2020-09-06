@@ -20,10 +20,11 @@ part './src/base_api.dart';
 /// Utils
 part './src/utils/exceptions.dart';
 part './src/utils/api_link.dart';
+part './src/utils/debug_link.dart';
 
 /// Links
 part './src/links/headers_mapper_link.dart';
-part './src/links/debug_link.dart';
+part 'src/links/logger_link.dart';
 part './src/links/http_link.dart';
 
 /// Requests

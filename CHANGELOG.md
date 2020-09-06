@@ -1,3 +1,7 @@
+## [0.6.0] - 06 September 2020.
+- Renamed current `DebugLink` class to `LoggerLink`.
+- Added abstract `DebugLink` class. DebugLinks are special types of links that will never be chained (will be skipped) in release builds. 
+- Replaced internal `ApiException`s with `ApiError`s.
 ## [0.5.0] - 05 September 2020.
 * Added cache support.
 * Added id property to ApiRequest and ApiResponse objects.
