@@ -10,7 +10,7 @@ Simple yet powerful wrapper around http package inspired by apollo graphql links
 This library is under development, breaking API changes might still happen. If you would like to make use of this library please make sure to provide which version you want to use e.g:
 ```yaml
 dependencies:
-  http_api: 0.5.0
+  http_api: 0.7.0
 ```
 
 ## Getting Started
