@@ -1,7 +1,19 @@
 ## [0.7.0] - XX September 2020.
 - Removed flutter from dependency (add crossplatform support).
   - Replaced Flutter `Key` class with `CacheKey`.
-- CacheKey class now operates on String values.
+- Cache system changes:
+  - `CacheKey` class now operates on `String` values.
+  - Create `CacheManager` class.
+  - Added `Cache` mixin that adds cache to `BaseApi` instances.
+    ```dart
+    class Api extends BaseApi with Cache {
+
+      @override
+      CacheManager createCacheManager() => InMemoryCache();
+
+      /// ** your custom Api class implementation **
+    }
+    ```
 - Now displaying `hexString` for id's in logger link.
 - Made `saveCache` function optionally asynchronous.
 - Bug fixes:

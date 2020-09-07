@@ -12,10 +12,8 @@ class Api extends BaseApi with Cache {
   Api({
     @required Uri url,
     ApiLink link,
-    Map<String, String> defaultHeaders,
   }) : super(
           url: url,
-          defaultHeaders: defaultHeaders,
           link: link,
         );
 
