@@ -17,6 +17,9 @@ class ApiRequest {
   /// Id of current ApiRequest
   ObjectId get id => _id;
 
+  /// ApiRequest object creation timestamp.
+  DateTime get createdAt => id.timestamp;
+
   /// Url is set by BaseApi class
   Uri _apiUrl;
   Uri get apiUrl => _apiUrl;

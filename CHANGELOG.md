@@ -15,6 +15,7 @@
     }
     ```
 - Now displaying `hexString` for id's in logger link.
+- Added `createdAt` property to `ApiRequest`. 
 - Made `saveCache` function optionally asynchronous.
 - Bug fixes:
   - Fixed example app compilation error.
