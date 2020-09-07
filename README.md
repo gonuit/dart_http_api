@@ -165,7 +165,7 @@ class Api extends BaseApi with Cache {
 #### `cache`
 Cache property contains a `CacheManager` instance that was internally created via the `createCacheManager` method.
   
-Thanks to this property, you can manipulate your cache yourself.
+Thanks to this property, you can manipulate your cache by yourself.
   
 Example:
 ```dart
