@@ -183,4 +183,6 @@ bool shouldUpdateCache(ApiRequest request, ApiResponse response) {
 ```
   
 ## TODO:
-- Readme (Add examples + documentation)
+- Improve documentation
+  - Improve readme file
+  - Add devtools
