@@ -10,6 +10,8 @@ import {
   Theme,
   createStyles,
 } from "@material-ui/core";
+import QuestionAnswer from "@material-ui/icons/QuestionAnswer";
+
 import React from "react";
 import {
   PatchIcon,
@@ -19,6 +21,8 @@ import {
   HeadIcon,
   DeleteIcon,
 } from "./Icons";
+import { observer, inject } from "mobx-react";
+import { RequestStore } from "../Stores/requestStore";
 
 const DRAWER_WIDTH = 325;
 
@@ -40,79 +44,70 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// TODO: REMOVE MOCK
-const icons = [
-  <PatchIcon />,
-  <DeleteIcon />,
-  <GetIcon />,
-  <PutIcon />,
-  <HeadIcon />,
-  <PostIcon />,
-];
-
-export const RequestListDrawer: React.FC = () => {
-  const classes = useStyles();
-
-  return (
-    <Drawer
-      className={classes.drawer}
-      variant="permanent"
-      classes={{
-        paper: classes.drawerPaper,
-      }}
-    >
-      <Toolbar />
-      <div className={classes.drawerContainer}>
-        <List>
-          <ListSubheader className={classes.listSection}>
-            <ListItemText primary={"Requests"} />
-          </ListSubheader>
-          <ListItem button>
-            <ListItemIcon>
-              <PatchIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Patch"} />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <GetIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Get"} />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <PostIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Post"} />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <PutIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Put"} />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <HeadIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Head"} />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <DeleteIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Delete"} />
-          </ListItem>
-          {new Array(100).fill(1).map((_, index) => {
-            return (
-              <ListItem button>
-                <ListItemIcon>{icons[index % 6]}</ListItemIcon>
-                <ListItemText primary={`/photos/${index + 342}`} />
-              </ListItem>
-            );
-          })}
-        </List>
-      </div>
-    </Drawer>
-  );
+const getRequestIcon = (method: string) => {
+  switch (method) {
+    case "POST":
+      return <PostIcon />;
+    case "DELETE":
+      return <DeleteIcon />;
+    case "GET":
+      return <GetIcon />;
+    case "PUT":
+      return <PutIcon />;
+    case "HEAD":
+      return <HeadIcon />;
+    case "PATCH":
+      return <PatchIcon />;
+    default:
+      return <QuestionAnswer />;
+  }
 };
+
+export const RequestListDrawer: React.FC<{
+  requestStore?: RequestStore;
+}> = inject("requestStore")(
+  observer(({ requestStore }) => {
+    const classes = useStyles();
+
+    return (
+      <Drawer
+        className={classes.drawer}
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        <Toolbar />
+        <div className={classes.drawerContainer}>
+          <List>
+            <ListSubheader className={classes.listSection}>
+              <ListItemText primary={"Requests"} />
+            </ListSubheader>
+            {requestStore!.data.map((requestData) => {
+              return (
+                <ListItem
+                  onClick={() => {
+                    requestStore?.select(requestData.id);
+                  }}
+                  style={{
+                    backgroundColor:
+                      requestData.id === requestStore?.selected?.id
+                        ? "rgba(255,255,255,0.1)"
+                        : "transparent",
+                  }}
+                  key={requestData.id}
+                  button
+                >
+                  <ListItemIcon>
+                    {getRequestIcon(requestData.request.method)}
+                  </ListItemIcon>
+                  <ListItemText primary={requestData.request.endpoint} />
+                </ListItem>
+              );
+            })}
+          </List>
+        </div>
+      </Drawer>
+    );
+  })
+);

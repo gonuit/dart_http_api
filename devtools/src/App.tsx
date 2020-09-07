@@ -12,9 +12,6 @@ import { RequestStore } from "./Stores/requestStore";
 
 const requestStore = new RequestStore();
 
-// connect to socketio
-// TODO:
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {

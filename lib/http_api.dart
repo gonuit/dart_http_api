@@ -8,6 +8,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:objectid/objectid.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 /// ObjectId
 export 'package:objectid/objectid.dart' show ObjectId;
@@ -25,6 +26,7 @@ part './src/utils/cache_key.dart';
 part './src/links/headers_mapper_link.dart';
 part 'src/links/logger_link.dart';
 part './src/links/http_link.dart';
+part './src/links/dev_tools_link.dart';
 
 /// Requests
 part 'src/data/api_request.dart';

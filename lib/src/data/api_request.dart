@@ -43,7 +43,7 @@ class ApiRequest {
   String endpoint;
   HttpMethod method;
   Encoding encoding;
-  bool multipart;
+  bool _multipart;
   dynamic body;
 
   /// Here you can assign your data that will be passed to the next link
@@ -54,7 +54,7 @@ class ApiRequest {
 
   /// If [BaseApiRequest] contains files or [multipart] property is set to true
   /// [isMultipart] equals true
-  bool get isMultipart => multipart == true || fileFields.isNotEmpty;
+  bool get isMultipart => _multipart == true || fileFields.isNotEmpty;
 
   ApiRequest({
     @required this.endpoint,
@@ -64,9 +64,10 @@ class ApiRequest {
     Map<String, dynamic> queryParameters,
     this.body,
     this.encoding,
-    this.multipart,
+    bool multipart,
     @experimental CacheKey key,
   })  : _key = key,
+        _multipart = multipart,
         assert(
           endpoint != null && method != null,
           "endpoint and method arguments cannot be null",
@@ -140,7 +141,7 @@ class ApiRequest {
         "headers": headers,
         "linkData": linkData,
         "method": method.value,
-        "multipart": multipart,
+        "isMultipart": isMultipart,
       };
 
   String toString() => "$runtimeType(${toMap()})";
@@ -154,7 +155,7 @@ class ApiRequest {
       if (apiUrl != null) "url": url.toString(),
       "endpoint": endpoint,
       "method": method.value,
-      "multipart": multipart,
+      "isMultipart": isMultipart,
       "body": body,
       "headers": headers,
       "queryParameters": queryParameters,
