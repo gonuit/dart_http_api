@@ -141,7 +141,7 @@ class CustomLink extends ApiLink {
   }
 }
 ```
-If your link operates on data that should be disposed of together with api instance. You can override the ApiLink dispose method.
+If your link operates on data that should be disposed of together with api instance. You can override its dispose method.
 
 ## Cache
 With http_api you can cache your responses to avoid uneccesary fetches or/and improve user experience.
