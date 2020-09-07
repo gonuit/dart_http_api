@@ -19,8 +19,10 @@ class MockFileField extends Mock implements FileField {
 }
 
 class MockHttpClient extends Fake implements http.Client {
+  int sendCalledTimes = 0;
   @override
   Future<http.StreamedResponse> send(http.BaseRequest httpRequest) async {
+    sendCalledTimes++;
     return http.StreamedResponse(
       Stream<List<int>>.empty(),
       200,
@@ -49,4 +51,23 @@ class TestApi extends BaseApi {
           link: link,
           defaultHeaders: defaultHeaders,
         );
+}
+
+class MockedCacheManager extends Mock implements CacheManager {}
+
+class TestApiWithCache extends BaseApi with Cache {
+  TestApiWithCache({
+    @required Uri url,
+    ApiLink link,
+    Map<String, String> defaultHeaders,
+  }) : super(
+          url,
+          link: link,
+          defaultHeaders: defaultHeaders,
+        );
+
+  @override
+  CacheManager createCacheManager() {
+    return MockedCacheManager();
+  }
 }
