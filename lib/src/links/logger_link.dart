@@ -43,7 +43,7 @@ class LoggerLink extends DebugLink {
       if (requestBody || requestHeaders || countRequests || url) {
         print("\n==== REQUEST ====\n");
 
-        print("request id: ${request.id}\n");
+        print("request id: ${request.id.hexString}\n");
 
         if (label != null) {
           print("label: $label\n");
@@ -82,7 +82,7 @@ class LoggerLink extends DebugLink {
           url) {
         print("\n==== RESPONSE ====\n");
 
-        print("request id: ${response.id}\n");
+        print("request id: ${response.id.hexString}\n");
 
         if (label != null) {
           print("label: $label\n");
