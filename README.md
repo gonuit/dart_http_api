@@ -4,7 +4,7 @@
 ![Pub Version](https://img.shields.io/pub/v/http_api?color=%230175c2)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
   
-Simple yet powerful wrapper around http package inspired by apollo graphql links. This package provides you a simple way of adding middlewares to your app http requests.
+Simple yet powerful wrapper around http package inspired by apollo graphql links. This package provides you a simple way of adding interceptors to your app http requests.
 
 ## IMPORTANT
 This library is under development, breaking API changes might still happen. If you would like to make use of this library please make sure to provide which version you want to use e.g:
@@ -70,10 +70,6 @@ class MyApp extends StatelessWidget {
     return Provider(
         create: (_) => Api(
           Uri.parse("https://example.com/api"),
-          /// Assign middlewares by providing ApiLinks (to provide more than one middlewares, chain them)
-          link: AuthLink()
-              .chain(DebugLink(responseBody: true)),
-              .chain(HttpLink()),
         ),
         /// Your app
         child: MaterialApp(
@@ -83,6 +79,30 @@ class MyApp extends StatelessWidget {
       );
   }
 }
+```
+
+## ApiLinks (Interceptors / Middleware)
+Api links allow you to perform certain tasks before the request and after the response from the API (HTTP client).
+
+### To add interceptors to your api instance.
+```dart
+void main() {
+  Api(
+    Uri.parse("https://example.com/api"),
+    /// Assign interceptors by providing ApiLinks (to provide more than one interceptors, chain them)
+    link: AuthLink()
+        .chain(DebugLink(responseBody: true)),
+        .chain(HttpLink()),
+  )
+}
+```
+#### How will it work?
+When performing a request via `send` (or `cacheAndNetwork` and `cacheIfAvailable`). Request will trawers api links chain to reach HttpLink wich should be the last link. HttpLinks calls api by doing request. Then all links are receiving api response before it is returned in place of `send` method invocation.  
+```
+                                 __________               ____________               __________
+calling send()    |  -request-> | AuthLink |  -request-> | LoggerLink |  -request-> | HttpLink |
+send returns data | <-response- |__________| <-response- |____________| <-response- |__________|
+                                    tasks                     tasks                 http request   
 ```
 
 ## Cache
