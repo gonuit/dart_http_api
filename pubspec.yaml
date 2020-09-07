@@ -15,5 +15,6 @@ dependencies:
   http_parser: ^3.1.4
 
 dev_dependencies:
+  effective_dart: ^1.2.0
   test:
   mockito: 4.1.1

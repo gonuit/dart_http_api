@@ -42,7 +42,7 @@ void main() {
       final key = CacheKey("TEST KEY");
       final request = ApiRequest(key: key, endpoint: '/test');
 
-      final responses = List<ApiResponse>();
+      final responses = <ApiResponse>[];
       await for (final response in testApi.cacheAndNetwork(request)) {
         responses.add(response);
       }
@@ -64,7 +64,7 @@ void main() {
       when(testApi.cache.read(key)).thenReturn(response);
 
       final request2 = ApiRequest(key: key, endpoint: '/test');
-      final responses = List<ApiResponse>();
+      final responses = <ApiResponse>[];
       await for (final response in testApi.cacheAndNetwork(request2)) {
         responses.add(response);
       }

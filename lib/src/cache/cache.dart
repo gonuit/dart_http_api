@@ -79,7 +79,8 @@ mixin Cache<T extends CacheManager> on BaseApi {
     }
   }
 
-  /// Retrieve response from the cache if available and then from the network. Returns `Stream<ApiResponse>` type.
+  /// Retrieve response from the cache if available and then from the network.
+  /// Returns `Stream<ApiResponse>` type.
   @experimental
   Stream<ApiResponse> cacheAndNetwork(
     ApiRequest request, {

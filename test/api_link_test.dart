@@ -63,6 +63,7 @@ void main() {
     ApiError error;
     try {
       apiLink.chain(TestLink(99));
+      // ignore: avoid_catching_errors
     } on ApiError catch (err) {
       error = err;
     }
@@ -102,6 +103,7 @@ void main() {
         url: testUrl,
         link: apiLink,
       );
+      // ignore: avoid_catching_errors
     } on ApiError catch (err) {
       error = err;
     }
@@ -142,6 +144,7 @@ void main() {
     ApiError error;
     try {
       apiLink.chain(TestLink(99));
+      // ignore: avoid_catching_errors
     } on ApiError catch (err) {
       error = err;
     }
@@ -158,6 +161,7 @@ void main() {
     ApiError error;
     try {
       TestApi(url: testUrl, link: TestLink(1).chain(TestLink(2)));
+      // ignore: avoid_catching_errors
     } on ApiError catch (err) {
       error = err;
     }

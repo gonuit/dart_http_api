@@ -4,7 +4,8 @@ part of http_api;
 ///
 /// Each link should extend this method
 abstract class ApiLink {
-  /// [ApiLink]s keeps reference to the first [ApiLink] in chain to simplify chaining.
+  /// [ApiLink]s keeps reference to the first [ApiLink] in chain
+  /// to simplify chaining.
   ///
   /// Initialy set to this or null in release builds if `this` is a [DebugLink].
   /// Can be changed by [chain] method.
@@ -21,7 +22,7 @@ abstract class ApiLink {
 
   /// calls [callback] for every link in chain
   void _forEach(void Function(ApiLink) callback) {
-    ApiLink lastLink = _firstLink ?? this;
+    var lastLink = _firstLink ?? this;
     do {
       callback(lastLink);
       lastLink = lastLink._nextLink;
@@ -30,7 +31,7 @@ abstract class ApiLink {
 
   /// Returns first [ApiLink] that matches provided test function.
   ApiLink _firstWhere(bool test(ApiLink link)) {
-    ApiLink lastLink = _firstLink ?? this;
+    var lastLink = _firstLink ?? this;
     do {
       if (test(lastLink)) return lastLink;
       lastLink = lastLink._nextLink;
@@ -38,17 +39,19 @@ abstract class ApiLink {
     return null;
   }
 
-  /// Marks all ApiLinks in chain as closed by setting `closed` property to true.
+  /// Marks all ApiLinks in chain as closed by setting
+  /// `closed` property to true.
+  ///
   /// Closed links cannot be chained.
   void _closeChain() {
-    _forEach((ApiLink link) {
+    _forEach((link) {
       link._closed = true;
     });
   }
 
   @visibleForTesting
   bool get isReleaseBuild {
-    bool release = true;
+    var release = true;
     assert(!(release = false));
     return release;
   }
@@ -57,29 +60,33 @@ abstract class ApiLink {
   /// throws [ApiError] when error occurs
   @nonVirtual
   ApiLink chain(ApiLink nextLink) {
-    if (nextLink == null)
+    if (nextLink == null) {
       throw ApiError(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
         "nextLink cannot be null",
       );
+    }
 
-    if (closed || nextLink.closed)
+    if (closed || nextLink.closed) {
       throw ApiError(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
         "You cannot chain links after attaching to BaseApi",
       );
+    }
 
-    if (disposed || nextLink.disposed)
+    if (disposed || nextLink.disposed) {
       throw ApiError(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
         "You cannot chain disposed links",
       );
+    }
 
-    if (this is HttpLink)
+    if (this is HttpLink) {
       throw ApiError(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
         "Adding link after http link will take no effect",
       );
+    }
 
     /// Do not chain (skip) [DebugLink] in release build.
     if (isReleaseBuild) {
@@ -97,8 +104,8 @@ abstract class ApiLink {
   }
 
   /// This method is called on every request.
-  /// Calling `super.next` will cause invocation of `next` method in the next ApiLink
-  /// in the chain (if present)
+  /// Calling `super.next` will cause invocation of `next` method
+  /// in the next ApiLink in the chain (if present)
   @protected
   Future<ApiResponse> next(ApiRequest request) {
     return _nextLink?.next(request);

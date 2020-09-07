@@ -24,8 +24,9 @@ class ApiRequest {
   Uri _apiUrl;
   Uri get apiUrl => _apiUrl;
   Uri get url {
-    if (apiUrl == null)
+    if (apiUrl == null) {
       throw ApiError("url is not available before sending a request");
+    }
 
     final queryParameters = Map<String, dynamic>.from(apiUrl.queryParameters)
       ..addAll(this.queryParameters);
@@ -93,18 +94,20 @@ class ApiRequest {
 
     /// Assign body if it is map
     if (body != null) {
-      if (body is Map)
+      if (body is Map) {
         request.fields.addAll(body.cast<String, String>());
-      else
+      } else {
         throw ArgumentError(
           'Invalid request body "$body".\n'
           'Multipart request body should be Map<String, String>',
         );
+      }
     }
 
     /// Assign files to [MultipartRequest]
-    for (final fileField in fileFields)
+    for (final fileField in fileFields) {
       request.files.add(await fileField.toMultipartFile());
+    }
 
     return request;
   }
@@ -116,14 +119,15 @@ class ApiRequest {
     if (headers != null) request.headers.addAll(headers);
     if (encoding != null) request.encoding = encoding;
     if (body != null) {
-      if (body is String)
+      if (body is String) {
         request.body = body;
-      else if (body is List)
+      } else if (body is List) {
         request.bodyBytes = body.cast<int>();
-      else if (body is Map)
+      } else if (body is Map) {
         request.bodyFields = body.cast<String, String>();
-      else
+      } else {
         throw ArgumentError('Invalid request body "$body".');
+      }
     }
     return request;
   }

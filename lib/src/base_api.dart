@@ -20,7 +20,7 @@ abstract class BaseApi {
     @experimental CacheManager cache,
   })  : assert(url != null, "url $runtimeType argument cannot be null"),
         _url = url,
-        this.defaultHeaders = defaultHeaders ?? <String, String>{},
+        defaultHeaders = defaultHeaders ?? <String, String>{},
         _link = link._firstLink ?? HttpLink() {
     if (_link._firstWhere((apiLink) => (apiLink is HttpLink)) == null) {
       throw ApiError("ApiLinks chain should contain HttpLink");
@@ -35,13 +35,14 @@ abstract class BaseApi {
   }
 
   /// Get first link of provided type from current link chain.
-  /// If ApiLink chain does not contain link of provided type, [null] will be returned.
-  T getFirstLinkOfType<T>() =>
-      _link?._firstWhere((ApiLink link) => link is T) as T;
+  /// If ApiLink chain does not contain link of provided type,
+  /// [null] will be returned.
+  T getFirstLinkOfType<T>() => _link?._firstWhere((link) => link is T) as T;
 
   /// Make API request by triggering [ApiLink]s [next] methods
   Future<ApiResponse> send(ApiRequest request) async {
-    /// Adds default headers to the request, but does not overrides existing ones
+    /// Adds default headers to the request, but does not overrides
+    /// existing ones
     request.headers.addAll(
       Map<String, String>.from(defaultHeaders)..addAll(request.headers),
     );
