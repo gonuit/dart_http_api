@@ -8,7 +8,7 @@ import 'package:http_api/http_api.dart';
 
 import 'models/example_photo_model.dart';
 
-class Api extends BaseApi {
+class Api extends BaseApi with Cache {
   Api({
     @required Uri url,
     ApiLink link,
@@ -18,6 +18,9 @@ class Api extends BaseApi {
           defaultHeaders: defaultHeaders,
           link: link,
         );
+
+  @override
+  CacheManager createCacheManager() => InMemoryCache();
 
   Stream<ExamplePhotoModel> getPhotoWithCache() async* {
     yield* cacheAndNetwork(ApiRequest(
@@ -34,7 +37,6 @@ class Api extends BaseApi {
   Future<ExamplePhotoModel> getRandomPhoto() async {
     /// Use [send] method to make api request
     final response = await send(ApiRequest(
-      key: CacheKey("TEST"),
       endpoint: "/id/${Random().nextInt(50)}/info",
       method: HttpMethod.get,
     ));
