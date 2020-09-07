@@ -76,7 +76,9 @@ class ApiRequest {
   FutureOr<http.BaseRequest> build() {
     if (url == null) {
       throw ApiError(
-          "$runtimeType url cannot be null. Instead of calling build method, pass ApiRequest to BaseApi: 'send' method.");
+        "$runtimeType url cannot be null. Instead of calling build method, "
+        "pass ApiRequest to BaseApi: 'send' method.",
+      );
     }
     return isMultipart ? _buildMultipartHttpRequest() : _buildHttpRequest();
   }
