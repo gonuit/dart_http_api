@@ -13,7 +13,7 @@ class Api extends BaseApi with Cache {
     @required Uri url,
     ApiLink link,
   }) : super(
-          url: url,
+          url,
           link: link,
         );
 

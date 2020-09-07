@@ -45,7 +45,7 @@ class TestApi extends BaseApi {
     ApiLink link,
     Map<String, String> defaultHeaders,
   }) : super(
-          url: url,
+          url,
           link: link,
           defaultHeaders: defaultHeaders,
         );

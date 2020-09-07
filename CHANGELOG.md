@@ -17,6 +17,7 @@
 - Now displaying `hexString` for id's in logger link.
 - Added `createdAt` property to `ApiRequest`. 
 - Made `saveCache` function optionally asynchronous.
+- url is now a required positional argument in BaseApi class constructor.
 - Bug fixes:
   - Fixed example app compilation error.
   - Disallowed chaining DebugLink in release apps when only one link is provided.

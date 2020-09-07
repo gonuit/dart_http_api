@@ -11,8 +11,8 @@ abstract class BaseApi {
   final Map<String, String> defaultHeaders;
   final ApiLink _link;
 
-  BaseApi({
-    @required Uri url,
+  BaseApi(
+    Uri url, {
     ApiLink link,
     Map<String, String> defaultHeaders,
 
