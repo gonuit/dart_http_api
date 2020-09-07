@@ -1,6 +1,6 @@
 # http_api
   
-[![Codemagic build status](https://api.codemagic.io/apps/5e9c9c7a7af7f3ae2a99d6a0/5e9c9c7a7af7f3ae2a99d69f/status_badge.svg)](https://codemagic.io/apps/5e9c9c7a7af7f3ae2a99d6a0/5e9c9c7a7af7f3ae2a99d69f/latest_build)
+![Tests](https://github.com/gonuit/flutter_http_api/workflows/Tests/badge.svg?event=status)
 ![Pub Version](https://img.shields.io/pub/v/http_api?color=%230175c2)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
   
