@@ -1,4 +1,4 @@
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:http_api/http_api.dart';
 
 import 'mocks.dart';
@@ -60,15 +60,16 @@ void main() {
   });
 
   test("Cannot chain ApiLinks after http link", () {
-    ApiException exception;
+    ApiError error;
     try {
       apiLink.chain(TestLink(99));
-    } on ApiException catch (err) {
-      exception = err;
+      // ignore: avoid_catching_errors
+    } on ApiError catch (err) {
+      error = err;
     }
-    expect(exception, isNotNull);
+    expect(error, isNotNull);
     expect(
-        exception.message,
+        error.message,
         equals(
           "Cannot chain link HttpLink with TestLink\n"
           "Adding link after http link will take no effect",
@@ -96,18 +97,19 @@ void main() {
   });
 
   test("Cannot reasing ApiLink chain to another api", () async {
-    ApiException exception;
+    ApiError error;
     try {
       TestApi(
         url: testUrl,
         link: apiLink,
       );
-    } on ApiException catch (err) {
-      exception = err;
+      // ignore: avoid_catching_errors
+    } on ApiError catch (err) {
+      error = err;
     }
 
-    expect(exception, isNotNull);
-    expect(exception.message,
+    expect(error, isNotNull);
+    expect(error.message,
         equals("Cannot assign closed ApiLinks chain to TestApi"));
   });
 
@@ -139,15 +141,16 @@ void main() {
   });
 
   test("Cannot chain ApiLinks after attaching to BaseApi", () {
-    ApiException exception;
+    ApiError error;
     try {
       apiLink.chain(TestLink(99));
-    } on ApiException catch (err) {
-      exception = err;
+      // ignore: avoid_catching_errors
+    } on ApiError catch (err) {
+      error = err;
     }
-    expect(exception, isNotNull);
+    expect(error, isNotNull);
     expect(
-        exception.message,
+        error.message,
         equals(
           "Cannot chain link HttpLink with TestLink\n"
           "You cannot chain links after attaching to BaseApi",
@@ -155,14 +158,15 @@ void main() {
   });
 
   test("Cannot attach ApiLinks chain without HttpLink", () {
-    ApiException exception;
+    ApiError error;
     try {
       TestApi(url: testUrl, link: TestLink(1).chain(TestLink(2)));
-    } on ApiException catch (err) {
-      exception = err;
+      // ignore: avoid_catching_errors
+    } on ApiError catch (err) {
+      error = err;
     }
-    expect(exception, isNotNull);
-    expect(exception.message, equals("ApiLinks chain should contain HttpLink"));
+    expect(error, isNotNull);
+    expect(error.message, equals("ApiLinks chain should contain HttpLink"));
   });
 
   test(

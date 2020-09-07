@@ -1,6 +1,9 @@
 part of http_api;
 
-class DebugLink extends ApiLink {
+/// LoggerLink is DebugLink that prints request details to console.
+///
+/// {@macro http_api.debug_link}
+class LoggerLink extends DebugLink {
   final String label;
   final bool url;
   final bool responseBody;
@@ -10,7 +13,7 @@ class DebugLink extends ApiLink {
   final bool statusCode;
   final bool countRequests;
   final bool responseDuration;
-  DebugLink({
+  LoggerLink({
     this.label,
     this.url = false,
     this.requestBody = false,
@@ -40,7 +43,7 @@ class DebugLink extends ApiLink {
       if (requestBody || requestHeaders || countRequests || url) {
         print("\n==== REQUEST ====\n");
 
-        print("request id: ${request.id}\n");
+        print("request id: ${request.id.hexString}\n");
 
         if (label != null) {
           print("label: $label\n");
@@ -79,7 +82,7 @@ class DebugLink extends ApiLink {
           url) {
         print("\n==== RESPONSE ====\n");
 
-        print("request id: ${response.id}\n");
+        print("request id: ${response.id.hexString}\n");
 
         if (label != null) {
           print("label: $label\n");

@@ -1,6 +1,6 @@
 part of http_api;
 
-class HttpLink with ApiLink {
+class HttpLink extends ApiLink {
   /// Client is needed for persistent connection
   final http.Client _client;
 
@@ -17,12 +17,12 @@ class HttpLink with ApiLink {
     final httpRequest = await apiRequest.build();
 
     /// Sends a request
-    http.StreamedResponse streamedResponse = await client.send(
+    final streamedResponse = await client.send(
       httpRequest,
     );
 
     /// Parses the response
-    http.Response httpResponse = await http.Response.fromStream(
+    final httpResponse = await http.Response.fromStream(
       streamedResponse,
     );
 

@@ -227,7 +227,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.5.0"
+    version: "0.7.0"
   http_multi_server:
     dependency: transitive
     description:

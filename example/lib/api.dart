@@ -8,36 +8,40 @@ import 'package:http_api/http_api.dart';
 
 import 'models/example_photo_model.dart';
 
-class Api extends BaseApi {
+class Api extends BaseApi with Cache {
   Api({
     @required Uri url,
     ApiLink link,
-    Map<String, String> defaultHeaders,
   }) : super(
-          url: url,
-          defaultHeaders: defaultHeaders,
+          url,
           link: link,
         );
 
-  Stream<ExamplePhotoModel> getPhotoWithCache() async* {
-    yield* cacheAndNetwork(ApiRequest(
-      key: Key("TEST"),
+  @override
+  CacheManager createCacheManager() => InMemoryCache();
+
+  Stream<ExamplePhotoModel> getPhotoWithCache() {
+    final request = ApiRequest(
+      key: const CacheKey("TEST"),
       endpoint: "/id/${129}/info",
-      method: HttpMethod.get,
-    )).transform<ExamplePhotoModel>(StreamTransformer.fromHandlers(
-        handleData: (ApiResponse response, sink) {
-      sink.add(ExamplePhotoModel.fromJson(json.decode(response.body)));
-    }));
+    );
+
+    final transformResponseToExamplePhotoModel =
+        StreamTransformer<ApiResponse, ExamplePhotoModel>.fromHandlers(
+      handleData: (response, sink) => sink.add(
+        ExamplePhotoModel.fromJson(json.decode(response.body)),
+      ),
+    );
+
+    return cacheAndNetwork(request)
+        .transform(transformResponseToExamplePhotoModel);
   }
 
   /// Implement api request methods
   Future<ExamplePhotoModel> getRandomPhoto() async {
     /// Use [send] method to make api request
-    final response = await send(ApiRequest(
-      key: Key("TEST"),
-      endpoint: "/id/${Random().nextInt(50)}/info",
-      method: HttpMethod.get,
-    ));
+    final response =
+        await send(ApiRequest(endpoint: "/id/${Random().nextInt(50)}/info"));
 
     return ExamplePhotoModel.fromJson(json.decode(response.body));
   }

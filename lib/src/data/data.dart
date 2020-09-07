@@ -21,7 +21,8 @@ class HttpMethod {
   static const head = HttpMethod._("HEAD");
 }
 
-/// Represents File that can be attached to [BaseApiRequest] so can be sent to API
+/// Represents File that can be attached to [BaseApiRequest]
+/// so can be sent to API
 /// with [MultipartRequest]
 abstract class FileField {
   final String field;
