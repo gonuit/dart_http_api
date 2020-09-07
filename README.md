@@ -5,7 +5,15 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart)
   
-Simple yet powerful wrapper around http package inspired by apollo graphql links. This package provides you a simple way of adding interceptors to your app http requests.
+Simple yet powerful wrapper around http package. This package provides you a simple way of adding interceptors to your app http requests, along with response caching support.
+
+## Table of contents
+- [http_api](#http_api)
+  - [IMPORTANT](#important)
+  - [Getting Started](#getting-started)
+  - [ApiLinks (Interceptors / Middleware)](#apilinks-interceptors--middleware)
+  - [Cache](#cache)
+  - [http_api and Flutter ♥️.](#http_api-and-flutter-️)
 
 ## IMPORTANT
 This library is under development, breaking API changes might still happen. If you would like to make use of this library please make sure to provide which version you want to use e.g:
@@ -62,42 +70,18 @@ void main() async {
 }
 ```
 
-- [http_api](#http_api)
-  - [IMPORTANT](#important)
-  - [Getting Started](#getting-started)
-      - [1. Create your Api class by extending `BaseApi` class.](#1-create-your-api-class-by-extending-baseapi-class)
-      - [2. Play with it!](#2-play-with-it)
-  - [ApiLinks (Interceptors / Middleware)](#apilinks-interceptors--middleware)
-      - [To add interceptors to your api instance.](#to-add-interceptors-to-your-api-instance)
-      - [How will it work?](#how-will-it-work)
-      - [Custom api link implementation (Create own interceptor).](#custom-api-link-implementation-create-own-interceptor)
-  - [Cache](#cache)
-    - [To add cache to your existing Api class.](#to-add-cache-to-your-existing-api-class)
-      - [1. Add `Cache` mixin on it.](#1-add-cache-mixin-on-it)
-      - [2. Provide a Api class with cache manager of your choice.](#2-provide-a-api-class-with-cache-manager-of-your-choice)
-      - [3. That's all!](#3-thats-all)
-    - [Cache mixin.](#cache-mixin)
-      - [`cacheIfAvailable`](#cacheifavailable)
-      - [`cacheAndNetwork`](#cacheandnetwork)
-      - [`cache`](#cache-1)
-      - [`shouldUpdateCache`](#shouldupdatecache)
-  - [http_api and Flutter ♥️.](#http_api-and-flutter-️)
-      - [TIP: You can provide your Api instance down the widget tree using provider package.](#tip-you-can-provide-your-api-instance-down-the-widget-tree-using-provider-package)
-  - [TODO:](#todo)
-
-
-
 ## ApiLinks (Interceptors / Middleware)
 Api links allow you to perform certain tasks before the request and after the response from the API (HTTP client).
 
 #### To add interceptors to your api instance.
+Provide ApiLink through api constructor `link` argument.
 ```dart
 void main() {
   Api(
     Uri.parse("https://example.com/api"),
     /// Assign interceptors by providing ApiLinks (to provide more than one interceptors, chain them)
     link: AuthLink()
-        .chain(DebugLink(responseBody: true)),
+        .chain(LoggerLink(responseBody: true)),
         .chain(HttpLink()),
   )
 }
