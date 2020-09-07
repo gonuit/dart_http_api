@@ -1,4 +1,4 @@
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_api/http_api.dart';
 
@@ -18,8 +18,8 @@ void main() {
       link: testLink,
     );
     expect(testApi, isNotNull);
-    expect(testApi, isInstanceOf<TestApi>());
-    expect(testApi, isInstanceOf<BaseApi>());
+    expect(testApi, isA<TestApi>());
+    expect(testApi, isA<BaseApi>());
     expect(testApi.url, equals(testUrl));
     expect(testApi.defaultHeaders, equals(testDefaultHeaders));
   });
@@ -65,7 +65,7 @@ void main() {
     await testApi.send(apiRequest);
     final httpRequest = await apiRequest.build();
 
-    expect(httpRequest, isInstanceOf<http.MultipartRequest>());
+    expect(httpRequest, isA<http.MultipartRequest>());
   });
 
   test("ApiRequests without files are not multipart", () async {
@@ -79,7 +79,7 @@ void main() {
     await testApi.send(apiRequest);
     final httpRequest = await apiRequest.build();
 
-    expect(httpRequest, isInstanceOf<http.Request>());
+    expect(httpRequest, isA<http.Request>());
   });
 
   test("ApiResponse ok field is true for response with status code 200",

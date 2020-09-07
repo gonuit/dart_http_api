@@ -4,8 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +19,7 @@ part './src/base_api.dart';
 part './src/utils/exceptions.dart';
 part './src/utils/api_link.dart';
 part './src/utils/debug_link.dart';
+part './src/utils/cache_key.dart';
 
 /// Links
 part './src/links/headers_mapper_link.dart';

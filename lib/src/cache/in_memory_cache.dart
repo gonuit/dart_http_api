@@ -1,13 +1,18 @@
 part of http_api;
 
+/// Simplest [CacheManager] implementation that stores ApiResponses in memory.
 class InMemoryCache extends CacheManager {
-  final _storage = <ValueKey, ApiResponse>{};
+  final _storage = <CacheKey, ApiResponse>{};
 
   @override
-  Future<ApiResponse> load(ValueKey key) async => _storage[key];
+  ApiResponse read(CacheKey key) => _storage[key];
 
   @override
-  void save(ValueKey key, ApiResponse response) {
-    _storage[key] = response;
-  }
+  void write(CacheKey key, ApiResponse response) => _storage[key] = response;
+
+  @override
+  void clear(CacheKey key) => _storage.remove(key);
+
+  @override
+  void clearAll() => _storage.clear();
 }

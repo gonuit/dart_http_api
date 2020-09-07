@@ -4,25 +4,29 @@ part of http_api;
 
 class ApiRequest {
   // TODO: Add automatic key generation
-  Key _key;
+  CacheKey _key;
 
   /// Identifies (groups) requests.
   ///
   /// Used for caching purposes - as cache key.
-  Key get key => _key;
-  set key(Key value) => _key = value;
+  CacheKey get key => _key;
+  set key(CacheKey value) => _key = value;
 
   final _id = ObjectId();
 
   /// Id of current ApiRequest
   ObjectId get id => _id;
 
+  /// ApiRequest object creation timestamp.
+  DateTime get createdAt => id.timestamp;
+
   /// Url is set by BaseApi class
   Uri _apiUrl;
   Uri get apiUrl => _apiUrl;
   Uri get url {
-    if (apiUrl == null)
+    if (apiUrl == null) {
       throw ApiError("url is not available before sending a request");
+    }
 
     final queryParameters = Map<String, dynamic>.from(apiUrl.queryParameters)
       ..addAll(this.queryParameters);
@@ -61,7 +65,7 @@ class ApiRequest {
     this.body,
     this.encoding,
     this.multipart,
-    @experimental Key key,
+    @experimental CacheKey key,
   })  : _key = key,
         assert(
           endpoint != null && method != null,
@@ -75,7 +79,10 @@ class ApiRequest {
   /// Builds http request from ApiRequest data
   FutureOr<http.BaseRequest> build() {
     if (url == null) {
-      throw ApiError("$runtimeType url cannot be null. Instead of calling build method, pass ApiRequest to BaseApi: 'send' method.");
+      throw ApiError(
+        "$runtimeType url cannot be null. Instead of calling build method, "
+        "pass ApiRequest to BaseApi: 'send' method.",
+      );
     }
     return isMultipart ? _buildMultipartHttpRequest() : _buildHttpRequest();
   }
@@ -87,18 +94,20 @@ class ApiRequest {
 
     /// Assign body if it is map
     if (body != null) {
-      if (body is Map)
+      if (body is Map) {
         request.fields.addAll(body.cast<String, String>());
-      else
+      } else {
         throw ArgumentError(
           'Invalid request body "$body".\n'
           'Multipart request body should be Map<String, String>',
         );
+      }
     }
 
     /// Assign files to [MultipartRequest]
-    for (final fileField in fileFields)
+    for (final fileField in fileFields) {
       request.files.add(await fileField.toMultipartFile());
+    }
 
     return request;
   }
@@ -110,14 +119,15 @@ class ApiRequest {
     if (headers != null) request.headers.addAll(headers);
     if (encoding != null) request.encoding = encoding;
     if (body != null) {
-      if (body is String)
+      if (body is String) {
         request.body = body;
-      else if (body is List)
+      } else if (body is List) {
         request.bodyBytes = body.cast<int>();
-      else if (body is Map)
+      } else if (body is Map) {
         request.bodyFields = body.cast<String, String>();
-      else
+      } else {
         throw ArgumentError('Invalid request body "$body".');
+      }
     }
     return request;
   }

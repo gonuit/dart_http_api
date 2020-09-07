@@ -3,8 +3,12 @@ part of http_api;
 class ApiResponse extends http.Response {
   final ObjectId _id;
 
-  /// Id of current ApiRequest
+  /// Id of current [ApiResponse].
+  /// The same as related [ApiRequest] id.
   ObjectId get id => _id;
+
+  /// ApiRequest object creation timestamp.
+  DateTime get createdAt => id.timestamp;
 
   /// Here you can assing your data that will be passed to the next link
   final Map<String, dynamic> linkData;
