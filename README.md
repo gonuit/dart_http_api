@@ -54,6 +54,9 @@ void main() async {
   /// Do something with your data 🚀
   print(post.title);
 
+  /// After all.
+  api.dispose();
+
   /// 🔥 You are ready for rocking! 🔥
 }
 ```
@@ -104,6 +107,41 @@ calling send()    |  -request-> | AuthLink |  -request-> | LoggerLink |  -reques
 send returns data | <-response- |__________| <-response- |____________| <-response- |__________|
                                     tasks                     tasks                 http request   
 ```
+#### Custom api link implementation (Create own interceptor).
+```dart
+/// Create link class and extends [ApiLink].
+class CustomLink extends ApiLink {
+
+  /// Override next method.
+  @override
+  Future<ApiResponse> next(ApiRequest request) async {
+    /// Here you can do actions that will take place before
+    /// sending http request.
+    /// e.g: Measure request duration.
+    final requestTime = DateTime.now();
+
+    /// Calling super.next invokes next ApiLinks.
+    /// This can be thought of as sending an HTTP request.
+    ApiResponse response = await super.next(request);
+
+    /// This part of the code will be called after receiving a
+    /// response from the API.
+    /// e.g: We can print request duration.
+
+    final requestDuration = DateTime.now().difference(requestTime);
+
+    print(
+      "Request ${request.id} duration: "
+      "${responseDuration.inMilliseconds} ms\n",
+    );
+
+    /// Provide prevoius link with response.
+    /// This can be thought of as returning from APIs' `send` method.
+    return response;
+  }
+}
+```
+If your link operates on data that should be disposed of together with api instance. You can override the ApiLink dispose method.
 
 ## Cache
 With http_api you can cache your responses to avoid uneccesary fetches or/and improve user experience.
