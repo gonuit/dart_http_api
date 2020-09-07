@@ -1,4 +1,4 @@
-## [0.7.0] - XX September 2020.
+## [0.7.1] - 07 September 2020.
 - Removed flutter from dependency (add crossplatform support).
   - Replaced Flutter `Key` class with `CacheKey`.
 - Cache system changes:
@@ -18,6 +18,7 @@
 - Added `createdAt` property to `ApiRequest`. 
 - Made `saveCache` function optionally asynchronous.
 - url is now a required positional argument in BaseApi class constructor.
+- Improved readme file.
 - Bug fixes:
   - Fixed example app compilation error.
   - Disallowed chaining DebugLink in release apps when only one link is provided.

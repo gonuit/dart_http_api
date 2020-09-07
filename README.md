@@ -7,19 +7,18 @@
   
 Simple yet powerful wrapper around http package. This package provides you a simple way of adding interceptors to your app http requests, along with response caching support.
 
-## Table of contents
-- [http_api](#http_api)
-  - [IMPORTANT](#important)
-  - [Getting Started](#getting-started)
-  - [ApiLinks (Interceptors / Middleware)](#apilinks-interceptors--middleware)
-  - [Cache](#cache)
-  - [http_api and Flutter ♥️.](#http_api-and-flutter-️)
+## Why this package?
+- ⛓ [Interceptors / Middlewares](#apilinks-interceptors--middleware)
+- 💽 [Cache support](#cache)
+- 📱 [Works well with Flutter ♥️](#http_api-and-flutter-️)
+- 🛠 Easily expandable and customizable.
+- 💻 Cross-platform
 
 ## IMPORTANT
 This library is under development, breaking API changes might still happen. If you would like to make use of this library please make sure to provide which version you want to use e.g:
 ```yaml
 dependencies:
-  http_api: 0.7.0
+  http_api: 0.7.1
 ```
 
 ## Getting Started
@@ -253,4 +252,4 @@ class MyApp extends StatelessWidget {
 ## TODO:
 - Improve documentation
   - Improve readme file
-  - Add devtools
+- Add devtools
