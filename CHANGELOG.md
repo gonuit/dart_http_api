@@ -1,7 +1,12 @@
-## [0.7.0] - 07 September 2020.
+## [0.7.0] - XX September 2020.
 - Removed flutter from dependency (add crossplatform support).
   - Replaced Flutter `Key` class with `CacheKey`.
-- Fix example app compilation error.
+- CacheKey class now operates on String values.
+- Now displaying `hexString` for id's in logger link.
+- Made `saveCache` function optionally asynchronous.
+- Bug fixes:
+  - Fixed example app compilation error.
+  - Disallowed chaining DebugLink in release apps when only one link is provided.
 ## [0.6.0] - 06 September 2020.
 - Renamed current `DebugLink` class to `LoggerLink`.
 - Added abstract `DebugLink` class. DebugLinks are special types of links that will never be chained (will be skipped) in release builds. 
