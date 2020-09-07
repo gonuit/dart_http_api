@@ -115,7 +115,4 @@ abstract class ApiLink {
     assert(_disposed == false, "ApiLink cannot be disposed more than once");
     _disposed = true;
   }
-
-  @override
-  String toString() => "ApiLink: ${this.runtimeType}";
 }
