@@ -115,7 +115,7 @@ Now you can take advantage of response caching.
 ### Cache mixin.
 Cache mixin adds `cacheAndNetwork` and `cacheIfAvailable` methods to your base api together with the cache manager which is accessible via `cache` property.
   
-By default, all request that contains `key` argument for which responses are successful that was sent via the `send` method; will automatically update the cache. To decide what should be saved into the cache, override `shouldUpdateCache` method.
+By default, each request that contains `key` argument for which response was successful; will automatically update the cache. To decide what should be saved into the cache, override `shouldUpdateCache` method.
 
 #### `cacheIfAvailable`
 Retrieve response from the cache,  if not available fallback to the network.  
@@ -174,6 +174,16 @@ ApiResponse saveResponseToCache(CacheKey key, ApiResponse response) async {
   final oldResponse = await api.cache.read(key);
   await api.cache.write(key, response);
   return oldResponse;
+}
+```
+
+#### `shouldUpdateCache` 
+Decide whether response related to request should be saved to the cache.
+
+Default implementation:
+```dart
+bool shouldUpdateCache(ApiRequest request, ApiResponse response) {
+ return request.key != null && response.ok;
 }
 ```
   
