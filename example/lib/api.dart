@@ -20,7 +20,7 @@ class Api extends BaseApi with Cache {
   @override
   CacheManager createCacheManager() => InMemoryCache();
 
-  Stream<ExamplePhotoModel> getPhotoWithCache() async* {
+  Stream<ExamplePhotoModel> getPhotoWithCache() {
     final request = ApiRequest(
       key: const CacheKey("TEST"),
       endpoint: "/id/${129}/info",
@@ -33,7 +33,7 @@ class Api extends BaseApi with Cache {
       ),
     );
 
-    yield* cacheAndNetwork(request)
+    return cacheAndNetwork(request)
         .transform(transformResponseToExamplePhotoModel);
   }
 

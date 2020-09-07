@@ -31,6 +31,18 @@ mixin Cache<T extends CacheManager> on BaseApi {
   /// Creates instance of cache manager
   T createCacheManager();
 
+  /// Whether [response] related to [request] should be saved to the cache.
+  ///
+  /// Default implementation:
+  /// ```dart
+  /// bool shouldUpdateCache(ApiRequest request, ApiResponse response) {
+  ///  return request.key != null && response.ok;
+  /// }
+  /// ```
+  bool shouldUpdateCache(ApiRequest request, ApiResponse response) {
+    return request.key != null && response.ok;
+  }
+
   CacheManager _cache;
 
   /// Get cache manager.
@@ -43,8 +55,9 @@ mixin Cache<T extends CacheManager> on BaseApi {
     final networkResponse = await super.send(request);
 
     /// Save cache when response is successful and request contains a key.
-    if (request.key != null && networkResponse.ok) {
+    if (shouldUpdateCache(request, networkResponse)) {
       print("[CACHE] Save: ${request.key}");
+      _throwOnRequestWithoutCacheKey(request);
       await cache.write(request.key, networkResponse);
     }
 
@@ -66,7 +79,7 @@ mixin Cache<T extends CacheManager> on BaseApi {
     }
   }
 
-  /// Retrieve response from cache if available and then from network.
+  /// Retrieve response from the cache if available and then from the network. Returns `Stream<ApiResponse>` type.
   @experimental
   Stream<ApiResponse> cacheAndNetwork(
     ApiRequest request, {

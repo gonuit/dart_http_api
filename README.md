@@ -15,66 +15,51 @@ dependencies:
 
 ## Getting Started
 
-### 1. First create your Api class by extending `BaseApi` class
+### 1. Create your Api class by extending `BaseApi` class.
 ```dart
 // define your api class
 class Api extends BaseApi {
 
-  Api({
-    @required Uri url,
-    ApiLink link,
-    Map<String, String> defaultHeaders,
-  }) : super(
-          url: url,
-          defaultHeaders: defaultHeaders,
-          link: link,
-        );
+  /// Provide the BaseApi constructor with the data you need,
+  /// by calling super method.
+  Api(Uri url) : super(url);
 
-  /// Implement api request methods 
-  Future<ExamplePhotoModel> getRandomPhoto() async {
+  /// Implement api request methods...
+  Future<PostModel> getPostById(int id) async {
 
     /// Use [send] method to make api request
     final response = await send(ApiRequest(
-      endpoint: "/id/${Random().nextInt(50)}/info",
-      method: HttpMethod.get,
+      endpoint: "/posts/$id",
     ));
 
-    /// Parse http response
-    return ExamplePhotoModel.fromJson(json.decode(response.body));
-  }
-
-  /// Implement api request methods 
-  Future<ExamplePhotoModel> getRandomPhoto() async {
-
-    /// Use [send] method to make api request
-    final response = await send(ApiRequest(
-      endpoint: "/id/${Random().nextInt(50)}/info",
-      method: HttpMethod.get,
-    ));
-
-    /// Parse http response
-    return ExamplePhotoModel.fromJson(json.decode(response.body));
-  }
-
-    /// Cache and network requests returns Stream instead of Future.
-    Stream<ExamplePhotoModel> getPhoto() async* {
-    yield* cacheAndNetwork(ApiRequest(
-      /// Provide key that will be used as cache key.
-      /// key property is required for cache functionality.
-      key: Key("TEST"),
-      endpoint: "/id/${129}/info",
-      method: HttpMethod.get,
-    ))
-    /// Make use of your ApiResponse stream.
-    /// e.g: We are transforming ApiResponses to ExamplePhotoModel.
-    .transform<ExamplePhotoModel>(StreamTransformer.fromHandlers(
-        handleData: (ApiResponse response, sink) {
-      sink.add(ExamplePhotoModel.fromJson(json.decode(response.body)));
-    }));
+    /// Do something with your data. 
+    /// e.g: Parse HTTP response to the model of your choice.
+    return PostModel.fromJson(response.body);
   }
 }
-
 ```
+
+#### 2. Play with it!
+```dart
+void main() async {
+  /// Define api base url.
+  final url = Uri.parse("https://example.com/api");
+
+  /// Create api instance
+  final api = Api(url);
+  
+  /// Make a request
+  Post post = await api.getPostById(10);
+
+  /// Do something with your data 🚀
+  print(post.title);
+
+  /// 🔥 You are ready for rocking! 🔥
+}
+```
+
+## http_api and Flutter ♥️.
+http_api package works well with both Dart and Flutter projects.
 
 #### TIP: You can provide your Api instance down the widget tree using [provider](https://pub.dev/packages/provider) package.
 ```dart
@@ -84,10 +69,9 @@ class MyApp extends StatelessWidget {
 
     return Provider(
         create: (_) => Api(
-          /// Provide base url for your api
-          url: Uri.parse("https://picsum.photos"),
-          /// Assign middleware by providing ApiLinks (to provide more than one middleware, chain them)
-          link: HeadersMapperLink(["authorization"])
+          Uri.parse("https://example.com/api"),
+          /// Assign middlewares by providing ApiLinks (to provide more than one middlewares, chain them)
+          link: AuthLink()
               .chain(DebugLink(responseBody: true)),
               .chain(HttpLink()),
         ),
@@ -101,31 +85,97 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-### 2. Make api request
-```dart
-class _ApiExampleScreenState extends State<ApiExampleScreen> {
+## Cache
+With http_api you can cache your responses to avoid uneccesary fetches or/and improve user experience.
+  
+### To add cache to your existing Api class.
+#### 1. Add `Cache` mixin on it.
+```diff
+- class Api extends BaseApi {
++ class Api extends BaseApi with Cache {
 
-  void _fetchPhoto() async {
-    final api = Provider.of<Api>(context, listen: false);
-    ExamplePhotoModel photo = await api.getRandomPhoto();
-    // Do sth with response
-  }
+  /// ** your custom Api class implementation **
+}
+```
+#### 2. Provide a Api class with cache manager of your choice.
+```dart
+class Api extends BaseApi with Cache {
+
+  /// Provide a cache manager of your choice.
+  /// This lib provides you with in memory cache manager implementation.
+  @override
+  CacheManager createCacheManager() => InMemoryCache();
+
+  /// ** Your custom Api class implementation **
+}
+```
+#### 3. That's all!
+Now you can take advantage of response caching.
+  
+### Cache mixin.
+Cache mixin adds `cacheAndNetwork` and `cacheIfAvailable` methods to your base api together with the cache manager which is accessible via `cache` property.
+  
+All request that contains `key` argument for which responses are successful that was sent via the `send` method; will automatically update the cache. To decide what should be saved into the cache, override `shouldUpdateCache` method.
+
+#### `cacheIfAvailable`
+Retrieve response from the cache,  if not available fallback to the network.  
+Returns `Future<ApiResponse>` type.
+
+#### `cacheAndNetwork`
+Retrieve response from the cache if available and then from the network.  Returns `Stream<ApiResponse>` type.
+  
+Example:
+```dart
+// Api.dart
+class Api extends BaseApi with Cache {
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: RaisedButton(
-          child: const Text("Fetch photo"),
-          onPressed: _fetchPhoto,
-        ),
+  CacheManager createCacheManager() => InMemoryCache();
+
+  Stream<PostModel> getPostById(int id) {
+    Stream<PostModel> request = ApiRequest(
+      /// Key argument is required for caching.
+      /// Response will be cached and retrieved from the following key.
+      /// 
+      /// You can also manipulate your cache by accesing `cache`
+      /// property from your api instance.
+      key: CacheKey("posts/$id"),
+      endpoint: "/posts/${id}",
+    );
+    
+    /// Because `cacheAndNetwork` method returns Stream, we can take
+    /// advantage of all it's features.
+    /// e.g: Transform responses to the models of your choice.
+    final transformResponseToPostModel =
+        StreamTransformer<ApiResponse, PostModel>.fromHandlers(
+      handleData: (response, sink) => sink.add(
+        PostModel.fromJson(response.body),
       ),
     );
+
+    /// Now you can return transformed stream from this function
+    return cacheAndNetwork(request)
+        .transform(transformResponseToPostModel);
   }
 
+  /// ** Your custom Api class implementation **
 }
 ```
 
-### TODO:
-- Independed from Flutter
+#### `cache`
+Cache property contains a `CacheManager` instance that was internally created via the `createCacheManager` method.
+  
+Thanks to this property, you can manipulate your cache yourself.
+  
+Example:
+```dart
+/// Saves a new response to the cache and retrieve previously saved.
+ApiResponse saveResponseToCache(CacheKey key, ApiResponse response) async {
+  final oldResponse = await api.cache.read(key);
+  await api.cache.write(key, response);
+  return oldResponse;
+}
+```
+  
+## TODO:
 - Readme (Add examples + documentation)
