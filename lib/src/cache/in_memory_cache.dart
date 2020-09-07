@@ -11,7 +11,7 @@ class InMemoryCache extends CacheManager {
   void write(CacheKey key, ApiResponse response) => _storage[key] = response;
 
   @override
-  ApiResponse clear(CacheKey key) => _storage.remove(key);
+  void clear(CacheKey key) => _storage.remove(key);
 
   @override
   void clearAll() => _storage.clear();
