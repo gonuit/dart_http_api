@@ -144,4 +144,23 @@ class ApiRequest {
       };
 
   String toString() => "$runtimeType(${toMap()})";
+
+  String toJson() {
+    return jsonEncode(<String, dynamic>{
+      "id": id.hexString,
+      if (key != null) "key": key.value,
+      "createdAt": createdAt.toIso8601String(),
+      if (apiUrl != null) "apiUrl": apiUrl.toString(),
+      if (apiUrl != null) "url": url.toString(),
+      "endpoint": endpoint,
+      "method": method.value,
+      "multipart": multipart,
+      "body": body,
+      "headers": headers,
+      "queryParameters": queryParameters,
+      // TODO:
+      // if(encoding != null) "encoding": encoding.toString(),
+      // "fileFields": fileFields,
+    });
+  }
 }

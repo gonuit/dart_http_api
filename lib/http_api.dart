@@ -27,7 +27,7 @@ part 'src/links/logger_link.dart';
 part './src/links/http_link.dart';
 
 /// Requests
-part './src/requests/api_request.dart';
+part 'src/data/api_request.dart';
 
 /// Data
 part './src/data/data.dart';
