@@ -56,7 +56,7 @@ abstract class BaseApi {
     return _link.next(request);
   }
 
-  /// Retrive response from cache if available and then from network.
+  /// Retrieve response from cache if available and then from network.
   @experimental
   Stream<ApiResponse> cacheAndNetwork(
     ApiRequest request, {
@@ -84,10 +84,10 @@ abstract class BaseApi {
     yield networkResponse;
 
     /// save cache when response is successful
-    if (updateCache) saveCache(request.key, networkResponse);
+    if (updateCache) await saveCache(request.key, networkResponse);
   }
 
-  /// Retrive response from cache if available and then from network.
+  /// Retrieve response from the cache if available or fallback to the network.
   @experimental
   Future<ApiResponse> cacheIfAvailable(
     ApiRequest request, {
@@ -113,18 +113,28 @@ abstract class BaseApi {
     }
   }
 
+  /// Reads cache saved under provided [key].
   @experimental
   FutureOr<ApiResponse> readCache(CacheKey key) {
-    print("CACHE READED; KEY: $key");
+    assert((() {
+      print("[CACHE] Read: $key");
+      return true;
+    })());
+
     return _cache.load(key);
   }
 
+  /// Caches [response] under provided [key].
   @experimental
-  void saveCache(CacheKey key, ApiResponse response) {
-    print("CACHE SAVED; KEY: $key");
-    _cache.save(key, response);
+  FutureOr<void> saveCache(CacheKey key, ApiResponse response) {
+    assert((() {
+      print("[CACHE] Save: $key");
+      return true;
+    })());
+
+    return _cache.save(key, response);
   }
 
-  /// closes http client
+  /// Disposes all links.
   void dispose() => _link._forEach((link) => link.dispose());
 }
