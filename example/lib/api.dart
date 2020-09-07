@@ -21,23 +21,27 @@ class Api extends BaseApi with Cache {
   CacheManager createCacheManager() => InMemoryCache();
 
   Stream<ExamplePhotoModel> getPhotoWithCache() async* {
-    yield* cacheAndNetwork(ApiRequest(
-      key: CacheKey("TEST"),
+    final request = ApiRequest(
+      key: const CacheKey("TEST"),
       endpoint: "/id/${129}/info",
-      method: HttpMethod.get,
-    )).transform<ExamplePhotoModel>(StreamTransformer.fromHandlers(
-        handleData: (ApiResponse response, sink) {
-      sink.add(ExamplePhotoModel.fromJson(json.decode(response.body)));
-    }));
+    );
+
+    final transformResponseToExamplePhotoModel =
+        StreamTransformer<ApiResponse, ExamplePhotoModel>.fromHandlers(
+      handleData: (response, sink) => sink.add(
+        ExamplePhotoModel.fromJson(json.decode(response.body)),
+      ),
+    );
+
+    yield* cacheAndNetwork(request)
+        .transform(transformResponseToExamplePhotoModel);
   }
 
   /// Implement api request methods
   Future<ExamplePhotoModel> getRandomPhoto() async {
     /// Use [send] method to make api request
-    final response = await send(ApiRequest(
-      endpoint: "/id/${Random().nextInt(50)}/info",
-      method: HttpMethod.get,
-    ));
+    final response =
+        await send(ApiRequest(endpoint: "/id/${Random().nextInt(50)}/info"));
 
     return ExamplePhotoModel.fromJson(json.decode(response.body));
   }
