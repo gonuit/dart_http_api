@@ -16,6 +16,11 @@ abstract class CacheManager {
 
   /// Clears all stored cache.
   FutureOr<void> clearAll();
+
+  /// Disposes cache manager.
+  ///
+  /// This method all called together with [BaseApi] dispose method.
+  void dispose() {}
 }
 
 /// Base class for implementing cache providers.
@@ -44,6 +49,12 @@ mixin Cache<T extends CacheManager> on BaseApi {
     }
 
     return networkResponse;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _cache.dispose();
   }
 
   void _throwOnRequestWithoutCacheKey(ApiRequest request) {
