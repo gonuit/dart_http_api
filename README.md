@@ -15,7 +15,7 @@ dependencies:
 
 ## Getting Started
 
-### 1. Create your Api class by extending `BaseApi` class.
+#### 1. Create your Api class by extending `BaseApi` class.
 ```dart
 // define your api class
 class Api extends BaseApi {
@@ -115,7 +115,7 @@ Now you can take advantage of response caching.
 ### Cache mixin.
 Cache mixin adds `cacheAndNetwork` and `cacheIfAvailable` methods to your base api together with the cache manager which is accessible via `cache` property.
   
-All request that contains `key` argument for which responses are successful that was sent via the `send` method; will automatically update the cache. To decide what should be saved into the cache, override `shouldUpdateCache` method.
+By default, all request that contains `key` argument for which responses are successful that was sent via the `send` method; will automatically update the cache. To decide what should be saved into the cache, override `shouldUpdateCache` method.
 
 #### `cacheIfAvailable`
 Retrieve response from the cache,  if not available fallback to the network.  
