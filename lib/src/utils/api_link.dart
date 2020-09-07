@@ -6,9 +6,10 @@ part of http_api;
 abstract class ApiLink {
   /// [ApiLink]s keeps reference to the first [ApiLink] in chain to simplify chaining.
   ///
-  /// Initialy set to this.
+  /// Initialy set to this or null in release builds if `this` is a [DebugLink].
   /// Can be changed by [chain] method.
-  ApiLink get _firstLink => __firstLink ?? this;
+  ApiLink get _firstLink =>
+      __firstLink ?? (isReleaseBuild && (this is DebugLink) ? null : this);
   @protected
   ApiLink __firstLink;
   ApiLink _nextLink;
@@ -45,6 +46,13 @@ abstract class ApiLink {
     });
   }
 
+  @visibleForTesting
+  bool get isReleaseBuild {
+    bool release = true;
+    assert(!(release = false));
+    return release;
+  }
+
   /// Chain multiple links into one.
   /// throws [ApiError] when error occurs
   @nonVirtual
@@ -72,9 +80,6 @@ abstract class ApiLink {
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
         "Adding link after http link will take no effect",
       );
-
-    bool isReleaseBuild = true;
-    assert(!(isReleaseBuild = false));
 
     /// Do not chain (skip) [DebugLink] in release build.
     if (isReleaseBuild) {
