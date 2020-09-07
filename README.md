@@ -113,7 +113,7 @@ class Api extends BaseApi with Cache {
 Now you can take advantage of response caching.
   
 ### Cache mixin.
-Cache mixin adds `cacheAndNetwork` and `cacheIfAvailable` methods to your base api together with the cache manager which is accessible via `cache` property.
+Cache mixin adds `cacheAndNetwork` and `cacheIfAvailable` methods to your api instance, together with the cache manager which is accessible via `cache` property.
   
 By default, each request that contains `key` argument for which response was successful; will automatically update the cache. To decide what should be saved into the cache, override `shouldUpdateCache` method.
 
