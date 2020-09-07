@@ -45,7 +45,6 @@ abstract class BaseApi {
     request.headers.addAll(
       Map<String, String>.from(defaultHeaders)..addAll(request.headers),
     );
-    print("super");
 
     /// Sets request api url
     request._apiUrl = url;
