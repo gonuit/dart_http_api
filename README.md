@@ -97,7 +97,7 @@ void main() {
 }
 ```
 #### How will it work?
-When performing a request via `send` (or `cacheAndNetwork` and `cacheIfAvailable`). Request will trawers api links chain to reach HttpLink wich should be the last link. HttpLinks calls api by doing request. Then all links are receiving api response before it is returned in place of `send` method invocation.  
+When performing a request via `send` (or `cacheAndNetwork` and `cacheIfAvailable`). The request will travers api links chain to reach `HttpLink` which must be the last link. HttpLink calls API by making a request. Then all links are receiving api response before it is returned in place of the send method invocation. Look at the below diagram.
 ```
                                  __________               ____________               __________
 calling send()    |  -request-> | AuthLink |  -request-> | LoggerLink |  -request-> | HttpLink |
