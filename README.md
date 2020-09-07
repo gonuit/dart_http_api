@@ -136,9 +136,6 @@ class Api extends BaseApi with Cache {
     Stream<PostModel> request = ApiRequest(
       /// Key argument is required for caching.
       /// Response will be cached and retrieved from the following key.
-      /// 
-      /// You can also manipulate your cache by accesing `cache`
-      /// property from your api instance.
       key: CacheKey("posts/$id"),
       endpoint: "/posts/${id}",
     );
