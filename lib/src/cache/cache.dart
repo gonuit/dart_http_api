@@ -56,7 +56,6 @@ mixin Cache<T extends CacheManager> on BaseApi {
 
     /// Save cache when response is successful and request contains a key.
     if (shouldUpdateCache(request, networkResponse)) {
-      print("[CACHE] Save: ${request.key}");
       _throwOnRequestWithoutCacheKey(request);
       await cache.write(request.key, networkResponse);
     }
