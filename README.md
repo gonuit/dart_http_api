@@ -1,6 +1,6 @@
 # http_api
   
-![Tests](https://github.com/gonuit/flutter_http_api/workflows/Tests/badge.svg?event=status)
+![Tests](https://github.com/gonuit/flutter_http_api/workflows/Tests/badge.svg)
 ![Pub Version](https://img.shields.io/pub/v/http_api?color=%230175c2)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart)
