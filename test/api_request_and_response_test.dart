@@ -1,3 +1,5 @@
+// TODO: Update tests
+
 import 'package:test/test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_api/http_api.dart';
@@ -29,7 +31,8 @@ void main() {
     testApi.send(apiRequest);
     final httpRequest = await apiRequest.build();
 
-    expect(httpRequest.url, equals(Uri.parse("https://example.com/api/test")));
+    expect(httpRequest.endpoint,
+        equals(Uri.parse("https://example.com/api/test")));
   });
 
   test("Build ApiRequest with default method", () async {

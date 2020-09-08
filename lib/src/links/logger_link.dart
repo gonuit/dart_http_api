@@ -5,7 +5,7 @@ part of http_api;
 /// {@macro http_api.debug_link}
 class LoggerLink extends DebugLink {
   final String label;
-  final bool url;
+  final bool endpoint;
   final bool responseBody;
   final bool responseHeaders;
   final bool requestBody;
@@ -15,7 +15,7 @@ class LoggerLink extends DebugLink {
   final bool responseDuration;
   LoggerLink({
     this.label,
-    this.url = false,
+    this.endpoint = false,
     this.requestBody = false,
     this.requestHeaders = false,
     this.responseBody = false,
@@ -26,7 +26,7 @@ class LoggerLink extends DebugLink {
   }) : assert(requestBody != null &&
             requestHeaders != null &&
             responseBody != null &&
-            url != null &&
+            endpoint != null &&
             responseHeaders != null &&
             statusCode != null &&
             responseDuration != null &&
@@ -40,7 +40,7 @@ class LoggerLink extends DebugLink {
   void _printRequest(ApiRequest request) {
     /// print request only in debug mode
     assert((() {
-      if (requestBody || requestHeaders || countRequests || url) {
+      if (requestBody || requestHeaders || countRequests || endpoint) {
         print("\n==== REQUEST ====\n");
 
         print("request id: ${request.id.hexString}\n");
@@ -49,8 +49,8 @@ class LoggerLink extends DebugLink {
           print("label: $label\n");
         }
 
-        if (url) {
-          print("url: ${request.url}\n");
+        if (endpoint) {
+          print("endpoint: ${request.endpoint}\n");
         }
 
         if (countRequests) {
@@ -75,21 +75,13 @@ class LoggerLink extends DebugLink {
   void _printResponse(ApiResponse response) {
     /// print request only in debug mode
     assert((() {
-      if (responseBody ||
-          responseHeaders ||
-          statusCode ||
-          responseDuration ||
-          url) {
+      if (responseBody || responseHeaders || statusCode || responseDuration) {
         print("\n==== RESPONSE ====\n");
 
         print("request id: ${response.id.hexString}\n");
 
         if (label != null) {
           print("label: $label\n");
-        }
-
-        if (url) {
-          print("url: ${response.request.url}\n");
         }
 
         if (responseDuration) {
