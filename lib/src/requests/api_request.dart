@@ -12,13 +12,14 @@ class ApiRequest {
   CacheKey get key => _key;
   set key(CacheKey value) => _key = value;
 
-  final _id = ObjectId();
-
   /// Id of current ApiRequest
-  ObjectId get id => _id;
+  /// If not provided through arguments, will be Generated automatically.
+  final ObjectId id;
+
+  final _createdAt = DateTime.now();
 
   /// ApiRequest object creation timestamp.
-  DateTime get createdAt => id.timestamp;
+  DateTime get createdAt => _createdAt;
 
   /// Url is set by BaseApi class
   Uri _apiUrl;
@@ -65,8 +66,10 @@ class ApiRequest {
     this.body,
     this.encoding,
     this.multipart,
+    ObjectId id,
     CacheKey key,
   })  : _key = key,
+        id = id ?? ObjectId(),
         assert(
           endpoint != null && method != null,
           "endpoint and method arguments cannot be null",
