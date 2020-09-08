@@ -3,7 +3,9 @@ part of http_api;
 /// Base class for implementing cachce managers.
 ///
 /// Cache manaager is used by `BaseApi` class to cache responses.
-@experimental
+///
+/// BaseApi will not handle cache age,
+/// it should be handled by CacheManager implementation.
 abstract class CacheManager {
   /// Caches [response] under provided [key].
   FutureOr<void> write(CacheKey key, ApiResponse response);
@@ -81,11 +83,7 @@ mixin Cache<T extends CacheManager> on BaseApi {
 
   /// Retrieve response from the cache if available and then from the network.
   /// Returns `Stream<ApiResponse>` type.
-  @experimental
-  Stream<ApiResponse> cacheAndNetwork(
-    ApiRequest request, {
-    @experimental bool updateCache = true,
-  }) async* {
+  Stream<ApiResponse> cacheAndNetwork(ApiRequest request) async* {
     _throwOnRequestWithoutCacheKey(request);
 
     /// read cache
@@ -109,7 +107,6 @@ mixin Cache<T extends CacheManager> on BaseApi {
   }
 
   /// Retrieve response from the cache if available or fallback to the network.
-  @experimental
   Future<ApiResponse> cacheIfAvailable(ApiRequest request) async {
     _throwOnRequestWithoutCacheKey(request);
 

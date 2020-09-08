@@ -15,9 +15,6 @@ abstract class BaseApi {
     Uri url, {
     ApiLink link,
     Map<String, String> defaultHeaders,
-
-    /// Cache menager that will be used for cache storing.
-    @experimental CacheManager cache,
   })  : assert(url != null, "url $runtimeType argument cannot be null"),
         _url = url,
         defaultHeaders = defaultHeaders ?? <String, String>{},

@@ -65,7 +65,7 @@ class ApiRequest {
     this.body,
     this.encoding,
     this.multipart,
-    @experimental CacheKey key,
+    CacheKey key,
   })  : _key = key,
         assert(
           endpoint != null && method != null,

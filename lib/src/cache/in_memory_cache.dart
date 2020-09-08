@@ -1,6 +1,7 @@
 part of http_api;
 
 /// Simplest [CacheManager] implementation that stores ApiResponses in memory.
+/// The cache will be cleared, along with api 'dispose' method invocation.
 class InMemoryCache extends CacheManager {
   final _storage = <CacheKey, ApiResponse>{};
 
@@ -15,4 +16,10 @@ class InMemoryCache extends CacheManager {
 
   @override
   void clearAll() => _storage.clear();
+
+  @override
+  void dispose() {
+    _storage.clear();
+    super.dispose();
+  }
 }
