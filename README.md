@@ -18,7 +18,7 @@ Simple yet powerful wrapper around http package. This package provides you a sim
 This library is under development, breaking API changes might still happen. If you would like to make use of this library please make sure to provide which version you want to use e.g:
 ```yaml
 dependencies:
-  http_api: 0.7.2
+  http_api: 0.7.2+2
 ```
 
 ## Getting Started
