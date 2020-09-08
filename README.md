@@ -18,7 +18,7 @@ Simple yet powerful wrapper around http package. This package provides you a sim
 This library is under development, breaking API changes might still happen. If you would like to make use of this library please make sure to provide which version you want to use e.g:
 ```yaml
 dependencies:
-  http_api: 0.7.1
+  http_api: 0.7.2
 ```
 
 ## Getting Started
@@ -128,6 +128,24 @@ class CustomLink extends ApiLink {
 }
 ```
 If your link operates on data that should be disposed of together with api instance. You can override its `dispose` method.
+  
+For simple links, creating a class by extending `ApiLink` may be an overkill 😕. Therefore it is possible to define link in place. Link from the above example can be created in-place by calling `ApiLink.next` constructor:
+```dart
+ApiLink.next((ApiRequest request, NextFunction next) async {
+  final requestTime = DateTime.now();
+
+  final response = await next(request);
+  
+  final requestDuration = DateTime.now().difference(requestTime);
+
+  print(
+    "Request ${request.id} duration: "
+    "${requestDuration.inMilliseconds} ms",
+  );
+
+  return response;
+});
+```
 
 ## Cache
 With http_api you can cache your responses to avoid uneccesary fetches or/and improve user experience.

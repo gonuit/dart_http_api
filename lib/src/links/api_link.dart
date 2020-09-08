@@ -4,6 +4,25 @@ part of http_api;
 ///
 /// Each link should extend this method
 abstract class ApiLink {
+  /// Default constructor.
+  ApiLink();
+
+  /// Allows constructing the ApiLink instance in place by
+  /// providing handlers.
+  ///
+  /// example:
+  /// ```dart
+  /// ApiLink.next((request, next) {
+  ///   request.headers["x-Custom-Header"] = importantValue;
+  ///   return next(request);
+  /// });
+  /// ```
+  factory ApiLink.next(
+    final NextHandler next, {
+    final VoidFunction dispose,
+    final VoidFunction init,
+  }) = _InPlaceLink;
+
   /// [ApiLink]s keeps reference to the first [ApiLink] in chain
   /// to simplify chaining.
   ///

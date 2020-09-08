@@ -17,11 +17,13 @@ part './src/base_api.dart';
 
 /// Utils
 part './src/utils/exceptions.dart';
-part './src/utils/api_link.dart';
+part './src/utils/types.dart';
 part './src/utils/debug_link.dart';
 part './src/utils/cache_key.dart';
 
 /// Links
+part './src/links/api_link.dart';
+part './src/links/in_place_link.dart';
 part './src/links/headers_mapper_link.dart';
 part 'src/links/logger_link.dart';
 part './src/links/http_link.dart';
