@@ -2,7 +2,7 @@ part of http_api;
 
 /// Base class for implementing cachce managers.
 ///
-/// Cache manaager is used by `ApiClass` to cache responses.
+/// Cache manaager is used by `BaseApi` class to cache responses.
 @experimental
 abstract class CacheManager {
   /// Caches [response] under provided [key].
@@ -47,7 +47,7 @@ mixin Cache<T extends CacheManager> on BaseApi {
 
   /// Get cache manager.
   ///
-  /// If cache manager is wasn't already defined.
+  /// If cache manager wasn't already defined.
   CacheManager get cache => _cache ??= createCacheManager();
 
   @override

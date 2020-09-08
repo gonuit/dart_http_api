@@ -118,7 +118,7 @@ class CustomLink extends ApiLink {
 
     print(
       "Request ${request.id} duration: "
-      "${responseDuration.inMilliseconds} ms\n",
+      "${requestDuration.inMilliseconds} ms",
     );
 
     /// Provide prevoius link with response.
