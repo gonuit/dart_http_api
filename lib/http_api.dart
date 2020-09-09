@@ -3,6 +3,7 @@ library http_api;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:http_parser/http_parser.dart';
 import 'package:meta/meta.dart';

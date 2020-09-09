@@ -3,14 +3,6 @@ part of http_api;
 // ignore_for_file: unnecessary_getters_setters
 
 class ApiRequest {
-  CacheKey _key;
-
-  /// Identifies (groups) requests.
-  ///
-  /// Used for caching purposes - as cache key.
-  CacheKey get key => _key;
-  set key(CacheKey value) => _key = value;
-
   /// The id of current request.
   ///
   /// If you supply it by argument, try to make it unique
@@ -19,11 +11,15 @@ class ApiRequest {
   /// If not provided through arguments, will be Generated automatically.
   final ObjectId id;
 
-  final _createdAt = DateTime.now();
+  /// Request creation timestamp.
+  ///
+  /// By default set to now.
+  final DateTime createdAt;
 
-  /// ApiRequest object creation timestamp.
-  DateTime get createdAt => _createdAt;
-
+  /// Identifies (groups) requests.
+  ///
+  /// Used for caching purposes - as cache key.
+  CacheKey key;
   String endpoint;
   HttpMethod method;
   Encoding encoding;
@@ -49,9 +45,10 @@ class ApiRequest {
     this.body,
     this.encoding,
     this.multipart,
+    DateTime createdAt,
     ObjectId id,
-    CacheKey key,
-  })  : _key = key,
+    this.key,
+  })  : createdAt = createdAt ?? DateTime.now(),
         id = id ?? ObjectId(),
         assert(
           endpoint != null && method != null,
@@ -63,15 +60,33 @@ class ApiRequest {
   }
 
   Map<String, dynamic> toMap() => <String, dynamic>{
+        "id": id.hexString,
+        "key": key.value,
         "endpoint": endpoint,
         "body": body,
-        "encoding": encoding,
-        "fileFields": fileFields,
+        "encoding": encoding?.name,
+        // TODO: "fileFields": fileFields,
         "headers": headers,
-        "linkData": linkData,
         "method": method.value,
         "multipart": multipart,
+        "queryParameters": queryParameters,
+        "createdAt": createdAt.toIso8601String(),
       };
+
+  String toJson() => jsonEncode(toMap());
+
+  ApiRequest.fromJson(Map<String, dynamic> json)
+      : id = ObjectId.fromHexString(json["id"]),
+        key = CacheKey(json["key"]),
+        endpoint = json["endpoint"],
+        body = json["body"],
+        encoding = Encoding.getByName(json["encoding"]),
+        method = HttpMethod.fromString(json["method"]),
+        multipart = json["multipart"],
+        createdAt = DateTime.parse(json["createdAt"]) {
+    headers.addAll(json["headers"]);
+    queryParameters.addAll(json["queryParameters"]);
+  }
 
   String toString() => "$runtimeType(${toMap()})";
 }

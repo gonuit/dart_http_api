@@ -19,6 +19,25 @@ class HttpMethod {
   static const put = HttpMethod._("PUT");
   static const patch = HttpMethod._("PATCH");
   static const head = HttpMethod._("HEAD");
+
+  factory HttpMethod.fromString(String method) {
+    switch (method) {
+      case "POST":
+        return post;
+      case "GET":
+        return get;
+      case "DELETE":
+        return delete;
+      case "PUT":
+        return put;
+      case "PATCH":
+        return patch;
+      case "HEAD":
+        return head;
+      default:
+        return null;
+    }
+  }
 }
 
 /// Represents File that can be attached to [BaseApiRequest]
