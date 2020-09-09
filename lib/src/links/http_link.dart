@@ -115,10 +115,15 @@ class HttpLink extends ApiLink {
     );
 
     /// Returns the api response
-    return ApiResponse.fromHttp(
+    return ApiResponse(
       apiRequest,
-      httpRequest,
-      httpResponse,
+      headers: httpResponse.headers,
+      isRedirect: httpResponse.isRedirect,
+      persistentConnection: httpResponse.persistentConnection,
+      reasonPhrase: httpResponse.reasonPhrase,
+      statusCode: httpResponse.statusCode,
+      contentLength: httpResponse.contentLength,
+      bodyBytes: httpResponse.bodyBytes,
     );
   }
 
