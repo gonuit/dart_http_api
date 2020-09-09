@@ -73,9 +73,9 @@ class ApiResponse {
     @required this.persistentConnection,
   }) : received = DateTime.now();
 
-  Map<String, dynamic> toMap() => <String, dynamic>{
+  Map<String, dynamic> toJson() => <String, dynamic>{
         "id": id.hexString,
-        "apiRequest": apiRequest.toMap(),
+        "apiRequest": apiRequest.toJson(),
         "bodyBytes": bodyBytes,
         "statusCode": statusCode,
         "reasonPhrase": reasonPhrase,
@@ -86,18 +86,20 @@ class ApiResponse {
         "received": received.toIso8601String(),
       };
 
-  String toJson() => jsonEncode(toMap());
-
-  ApiResponse.fromJson(Map<String, dynamic> json)
+  ApiResponse.fromJson(dynamic json)
       : apiRequest = ApiRequest.fromJson(json["apiRequest"]),
-        bodyBytes = json["bodyBytes"],
+        bodyBytes =
+            Uint8List.fromList(List.castFrom<dynamic, int>(json["bodyBytes"])),
         statusCode = json["statusCode"],
         reasonPhrase = json["reasonPhrase"],
         contentLength = json["contentLength"],
-        headers = json["headers"],
+        headers =
+            Map.castFrom<String, dynamic, String, String>(json["headers"]),
         isRedirect = json["isRedirect"],
         persistentConnection = json["persistentConnection"],
         received = DateTime.parse(json["received"]);
+
+  String toString() => "$runtimeType(${toJson()})";
 }
 
 // TODO: rewrite:

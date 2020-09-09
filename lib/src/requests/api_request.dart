@@ -59,7 +59,7 @@ class ApiRequest {
     if (queryParameters != null) this.queryParameters.addAll(queryParameters);
   }
 
-  Map<String, dynamic> toMap() => <String, dynamic>{
+  Map<String, dynamic> toJson() => <String, dynamic>{
         "id": id.hexString,
         "key": key.value,
         "endpoint": endpoint,
@@ -73,9 +73,7 @@ class ApiRequest {
         "createdAt": createdAt.toIso8601String(),
       };
 
-  String toJson() => jsonEncode(toMap());
-
-  ApiRequest.fromJson(Map<String, dynamic> json)
+  ApiRequest.fromJson(dynamic json)
       : id = ObjectId.fromHexString(json["id"]),
         key = CacheKey(json["key"]),
         endpoint = json["endpoint"],
@@ -84,9 +82,11 @@ class ApiRequest {
         method = HttpMethod.fromString(json["method"]),
         multipart = json["multipart"],
         createdAt = DateTime.parse(json["createdAt"]) {
-    headers.addAll(json["headers"]);
+    headers.addAll(
+      Map.castFrom<String, dynamic, String, String>(json["headers"]),
+    );
     queryParameters.addAll(json["queryParameters"]);
   }
 
-  String toString() => "$runtimeType(${toMap()})";
+  String toString() => "$runtimeType(${toJson()})";
 }
