@@ -21,6 +21,7 @@ part './src/utils/exceptions.dart';
 part './src/utils/types.dart';
 part './src/utils/debug_link.dart';
 part './src/utils/cache_key.dart';
+part './src/utils/body_encoding.dart';
 
 /// Links
 part './src/links/api_link.dart';

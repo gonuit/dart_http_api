@@ -59,13 +59,19 @@ class ApiRequest {
     if (queryParameters != null) this.queryParameters.addAll(queryParameters);
   }
 
+  /// *************
+  /// SERIALIZATION
+  /// *************
+
   Map<String, dynamic> toJson() => <String, dynamic>{
         "id": id.hexString,
         "key": key.value,
         "endpoint": endpoint,
         "body": body,
         "encoding": encoding?.name,
-        // TODO: "fileFields": fileFields,
+        "fileFields": <Map<String, dynamic>>[
+          for (final fileField in fileFields) fileField.toJson()
+        ],
         "headers": headers,
         "method": method.value,
         "multipart": multipart,

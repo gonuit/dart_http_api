@@ -13,7 +13,7 @@ class MockFileField extends Mock implements FileField {
   }
 
   @override
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return null;
   }
 }

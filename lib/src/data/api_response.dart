@@ -60,7 +60,7 @@ class ApiResponse {
   /// [RFC 2616][].
   ///
   /// [RFC 2616]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
-  String get body => _encodingForHeaders(headers).decode(bodyBytes);
+  String get body => _getEncodingFromHeaders(headers).decode(bodyBytes);
 
   ApiResponse(
     this.apiRequest, {
@@ -72,6 +72,10 @@ class ApiResponse {
     @required this.isRedirect,
     @required this.persistentConnection,
   }) : received = DateTime.now();
+
+  /// *************
+  /// SERIALIZATION
+  /// *************
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         "id": id.hexString,
@@ -100,31 +104,4 @@ class ApiResponse {
         received = DateTime.parse(json["received"]);
 
   String toString() => "$runtimeType(${toJson()})";
-}
-
-// TODO: rewrite:
-
-/// Returns the encoding to use for a response with the given headers.
-///
-/// Defaults to [latin1] if the headers don't specify a charset or if that
-/// charset is unknown.
-Encoding _encodingForHeaders(Map<String, String> headers) =>
-    encodingForCharset(_contentTypeForHeaders(headers).parameters['charset']);
-
-/// Returns the [MediaType] object for the given headers's content-type.
-///
-/// Defaults to `application/octet-stream`.
-MediaType _contentTypeForHeaders(Map<String, String> headers) {
-  var contentType = headers['content-type'];
-  if (contentType != null) return MediaType.parse(contentType);
-  return MediaType('application', 'octet-stream');
-}
-
-/// Returns the [Encoding] that corresponds to [charset].
-///
-/// Returns [fallback] if [charset] is null or if no [Encoding] was found that
-/// corresponds to [charset].
-Encoding encodingForCharset(String charset, [Encoding fallback = latin1]) {
-  if (charset == null) return fallback;
-  return Encoding.getByName(charset) ?? fallback;
 }
