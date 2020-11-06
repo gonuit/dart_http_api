@@ -35,8 +35,8 @@ abstract class ApiLink {
   ApiLink _nextLink;
   bool _disposed = false;
   bool get disposed => false;
-  bool _closed = false;
-  bool get closed => _closed;
+  bool _attached = false;
+  bool get attached => _attached;
   bool get chained => _nextLink != null;
 
   /// calls [callback] for every link in chain
@@ -58,13 +58,18 @@ abstract class ApiLink {
     return null;
   }
 
-  /// Marks all ApiLinks in chain as closed by setting
-  /// `closed` property to true.
+  /// Marks all ApiLinks in chain as attached to api instance
+  /// by setting [attached] property to `true` and `api` property
+  /// to api instance.
   ///
-  /// Closed links cannot be chained.
-  void _closeChain() {
+  /// The attached links can no longer be chained.
+  void _closeChain(Uri apiUrl) {
     _forEach((link) {
-      link._closed = true;
+      link._attached = true;
+
+      if (link is HttpLink) {
+        link._apiUrl = apiUrl;
+      }
     });
   }
 
@@ -86,7 +91,7 @@ abstract class ApiLink {
       );
     }
 
-    if (closed || nextLink.closed) {
+    if (attached || nextLink.attached) {
       throw ApiError(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
         "You cannot chain links after attaching to BaseApi",
@@ -138,7 +143,7 @@ abstract class ApiLink {
   /// To initialize your ApiLink data you can use constructor body.
   @mustCallSuper
   void dispose() {
-    assert(_disposed == false, "ApiLink cannot be disposed more than once");
+    assert(_disposed == false, "ApiLink cannot be disposed more than once.");
     _disposed = true;
   }
 }

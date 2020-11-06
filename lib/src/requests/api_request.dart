@@ -3,43 +3,23 @@ part of http_api;
 // ignore_for_file: unnecessary_getters_setters
 
 class ApiRequest {
-  // TODO: Add automatic key generation
-  CacheKey _key;
+  /// The id of current request.
+  ///
+  /// If you supply it by argument, try to make it unique
+  /// across all requests (including those stored in the cache).
+  ///
+  /// If not provided through arguments, will be Generated automatically.
+  final ObjectId id;
+
+  /// Request creation timestamp.
+  ///
+  /// By default set to now.
+  final DateTime createdAt;
 
   /// Identifies (groups) requests.
   ///
   /// Used for caching purposes - as cache key.
-  CacheKey get key => _key;
-  set key(CacheKey value) => _key = value;
-
-  final _id = ObjectId();
-
-  /// Id of current ApiRequest
-  ObjectId get id => _id;
-
-  /// ApiRequest object creation timestamp.
-  DateTime get createdAt => id.timestamp;
-
-  /// Url is set by BaseApi class
-  Uri _apiUrl;
-  Uri get apiUrl => _apiUrl;
-  Uri get url {
-    if (apiUrl == null) {
-      throw ApiError("url is not available before sending a request");
-    }
-
-    final queryParameters = Map<String, dynamic>.from(apiUrl.queryParameters)
-      ..addAll(this.queryParameters);
-
-    return Uri(
-      scheme: apiUrl.scheme,
-      host: apiUrl.host,
-      path: apiUrl.path + endpoint,
-      queryParameters: queryParameters.isNotEmpty ? queryParameters : null,
-      port: apiUrl.port,
-    );
-  }
-
+  CacheKey key;
   String endpoint;
   HttpMethod method;
   Encoding encoding;
@@ -65,8 +45,11 @@ class ApiRequest {
     this.body,
     this.encoding,
     this.multipart,
-    CacheKey key,
-  })  : _key = key,
+    DateTime createdAt,
+    ObjectId id,
+    this.key,
+  })  : createdAt = createdAt ?? DateTime.now(),
+        id = id ?? ObjectId(),
         assert(
           endpoint != null && method != null,
           "endpoint and method arguments cannot be null",
@@ -76,72 +59,40 @@ class ApiRequest {
     if (queryParameters != null) this.queryParameters.addAll(queryParameters);
   }
 
-  /// Builds http request from ApiRequest data
-  FutureOr<http.BaseRequest> build() {
-    if (url == null) {
-      throw ApiError(
-        "$runtimeType url cannot be null. Instead of calling build method, "
-        "pass ApiRequest to BaseApi: 'send' method.",
-      );
-    }
-    return isMultipart ? _buildMultipartHttpRequest() : _buildHttpRequest();
-  }
+  /// *************
+  /// SERIALIZATION
+  /// *************
 
-  /// Builds [MultipartRequest]
-  Future<http.BaseRequest> _buildMultipartHttpRequest() async {
-    final request = http.MultipartRequest(method.value, url)
-      ..headers.addAll(headers);
-
-    /// Assign body if it is map
-    if (body != null) {
-      if (body is Map) {
-        request.fields.addAll(body.cast<String, String>());
-      } else {
-        throw ArgumentError(
-          'Invalid request body "$body".\n'
-          'Multipart request body should be Map<String, String>',
-        );
-      }
-    }
-
-    /// Assign files to [MultipartRequest]
-    for (final fileField in fileFields) {
-      request.files.add(await fileField.toMultipartFile());
-    }
-
-    return request;
-  }
-
-  /// Buils [Request]
-  http.BaseRequest _buildHttpRequest() {
-    final request = http.Request(method.value, url);
-
-    if (headers != null) request.headers.addAll(headers);
-    if (encoding != null) request.encoding = encoding;
-    if (body != null) {
-      if (body is String) {
-        request.body = body;
-      } else if (body is List) {
-        request.bodyBytes = body.cast<int>();
-      } else if (body is Map) {
-        request.bodyFields = body.cast<String, String>();
-      } else {
-        throw ArgumentError('Invalid request body "$body".');
-      }
-    }
-    return request;
-  }
-
-  Map<String, dynamic> toMap() => <String, dynamic>{
-        "url": url,
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        "id": id.hexString,
+        "key": key.value,
+        "endpoint": endpoint,
         "body": body,
-        "encoding": encoding,
-        "fileFields": fileFields,
+        "encoding": encoding?.name,
+        "fileFields": <Map<String, dynamic>>[
+          for (final fileField in fileFields) fileField.toJson()
+        ],
         "headers": headers,
-        "linkData": linkData,
         "method": method.value,
         "multipart": multipart,
+        "queryParameters": queryParameters,
+        "createdAt": createdAt.toIso8601String(),
       };
 
-  String toString() => "$runtimeType(${toMap()})";
+  ApiRequest.fromJson(dynamic json)
+      : id = ObjectId.fromHexString(json["id"]),
+        key = CacheKey(json["key"]),
+        endpoint = json["endpoint"],
+        body = json["body"],
+        encoding = Encoding.getByName(json["encoding"]),
+        method = HttpMethod.fromString(json["method"]),
+        multipart = json["multipart"],
+        createdAt = DateTime.parse(json["createdAt"]) {
+    headers.addAll(
+      Map.castFrom<String, dynamic, String, String>(json["headers"]),
+    );
+    queryParameters.addAll(json["queryParameters"]);
+  }
+
+  String toString() => "$runtimeType(${toJson()})";
 }

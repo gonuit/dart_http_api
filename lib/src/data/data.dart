@@ -19,6 +19,25 @@ class HttpMethod {
   static const put = HttpMethod._("PUT");
   static const patch = HttpMethod._("PATCH");
   static const head = HttpMethod._("HEAD");
+
+  factory HttpMethod.fromString(String method) {
+    switch (method) {
+      case "POST":
+        return post;
+      case "GET":
+        return get;
+      case "DELETE":
+        return delete;
+      case "PUT":
+        return put;
+      case "PATCH":
+        return patch;
+      case "HEAD":
+        return head;
+      default:
+        return null;
+    }
+  }
 }
 
 /// Represents File that can be attached to [BaseApiRequest]
@@ -35,7 +54,7 @@ abstract class FileField {
     this.contentType,
   }) : assert(field != null, "field argument cannot be null");
 
-  /// Convert FileField to multipart file
+  /// Convert FileField to multipart file.
   Future<http.MultipartFile> toMultipartFile();
 
   factory FileField({
@@ -45,6 +64,7 @@ abstract class FileField {
     MediaType contentType,
   }) = _FileField;
 
+  /// Creates FileField from byte stream.
   factory FileField.fromStream({
     @required String field,
     @required Stream<List<int>> stream,
@@ -53,10 +73,51 @@ abstract class FileField {
     MediaType contentType,
   }) = _StreamFileField;
 
-  Map<String, dynamic> toMap();
+  /// This method is most commonly used to convert
+  /// [FileField] to JSON in order to prepare it for caching.
+  ///
+  /// This method should not return a file, only data
+  /// describing the file.
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        "field": field,
+        "fileName": fileName,
+        "contentType": contentType,
+      };
+
+  /// Construct FileField that only represents file without including it.
+  /// This constructor can be used for caching.
+  factory FileField.fromJson(dynamic json) => _FileDataField(
+        field: json["field"],
+        fileName: json["fileName"],
+        contentType: json["contentType"],
+      );
 
   @override
-  String toString() => "$runtimeType(${toMap()})";
+  String toString() => "$runtimeType(${toJson()})";
+}
+
+class _FileDataField extends FileField {
+  _FileDataField({
+    @required String field,
+    String fileName,
+    MediaType contentType,
+  }) : super._(
+          field: field,
+          fileName: fileName,
+          contentType: contentType,
+        );
+
+  @override
+  Future<http.MultipartFile> toMultipartFile() async {
+    throw ApiError(
+      '$runtimeType cannot be converted to multipart file. '
+      'This problem may occur when you try to send a FileField '
+      'created by calling the fromJson constructor.',
+    );
+  }
+
+  @override
+  String toString() => "$runtimeType(${toJson()})";
 }
 
 class _FileField extends FileField {
@@ -87,16 +148,6 @@ class _FileField extends FileField {
         contentType: contentType,
         filename: fileName,
       );
-
-  Map<String, dynamic> toMap() => <String, dynamic>{
-        "file": file,
-        "field": field,
-        "fileName": fileName,
-        "contentType": contentType,
-      };
-
-  @override
-  String toString() => "FileField(${toMap()})";
 }
 
 class _StreamFileField extends FileField {
@@ -126,13 +177,4 @@ class _StreamFileField extends FileField {
         filename: fileName,
         contentType: contentType,
       );
-
-  @override
-  Map<String, dynamic> toMap() => <String, dynamic>{
-        "field": field,
-        "stream": stream,
-        "length": length,
-        "fileName": fileName,
-        "contentType": contentType,
-      };
 }

@@ -1,4 +1,4 @@
-import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 import 'package:http_api/http_api.dart';
@@ -111,9 +111,17 @@ void main() {
       final key = CacheKey("TEST KEY");
       final request = ApiRequest(key: key, endpoint: '/test');
 
-      final httpResponse = http.Response("", 200);
-
-      final apiResponse = ApiResponse.fromHttp(request, null, httpResponse);
+      final bodyBytes = Encoding.getByName("utf-8").encode("");
+      final apiResponse = ApiResponse(
+        request,
+        statusCode: 200,
+        bodyBytes: bodyBytes,
+        isRedirect: false,
+        contentLength: bodyBytes.length,
+        headers: {},
+        reasonPhrase: "ok",
+        persistentConnection: false,
+      );
 
       when(testApi.cache.read(key)).thenReturn(apiResponse);
 
@@ -129,19 +137,16 @@ void main() {
   test("shouldUpdateCache works correctly", () {
     final key = CacheKey("TEST KEY");
     var request = ApiRequest(key: key, endpoint: '/test');
-    var httpResponse = http.Response("", 200);
-    var apiResponse = ApiResponse.fromHttp(request, null, httpResponse);
+    var apiResponse = ApiResponse(request, statusCode: 200);
 
     expect(testApi.shouldUpdateCache(request, apiResponse), isTrue);
 
-    httpResponse = http.Response("", 400);
-    apiResponse = ApiResponse.fromHttp(request, null, httpResponse);
+    apiResponse = ApiResponse(request, statusCode: 400);
 
     expect(testApi.shouldUpdateCache(request, apiResponse), isFalse);
 
     request = ApiRequest(endpoint: '/test');
-    httpResponse = http.Response("", 200);
-    apiResponse = ApiResponse.fromHttp(request, null, httpResponse);
+    apiResponse = ApiResponse(request, statusCode: 200);
 
     expect(testApi.shouldUpdateCache(request, apiResponse), isFalse);
   });

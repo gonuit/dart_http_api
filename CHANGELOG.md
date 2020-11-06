@@ -1,3 +1,6 @@
+## [0.7.3] - 06 November 2020.
+- Added support for ApiRequest and ApiResponse serialization (simplify caching).
+  - Added toJson methods and fromJson constructors.
 ## [0.7.2+2] - 09 September 2020.
 - Added `ApiLink.next` constructor to allows in-place link creation.
 - ⚠️ `ApiLink` now cannot be used as mixin. 

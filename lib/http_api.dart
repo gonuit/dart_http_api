@@ -3,6 +3,7 @@ library http_api;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:http_parser/http_parser.dart';
 import 'package:meta/meta.dart';
@@ -20,6 +21,7 @@ part './src/utils/exceptions.dart';
 part './src/utils/types.dart';
 part './src/utils/debug_link.dart';
 part './src/utils/cache_key.dart';
+part './src/utils/body_encoding.dart';
 
 /// Links
 part './src/links/api_link.dart';
