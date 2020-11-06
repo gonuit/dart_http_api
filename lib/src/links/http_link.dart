@@ -66,7 +66,7 @@ class HttpLink extends ApiLink {
     return multipartRequest;
   }
 
-  /// Buils [Request]
+  /// Builds [Request]
   http.BaseRequest _buildHttpRequest(
     Uri url,
     ApiRequest request,

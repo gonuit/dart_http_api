@@ -11,7 +11,7 @@ class ApiResponse {
   DateTime get createdAt => id.timestamp;
 
   /// Here you can assing your data that will be passed to the next link
-  final Map<String, dynamic> linkData = <String, dynamic>{};
+  final Map<String, dynamic> linkData;
 
   /// Time when [ApiResponse] was created.
   final DateTime received;
@@ -64,14 +64,16 @@ class ApiResponse {
 
   ApiResponse(
     this.apiRequest, {
-    @required this.bodyBytes,
     @required this.statusCode,
-    @required this.reasonPhrase,
-    @required this.contentLength,
-    @required this.headers,
-    @required this.isRedirect,
-    @required this.persistentConnection,
-  }) : received = DateTime.now();
+    this.bodyBytes,
+    this.contentLength,
+    this.reasonPhrase,
+    Map<String, String> headers,
+    this.isRedirect = false,
+    this.persistentConnection = false,
+  })  : received = DateTime.now(),
+        linkData = apiRequest.linkData,
+        headers = headers ?? <String, String>{};
 
   /// *************
   /// SERIALIZATION
@@ -101,7 +103,10 @@ class ApiResponse {
             Map.castFrom<String, dynamic, String, String>(json["headers"]),
         isRedirect = json["isRedirect"],
         persistentConnection = json["persistentConnection"],
-        received = DateTime.parse(json["received"]);
+        received = DateTime.parse(json["received"]),
+        linkData = <String, dynamic>{} {
+    linkData.addAll(apiRequest.linkData);
+  }
 
   String toString() => "$runtimeType(${toJson()})";
 }

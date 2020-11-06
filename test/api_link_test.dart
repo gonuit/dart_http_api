@@ -110,7 +110,7 @@ void main() {
 
     expect(error, isNotNull);
     expect(error.message,
-        equals("Cannot assign closed ApiLinks chain to TestApi"));
+        equals("Cannot reattach already attached ApiLink to TestApi."));
   });
 
   test("BaseApi dispose method, disposes all links", () async {
@@ -166,7 +166,7 @@ void main() {
       error = err;
     }
     expect(error, isNotNull);
-    expect(error.message, equals("ApiLinks chain should contain HttpLink"));
+    expect(error.message, equals("ApiLinks chain should contain HttpLink."));
   });
 
   test(
