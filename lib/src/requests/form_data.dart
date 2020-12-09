@@ -17,11 +17,6 @@ class FormData extends ApiRequest {
     return _headers;
   }
 
-  @override
-  final bool multipart = true;
-  @override
-  final bool isMultipart = true;
-
   void append(String key, dynamic value) {
     ArgumentError.checkNotNull(key, 'key');
 
@@ -51,7 +46,6 @@ class FormData extends ApiRequest {
     ArgumentError.checkNotNull(file, 'file');
 
     final fileField = FileField(
-      field: key,
       file: file,
       fileName: filename,
       contentType: contentType,

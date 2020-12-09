@@ -36,11 +36,9 @@ class HttpLink extends ApiLink {
 
     if (request is FormData) {
       return _buildFormDataRequest(url, request);
+    } else {
+      return _buildHttpRequest(url, request);
     }
-
-    return request.isMultipart
-        ? _buildMultipartHttpRequest(url, request)
-        : _buildHttpRequest(url, request);
   }
 
   /// Builds [FormDataRequest]
@@ -54,36 +52,6 @@ class HttpLink extends ApiLink {
     await formDataRequest.setEntries(request.entries);
 
     return formDataRequest;
-  }
-
-  /// Builds [FormDataRequest]
-  Future<http.BaseRequest> _buildMultipartHttpRequest(
-    Uri url,
-    ApiRequest request,
-  ) async {
-    final multipartRequest = http.MultipartRequest(request.method.value, url)
-      ..headers.addAll(request.headers);
-
-    /// Assign body if it is map
-    if (request.body != null) {
-      if (request.body is Map) {
-        multipartRequest.fields.addAll(request.body.cast<String, String>());
-      } else {
-        throw ArgumentError(
-          'Invalid request body "${request.body}".\n'
-          'Multipart request body should be Map<String, String>',
-        );
-      }
-    }
-
-    final files = await Future.wait<http.MultipartFile>([
-      for (final fileField in request.fileFields) fileField.toMultipartFile()
-    ]);
-
-    /// Assign files to [MultipartRequest]
-    multipartRequest.files.addAll(files);
-
-    return multipartRequest;
   }
 
   /// Builds [Request]

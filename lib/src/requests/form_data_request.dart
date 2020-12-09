@@ -119,7 +119,7 @@ class FormDataRequest extends http.BaseRequest {
 
     final multipartFilesFutures = entries
         .where((entry) => entry.value is FileField)
-        .map((entry) => (entry.value as FileField).toMultipartFile());
+        .map((entry) => (entry.value as FileField).toMultipartFile(entry.key));
 
     final multipartFiles = await Future.wait(multipartFilesFutures);
 

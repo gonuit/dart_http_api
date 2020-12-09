@@ -23,18 +23,12 @@ class ApiRequest {
   String endpoint;
   HttpMethod method;
   Encoding encoding;
-  bool multipart;
   dynamic body;
 
   /// Here you can assign your data that will be passed to the next link
   final Map<String, dynamic> linkData = {};
-  final List<FileField> fileFields = [];
   final Map<String, String> headers = {};
   final Map<String, dynamic> queryParameters = {};
-
-  /// If [BaseApiRequest] contains files or [multipart] property is set to true
-  /// [isMultipart] equals true
-  bool get isMultipart => multipart == true || fileFields.isNotEmpty;
 
   ApiRequest({
     @required this.endpoint,
@@ -44,7 +38,6 @@ class ApiRequest {
     Map<String, dynamic> queryParameters,
     this.body,
     this.encoding,
-    this.multipart,
     DateTime createdAt,
     ObjectId id,
     this.key,
@@ -54,7 +47,6 @@ class ApiRequest {
           endpoint != null && method != null,
           "endpoint and method arguments cannot be null",
         ) {
-    if (fileFields != null) this.fileFields.addAll(fileFields);
     if (headers != null) this.headers.addAll(headers);
     if (queryParameters != null) this.queryParameters.addAll(queryParameters);
   }
@@ -67,14 +59,14 @@ class ApiRequest {
         "id": id.hexString,
         "key": key.value,
         "endpoint": endpoint,
+        // TODO: FormData FileFields serialization
         "body": body,
         "encoding": encoding?.name,
-        "fileFields": <Map<String, dynamic>>[
-          for (final fileField in fileFields) fileField.toJson()
-        ],
+        // "fileFields": <Map<String, dynamic>>[
+        //   for (final fileField in fileFields) fileField.toJson()
+        // ],
         "headers": headers,
         "method": method.value,
-        "multipart": multipart,
         "queryParameters": queryParameters,
         "createdAt": createdAt.toIso8601String(),
       };
@@ -86,7 +78,6 @@ class ApiRequest {
         body = json["body"],
         encoding = Encoding.getByName(json["encoding"]),
         method = HttpMethod.fromString(json["method"]),
-        multipart = json["multipart"],
         createdAt = DateTime.parse(json["createdAt"]) {
     headers.addAll(
       Map.castFrom<String, dynamic, String, String>(json["headers"]),
