@@ -42,7 +42,7 @@ class HttpMethod {
 
 /// Represents File that can be attached to [BaseApiRequest]
 /// so can be sent to API
-/// with [MultipartRequest]
+/// with [FormDataRequest]
 abstract class FileField {
   final String field;
   final String fileName;

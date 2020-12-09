@@ -33,12 +33,30 @@ class HttpLink extends ApiLink {
   /// Builds http request from ApiRequest data
   FutureOr<http.BaseRequest> buildHttpRequest(ApiRequest request) {
     final url = getUrlForRequest(request);
+
+    if (request is FormData) {
+      return _buildFormDataRequest(url, request);
+    }
+
     return request.isMultipart
         ? _buildMultipartHttpRequest(url, request)
         : _buildHttpRequest(url, request);
   }
 
-  /// Builds [MultipartRequest]
+  /// Builds [FormDataRequest]
+  Future<http.BaseRequest> _buildFormDataRequest(
+    Uri url,
+    FormData request,
+  ) async {
+    final formDataRequest = FormDataRequest(request.method.value, url)
+      ..headers.addAll(request.headers);
+
+    await formDataRequest.setEntries(request.entries);
+
+    return formDataRequest;
+  }
+
+  /// Builds [FormDataRequest]
   Future<http.BaseRequest> _buildMultipartHttpRequest(
     Uri url,
     ApiRequest request,
@@ -58,10 +76,12 @@ class HttpLink extends ApiLink {
       }
     }
 
+    final files = await Future.wait<http.MultipartFile>([
+      for (final fileField in request.fileFields) fileField.toMultipartFile()
+    ]);
+
     /// Assign files to [MultipartRequest]
-    for (final fileField in request.fileFields) {
-      multipartRequest.files.add(await fileField.toMultipartFile());
-    }
+    multipartRequest.files.addAll(files);
 
     return multipartRequest;
   }

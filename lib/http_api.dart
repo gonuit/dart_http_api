@@ -3,6 +3,7 @@ library http_api;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:http_parser/http_parser.dart';
@@ -32,6 +33,8 @@ part './src/links/http_link.dart';
 
 /// Requests
 part './src/requests/api_request.dart';
+part './src/requests/form_data.dart';
+part './src/requests/form_data_request.dart';
 
 /// Data
 part './src/data/data.dart';
