@@ -6,7 +6,7 @@ homepage: https://github.com/gonuit/flutter_http_api
 issue_tracker: https://github.com/gonuit/flutter_http_api/issues
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
   http: ^0.12.1

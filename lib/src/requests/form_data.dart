@@ -3,6 +3,9 @@ part of http_api;
 /// A class to create readable "multipart/form-data" streams.
 /// It can be used to submit forms and file uploads to http server.
 class FormData extends ApiRequest {
+  @override
+  final requestType = RequestType.formData;
+
   /// MapEntry<String, String | FileField>
   @override
   covariant List<MapEntry<String, dynamic>> body = [];
@@ -110,4 +113,23 @@ class FormData extends ApiRequest {
     delete(key);
     append(key, value);
   }
+
+  Map<String, dynamic> toJson() {
+    final serializedBody = body.map((entry) {
+      if (entry is FileField) {
+        final FileField value = entry.value;
+        return {entry.key: value.toJson()};
+      } else {
+        return {entry.key: entry.value};
+      }
+    });
+
+    return <String, dynamic>{
+      ...super.toJson(),
+      "body": serializedBody,
+    };
+  }
+
+  // TODO: support for json body encoding
+  // ApiRequest.fromJson(dynamic json)
 }

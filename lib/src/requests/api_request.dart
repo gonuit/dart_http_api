@@ -3,6 +3,8 @@ part of http_api;
 // ignore_for_file: unnecessary_getters_setters
 
 class ApiRequest {
+  final requestType = RequestType.basic;
+
   /// The id of current request.
   ///
   /// If you supply it by argument, try to make it unique
@@ -55,21 +57,20 @@ class ApiRequest {
   /// SERIALIZATION
   /// *************
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        "id": id.hexString,
-        "key": key.value,
-        "endpoint": endpoint,
-        // TODO: FormData FileFields serialization
-        "body": body,
-        "encoding": encoding?.name,
-        // "fileFields": <Map<String, dynamic>>[
-        //   for (final fileField in fileFields) fileField.toJson()
-        // ],
-        "headers": headers,
-        "method": method.value,
-        "queryParameters": queryParameters,
-        "createdAt": createdAt.toIso8601String(),
-      };
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      "id": id.hexString,
+      "key": key.value,
+      "endpoint": endpoint,
+      "body": body,
+      "encoding": encoding?.name,
+      "headers": headers,
+      "method": method.value,
+      "queryParameters": queryParameters,
+      "createdAt": createdAt.toIso8601String(),
+      "_request_type": requestType.value,
+    };
+  }
 
   ApiRequest.fromJson(dynamic json)
       : id = ObjectId.fromHexString(json["id"]),

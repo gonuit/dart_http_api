@@ -40,6 +40,21 @@ class HttpMethod {
   }
 }
 
+enum RequestType { basic, formData }
+
+extension on RequestType {
+  String get value {
+    switch (this) {
+      case RequestType.basic:
+        return "basic";
+      case RequestType.formData:
+        return "formData";
+      default:
+        throw UnimplementedError();
+    }
+  }
+}
+
 /// Represents File that can be attached to [BaseApiRequest]
 /// so can be sent to API
 /// with [FormDataRequest]
