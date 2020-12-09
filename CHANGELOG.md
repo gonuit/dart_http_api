@@ -1,3 +1,6 @@
+## [0.8.3-dev.3] 09 December 2020.
+- Added [FormData] request.
+  - Removed `multipart` and `isMultipart` values from `ApiRequest`.
 ## [0.7.3] - 06 November 2020.
 - Added support for ApiRequest and ApiResponse serialization (simplify caching).
   - Added toJson methods and fromJson constructors.

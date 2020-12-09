@@ -107,7 +107,7 @@ class FormDataRequest extends http.BaseRequest {
   bool get isFinalized => _finalized;
 
   /// The form fields to send for this request.
-  final List<MapEntry<String, String>> _fields = [];
+  final List<MapEntry<String, dynamic>> _fields = [];
 
   /// The list of files to upload for this request.
   final _files = <http.MultipartFile>[];

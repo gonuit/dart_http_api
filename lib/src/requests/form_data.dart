@@ -2,23 +2,10 @@ part of http_api;
 
 /// A class to create readable "multipart/form-data" streams.
 /// It can be used to submit forms and file uploads to http server.
-class FormData extends ApiRequest {
-  @override
-  final requestType = RequestType.formData;
-
-  /// MapEntry<String, String | FileField>
-  @override
-  covariant List<MapEntry<String, dynamic>> body = [];
-
-  final Map<String, String> _headers = {};
-
-  /// This request automatically sets the Content-Type header to
-  /// `multipart/form-data`. This value will override any value set by the user.
-  @override
-  Map<String, String> get headers {
-    _headers['Content-Type'] = 'multipart/form-data';
-    return _headers;
-  }
+class FormData {
+  // MapEntry<String, String | FileField>
+  /// Returns an [Iterable] allowing to go through all FormData entries.
+  final List<MapEntry<String, dynamic>> entries = [];
 
   void append(String key, dynamic value) {
     ArgumentError.checkNotNull(key, 'key');
@@ -58,17 +45,14 @@ class FormData extends ApiRequest {
   }
 
   void _appendValue(String key, dynamic value) {
-    body.add(MapEntry(key, value));
+    entries.add(MapEntry(key, value));
   }
 
   void delete(String key) {
     ArgumentError.checkNotNull(key, 'key');
 
-    body.removeWhere((entry) => entry.key == key);
+    entries.removeWhere((entry) => entry.key == key);
   }
-
-  /// Returns an [Iterable] allowing to go through all FormData entries.
-  Iterable<MapEntry<String, dynamic>> get entries => body;
 
   /// Returns an [Iterable] allowing to go through all
   /// keys contained in this object.
@@ -114,8 +98,8 @@ class FormData extends ApiRequest {
     append(key, value);
   }
 
-  Map<String, dynamic> toJson() {
-    final serializedBody = body.map((entry) {
+  List<Map<String, dynamic>> toJson() {
+    final serializedEntries = entries.map((entry) {
       if (entry is FileField) {
         final FileField value = entry.value;
         return {entry.key: value.toJson()};
@@ -124,10 +108,7 @@ class FormData extends ApiRequest {
       }
     });
 
-    return <String, dynamic>{
-      ...super.toJson(),
-      "body": serializedBody,
-    };
+    return serializedEntries;
   }
 
   // TODO: support for json body encoding

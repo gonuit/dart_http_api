@@ -2,7 +2,7 @@ part of http_api;
 
 // ignore_for_file: unnecessary_getters_setters
 
-class ApiRequest {
+class ApiRequest<T extends dynamic> {
   final requestType = RequestType.basic;
 
   /// The id of current request.
@@ -25,7 +25,7 @@ class ApiRequest {
   String endpoint;
   HttpMethod method;
   Encoding encoding;
-  dynamic body;
+  T body;
 
   /// Here you can assign your data that will be passed to the next link
   final Map<String, dynamic> linkData = {};
@@ -36,7 +36,6 @@ class ApiRequest {
     @required this.endpoint,
     this.method = HttpMethod.get,
     Map<String, String> headers,
-    List<FileField> fileFields,
     Map<String, dynamic> queryParameters,
     this.body,
     this.encoding,

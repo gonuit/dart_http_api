@@ -34,7 +34,7 @@ class HttpLink extends ApiLink {
   FutureOr<http.BaseRequest> buildHttpRequest(ApiRequest request) {
     final url = getUrlForRequest(request);
 
-    if (request is FormData) {
+    if (request.body is FormData) {
       return _buildFormDataRequest(url, request);
     } else {
       return _buildHttpRequest(url, request);
@@ -44,12 +44,14 @@ class HttpLink extends ApiLink {
   /// Builds [FormDataRequest]
   Future<http.BaseRequest> _buildFormDataRequest(
     Uri url,
-    FormData request,
+    ApiRequest<FormData> request,
   ) async {
     final formDataRequest = FormDataRequest(request.method.value, url)
       ..headers.addAll(request.headers);
 
-    await formDataRequest.setEntries(request.entries);
+    final formData = request.body;
+
+    await formDataRequest.setEntries(formData.entries);
 
     return formDataRequest;
   }
