@@ -7,6 +7,16 @@ class FormData {
   /// Returns an [Iterable] allowing to go through all FormData entries.
   final List<MapEntry<String, dynamic>> entries = [];
 
+  FormData();
+
+  FormData.fromEntries(List<MapEntry<String, dynamic>> entries) {
+    /// use loop with [append] method to copy map entries
+    /// and check types.
+    for (final entry in entries) {
+      append(entry.key, entry.value);
+    }
+  }
+
   void append(String key, dynamic value) {
     ArgumentError.checkNotNull(key, 'key');
 

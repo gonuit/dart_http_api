@@ -40,8 +40,7 @@ class Api extends BaseApi with Cache {
   /// Implement api request methods
   Future<ExamplePhotoModel> getRandomPhoto() async {
     /// Use [send] method to make api request
-    final response =
-        await send(ApiRequest(endpoint: "/id/${Random().nextInt(50)}/info"));
+    final response = await get("/id/${Random().nextInt(50)}/info");
 
     return ExamplePhotoModel.fromJson(json.decode(response.body));
   }
