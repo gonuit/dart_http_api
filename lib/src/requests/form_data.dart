@@ -2,7 +2,7 @@ part of http_api;
 
 /// A class to create readable "multipart/form-data" streams.
 /// It can be used to submit forms and file uploads to http server.
-class FormData {
+class FormData with Serializable {
   // MapEntry<String, String | FileField>
   /// Returns an [Iterable] allowing to go through all FormData entries.
   final List<MapEntry<String, dynamic>> entries = [];
@@ -108,7 +108,11 @@ class FormData {
     append(key, value);
   }
 
-  List<Map<String, dynamic>> toJson() {
+  /// Serialize FormData to json.
+  ///
+  /// Important: Files will be skipped.
+  /// Only file description will be included.
+  Map<String, dynamic> toJson() {
     final serializedEntries = entries.map((entry) {
       if (entry is FileField) {
         final FileField value = entry.value;
@@ -118,9 +122,26 @@ class FormData {
       }
     });
 
-    return serializedEntries;
+    return {
+      _bodyTypeKey: DataType.formData.value,
+      "entries": serializedEntries,
+    };
   }
 
-  // TODO: support for json body encoding
-  // ApiRequest.fromJson(dynamic json)
+  /// Deserialize FormData from json.
+  factory FormData.fromJson(dynamic json) {
+    if (json == null ||
+        !(json is Map) ||
+        json.type != DataType.formData.value ||
+        json.entries == null ||
+        !(json.entries is List)) {
+      throw ArgumentError.value(
+        json,
+        'json',
+        'Provided value is not a valid FormData json.',
+      );
+    }
+
+    return FormData.fromEntries(json.entries);
+  }
 }

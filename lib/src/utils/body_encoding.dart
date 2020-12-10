@@ -1,5 +1,7 @@
 part of http_api;
 
+const _bodyTypeKey = '__type';
+
 /// Returns the encoding that will be used for body parsing.
 Encoding _getEncodingFromHeaders(Map<String, String> headers) {
   final mediaType = _getMediaTypeFromHeaders(headers);

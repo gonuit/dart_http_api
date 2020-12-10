@@ -3,8 +3,6 @@ part of http_api;
 // ignore_for_file: unnecessary_getters_setters
 
 class ApiRequest<T extends dynamic> {
-  final requestType = RequestType.basic;
-
   /// The id of current request.
   ///
   /// If you supply it by argument, try to make it unique
@@ -57,25 +55,45 @@ class ApiRequest<T extends dynamic> {
   /// *************
 
   Map<String, dynamic> toJson() {
+    final dynamic serializedBody = body != null && body is Serializable
+        ? (body as Serializable).toJson()
+        : body;
+
     return <String, dynamic>{
       "id": id.hexString,
       "key": key.value,
       "endpoint": endpoint,
-      "body": body,
+      "body": serializedBody,
       "encoding": encoding?.name,
       "headers": headers,
       "method": method.value,
       "queryParameters": queryParameters,
       "createdAt": createdAt.toIso8601String(),
-      "_request_type": requestType.value,
     };
+  }
+
+  static dynamic _getBodyType(dynamic body) {
+    if (body == null || !(body is Map)) {
+      return null;
+    } else {
+      return body[_bodyTypeKey];
+    }
+  }
+
+  static dynamic _bodyFromJson(dynamic body) {
+    if (body == null) return null;
+    if (_getBodyType(body) == DataType.formData.value) {
+      return FormData.fromJson(body);
+    } else {
+      return body;
+    }
   }
 
   ApiRequest.fromJson(dynamic json)
       : id = ObjectId.fromHexString(json["id"]),
         key = CacheKey(json["key"]),
         endpoint = json["endpoint"],
-        body = json["body"],
+        body = _bodyFromJson(json["body"]),
         encoding = Encoding.getByName(json["encoding"]),
         method = HttpMethod.fromString(json["method"]),
         createdAt = DateTime.parse(json["createdAt"]) {

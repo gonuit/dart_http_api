@@ -1,5 +1,9 @@
 part of http_api;
 
+mixin Serializable {
+  dynamic toJson();
+}
+
 class HttpMethod {
   final String _value;
 
@@ -40,17 +44,27 @@ class HttpMethod {
   }
 }
 
-enum RequestType { basic, formData }
+class DataType {
+  final String _value;
 
-extension on RequestType {
-  String get value {
-    switch (this) {
-      case RequestType.basic:
-        return "basic";
-      case RequestType.formData:
-        return "formData";
+  /// Returns [String] that represents [DataType]
+  ///
+  /// example:
+  /// ```dart
+  /// DataType.formData.value == "FORM_DATA"
+  /// ```
+  String get value => _value;
+
+  const DataType._(this._value);
+
+  static const formData = DataType._("FORM_DATA");
+
+  factory DataType.fromString(String method) {
+    switch (method) {
+      case "FORM_DATA":
+        return formData;
       default:
-        throw UnimplementedError();
+        return null;
     }
   }
 }
