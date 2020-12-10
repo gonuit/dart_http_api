@@ -1,7 +1,7 @@
 part of http_api;
 
-class ApiResponse {
-  final ApiRequest apiRequest;
+class ApiResponse<T extends dynamic> {
+  final ApiRequest<T> apiRequest;
 
   /// Id of current [ApiResponse].
   /// The same as related [ApiRequest] id.

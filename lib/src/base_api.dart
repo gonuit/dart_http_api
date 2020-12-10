@@ -44,7 +44,9 @@ abstract class BaseApi {
   void forEachLink(void Function(ApiLink) callback) =>
       _link?._forEach(callback);
 
+  /// {@template http_api.base_api.send}
   /// Make API request by triggering [ApiLink]s [next] methods
+  /// {@endtemplate}
   Future<ApiResponse> send(ApiRequest request) async {
     /// Adds default headers to the request, but does not overrides
     /// existing ones
@@ -54,6 +56,152 @@ abstract class BaseApi {
 
     return _link.next(request);
   }
+
+  /// Send http **get** request.
+  ///
+  /// {@macro http_api.base_api.send}
+  Future<ApiResponse> get(
+    String endpoint, {
+    Map<String, String> headers,
+    Map<String, dynamic> queryParameters,
+    Encoding encoding,
+    DateTime createdAt,
+    ObjectId id,
+    CacheKey key,
+  }) =>
+      send(ApiRequest(
+        endpoint: endpoint,
+        headers: headers,
+        queryParameters: queryParameters,
+        encoding: encoding,
+        createdAt: createdAt,
+        id: id,
+        key: key,
+        method: HttpMethod.get,
+      ));
+
+  /// Send http **post** request.
+  ///
+  /// {@macro http_api.base_api.send}
+  Future<ApiResponse> post(
+    String endpoint, {
+    Map<String, String> headers,
+    Map<String, dynamic> queryParameters,
+    dynamic body,
+    Encoding encoding,
+    DateTime createdAt,
+    ObjectId id,
+    CacheKey key,
+  }) =>
+      send(ApiRequest(
+        endpoint: endpoint,
+        headers: headers,
+        queryParameters: queryParameters,
+        body: body,
+        encoding: encoding,
+        createdAt: createdAt,
+        id: id,
+        key: key,
+        method: HttpMethod.post,
+      ));
+
+  /// Send http **put** request.
+  ///
+  /// {@macro http_api.base_api.send}
+  Future<ApiResponse> put(
+    String endpoint, {
+    Map<String, String> headers,
+    Map<String, dynamic> queryParameters,
+    dynamic body,
+    Encoding encoding,
+    DateTime createdAt,
+    ObjectId id,
+    CacheKey key,
+  }) =>
+      send(ApiRequest(
+        endpoint: endpoint,
+        headers: headers,
+        queryParameters: queryParameters,
+        body: body,
+        encoding: encoding,
+        createdAt: createdAt,
+        id: id,
+        key: key,
+        method: HttpMethod.put,
+      ));
+
+  /// Send http **patch** request.
+  ///
+  /// {@macro http_api.base_api.send}
+  Future<ApiResponse> patch(
+    String endpoint, {
+    Map<String, String> headers,
+    Map<String, dynamic> queryParameters,
+    dynamic body,
+    Encoding encoding,
+    DateTime createdAt,
+    ObjectId id,
+    CacheKey key,
+  }) =>
+      send(ApiRequest(
+        endpoint: endpoint,
+        headers: headers,
+        queryParameters: queryParameters,
+        body: body,
+        encoding: encoding,
+        createdAt: createdAt,
+        id: id,
+        key: key,
+        method: HttpMethod.patch,
+      ));
+
+  /// Send http **delete** request.
+  ///
+  /// {@macro http_api.base_api.send}
+  Future<ApiResponse> delete(
+    String endpoint, {
+    Map<String, String> headers,
+    Map<String, dynamic> queryParameters,
+    dynamic body,
+    Encoding encoding,
+    DateTime createdAt,
+    ObjectId id,
+    CacheKey key,
+  }) =>
+      send(ApiRequest(
+        endpoint: endpoint,
+        headers: headers,
+        queryParameters: queryParameters,
+        body: body,
+        encoding: encoding,
+        createdAt: createdAt,
+        id: id,
+        key: key,
+        method: HttpMethod.delete,
+      ));
+
+  /// Send http **head** request.
+  ///
+  /// {@macro http_api.base_api.send}
+  Future<ApiResponse> head(
+    String endpoint, {
+    Map<String, String> headers,
+    Map<String, dynamic> queryParameters,
+    Encoding encoding,
+    DateTime createdAt,
+    ObjectId id,
+    CacheKey key,
+  }) =>
+      send(ApiRequest(
+        endpoint: endpoint,
+        headers: headers,
+        queryParameters: queryParameters,
+        encoding: encoding,
+        createdAt: createdAt,
+        id: id,
+        key: key,
+        method: HttpMethod.head,
+      ));
 
   /// Disposes all links.
   void dispose() => _link._forEach((link) => link.dispose());
