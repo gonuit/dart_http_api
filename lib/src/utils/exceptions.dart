@@ -23,10 +23,9 @@ class RequestException extends ApiException {
     final hasReasonPhrase = response.reasonPhrase?.isNotEmpty == true;
     final reasonPhrase = hasReasonPhrase ? ' (${response.reasonPhrase})' : '';
 
-    return '${response.statusCode} '
-        '${response.request.method.value} '
-        '${response.request.endpoint}'
-        '$reasonPhrase';
+    return '${response.request.method.value} '
+        '${response.request.endpoint} '
+        '${response.statusCode}$reasonPhrase';
   }
 
   RequestException.fromResponse(this.response)
