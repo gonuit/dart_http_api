@@ -19,7 +19,7 @@ class _InPlaceLink extends ApiLink {
   }
 
   @override
-  Future<ApiResponse> next(ApiRequest request) {
+  Future<Response> next(Request request) {
     return _next(request, super.next);
   }
 

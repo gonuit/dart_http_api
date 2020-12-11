@@ -2,7 +2,7 @@ part of http_api;
 
 // ignore_for_file: unnecessary_getters_setters
 
-class ApiRequest<T extends dynamic> {
+class Request<T extends dynamic> {
   /// The id of current request.
   ///
   /// If you supply it by argument, try to make it unique
@@ -30,7 +30,7 @@ class ApiRequest<T extends dynamic> {
   final Map<String, String> headers = {};
   final Map<String, dynamic> queryParameters = {};
 
-  ApiRequest({
+  Request({
     @required this.endpoint,
     this.method = HttpMethod.get,
     Map<String, String> headers,
@@ -89,7 +89,7 @@ class ApiRequest<T extends dynamic> {
     }
   }
 
-  ApiRequest.fromJson(dynamic json)
+  Request.fromJson(dynamic json)
       : id = ObjectId.fromHexString(json["id"]),
         key = CacheKey(json["key"]),
         endpoint = json["endpoint"],

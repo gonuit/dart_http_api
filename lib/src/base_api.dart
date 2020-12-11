@@ -47,7 +47,7 @@ abstract class BaseApi {
   /// {@template http_api.base_api.send}
   /// Make API request by triggering [ApiLink]s [next] methods
   /// {@endtemplate}
-  Future<ApiResponse> send(ApiRequest request) async {
+  Future<Response> send(Request request) async {
     /// Adds default headers to the request, but does not overrides
     /// existing ones
     request.headers.addAll(
@@ -60,7 +60,7 @@ abstract class BaseApi {
   /// Send http **get** request.
   ///
   /// {@macro http_api.base_api.send}
-  Future<ApiResponse> get(
+  Future<Response> get(
     String endpoint, {
     Map<String, String> headers,
     Map<String, dynamic> queryParameters,
@@ -69,7 +69,7 @@ abstract class BaseApi {
     ObjectId id,
     CacheKey key,
   }) =>
-      send(ApiRequest(
+      send(Request(
         endpoint: endpoint,
         headers: headers,
         queryParameters: queryParameters,
@@ -83,7 +83,7 @@ abstract class BaseApi {
   /// Send http **post** request.
   ///
   /// {@macro http_api.base_api.send}
-  Future<ApiResponse> post(
+  Future<Response> post(
     String endpoint, {
     Map<String, String> headers,
     Map<String, dynamic> queryParameters,
@@ -93,7 +93,7 @@ abstract class BaseApi {
     ObjectId id,
     CacheKey key,
   }) =>
-      send(ApiRequest(
+      send(Request(
         endpoint: endpoint,
         headers: headers,
         queryParameters: queryParameters,
@@ -108,7 +108,7 @@ abstract class BaseApi {
   /// Send http **put** request.
   ///
   /// {@macro http_api.base_api.send}
-  Future<ApiResponse> put(
+  Future<Response> put(
     String endpoint, {
     Map<String, String> headers,
     Map<String, dynamic> queryParameters,
@@ -118,7 +118,7 @@ abstract class BaseApi {
     ObjectId id,
     CacheKey key,
   }) =>
-      send(ApiRequest(
+      send(Request(
         endpoint: endpoint,
         headers: headers,
         queryParameters: queryParameters,
@@ -133,7 +133,7 @@ abstract class BaseApi {
   /// Send http **patch** request.
   ///
   /// {@macro http_api.base_api.send}
-  Future<ApiResponse> patch(
+  Future<Response> patch(
     String endpoint, {
     Map<String, String> headers,
     Map<String, dynamic> queryParameters,
@@ -143,7 +143,7 @@ abstract class BaseApi {
     ObjectId id,
     CacheKey key,
   }) =>
-      send(ApiRequest(
+      send(Request(
         endpoint: endpoint,
         headers: headers,
         queryParameters: queryParameters,
@@ -158,7 +158,7 @@ abstract class BaseApi {
   /// Send http **delete** request.
   ///
   /// {@macro http_api.base_api.send}
-  Future<ApiResponse> delete(
+  Future<Response> delete(
     String endpoint, {
     Map<String, String> headers,
     Map<String, dynamic> queryParameters,
@@ -168,7 +168,7 @@ abstract class BaseApi {
     ObjectId id,
     CacheKey key,
   }) =>
-      send(ApiRequest(
+      send(Request(
         endpoint: endpoint,
         headers: headers,
         queryParameters: queryParameters,
@@ -183,7 +183,7 @@ abstract class BaseApi {
   /// Send http **head** request.
   ///
   /// {@macro http_api.base_api.send}
-  Future<ApiResponse> head(
+  Future<Response> head(
     String endpoint, {
     Map<String, String> headers,
     Map<String, dynamic> queryParameters,
@@ -192,7 +192,7 @@ abstract class BaseApi {
     ObjectId id,
     CacheKey key,
   }) =>
-      send(ApiRequest(
+      send(Request(
         endpoint: endpoint,
         headers: headers,
         queryParameters: queryParameters,

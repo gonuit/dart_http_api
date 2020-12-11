@@ -6,7 +6,7 @@ class HttpLink extends ApiLink {
   @experimental
   Uri get apiUrl => _apiUrl;
 
-  Uri getUrlForRequest(ApiRequest request) {
+  Uri getUrlForRequest(Request request) {
     ArgumentError.checkNotNull(request, 'request');
     if (!attached) {
       throw ApiError(
@@ -31,7 +31,7 @@ class HttpLink extends ApiLink {
   }
 
   /// Builds http request from ApiRequest data
-  FutureOr<http.BaseRequest> buildHttpRequest(ApiRequest request) {
+  FutureOr<http.BaseRequest> buildHttpRequest(Request request) {
     final url = getUrlForRequest(request);
 
     if (request.body is FormData) {
@@ -44,7 +44,7 @@ class HttpLink extends ApiLink {
   /// Builds [FormDataRequest]
   Future<http.BaseRequest> _buildFormDataRequest(
     Uri url,
-    ApiRequest<FormData> request,
+    Request<FormData> request,
   ) async {
     final formDataRequest = FormDataRequest(request.method.value, url)
       ..headers.addAll(request.headers);
@@ -59,7 +59,7 @@ class HttpLink extends ApiLink {
   /// Builds [Request]
   http.BaseRequest _buildHttpRequest(
     Uri url,
-    ApiRequest request,
+    Request request,
   ) {
     final httpRequest = http.Request(request.method.value, url);
 
@@ -90,7 +90,7 @@ class HttpLink extends ApiLink {
 
   @override
   @protected
-  Future<ApiResponse> next(ApiRequest request) async {
+  Future<Response> next(Request request) async {
     /// Builds a http request
     final httpRequest = await buildHttpRequest(request);
 
@@ -105,7 +105,7 @@ class HttpLink extends ApiLink {
     );
 
     /// Returns the api response
-    return ApiResponse(
+    return Response(
       request,
       headers: httpResponse.headers,
       isRedirect: httpResponse.isRedirect,

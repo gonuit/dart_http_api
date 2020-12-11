@@ -1,8 +1,8 @@
 part of http_api;
 
 typedef VoidFunction = void Function();
-typedef NextFunction = Future<ApiResponse> Function(ApiRequest request);
-typedef NextHandler = Future<ApiResponse> Function(
-  ApiRequest request,
+typedef NextFunction = Future<Response> Function(Request request);
+typedef NextHandler = Future<Response> Function(
+  Request request,
   NextFunction next,
 );

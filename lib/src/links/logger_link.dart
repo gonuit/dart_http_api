@@ -1,4 +1,4 @@
-part of http_api;
+import '../../http_api.dart';
 
 /// LoggerLink is DebugLink that prints request details to console.
 ///
@@ -37,7 +37,7 @@ class LoggerLink extends DebugLink {
 
   final _durations = <ObjectId, DateTime>{};
 
-  void _printRequest(ApiRequest request) {
+  void _printRequest(Request request) {
     /// print request only in debug mode
     assert((() {
       if (requestBody || requestHeaders || countRequests || endpoint) {
@@ -72,7 +72,7 @@ class LoggerLink extends DebugLink {
     })());
   }
 
-  void _printResponse(ApiResponse response) {
+  void _printResponse(Response response) {
     /// print request only in debug mode
     assert((() {
       if (responseBody || responseHeaders || statusCode || responseDuration) {
@@ -117,7 +117,7 @@ class LoggerLink extends DebugLink {
   }
 
   @override
-  Future<ApiResponse> next(ApiRequest request) async {
+  Future<Response> next(Request request) async {
     _requestsCount++;
 
     _printRequest(request);

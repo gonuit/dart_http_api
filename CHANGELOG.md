@@ -1,7 +1,8 @@
-## [0.8.3-dev.4] 09 December 2020.
+## [0.8.3-dev.5] 09 December 2020.
 - Added [FormData] class.
   - Removed `multipart` and `isMultipart` values from `ApiRequest`.
   - Added [FormData] serialization.
+- Renamed `apiRequest` property in `ApiResponse` class to `request`.
 ## [0.7.3] - 06 November 2020.
 - Added support for ApiRequest and ApiResponse serialization (simplify caching).
   - Added toJson methods and fromJson constructors.

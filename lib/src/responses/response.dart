@@ -1,10 +1,10 @@
 part of http_api;
 
-class ApiResponse<T extends dynamic> {
-  final ApiRequest<T> request;
+class Response<T extends dynamic> {
+  final Request<T> request;
 
-  /// Id of current [ApiResponse].
-  /// The same as related [ApiRequest] id.
+  /// Id of current [Response].
+  /// The same as related [Request] id.
   ObjectId get id => request.id;
 
   /// ApiRequest object creation timestamp.
@@ -13,7 +13,7 @@ class ApiResponse<T extends dynamic> {
   /// Here you can assing your data that will be passed to the next link
   final Map<String, dynamic> linkData;
 
-  /// Time when [ApiResponse] was created.
+  /// Time when [Response] was created.
   final DateTime received;
 
   /// Represent reponse success
@@ -62,7 +62,7 @@ class ApiResponse<T extends dynamic> {
   /// [RFC 2616]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
   String get body => _getEncodingFromHeaders(headers).decode(bodyBytes);
 
-  ApiResponse(
+  Response(
     this.request, {
     @required this.statusCode,
     this.bodyBytes,
@@ -92,8 +92,8 @@ class ApiResponse<T extends dynamic> {
         "received": received.toIso8601String(),
       };
 
-  ApiResponse.fromJson(dynamic json)
-      : request = ApiRequest.fromJson(json["request"]),
+  Response.fromJson(dynamic json)
+      : request = Request.fromJson(json["request"]),
         bodyBytes =
             Uint8List.fromList(List.castFrom<dynamic, int>(json["bodyBytes"])),
         statusCode = json["statusCode"],
