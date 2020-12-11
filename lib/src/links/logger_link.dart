@@ -62,7 +62,7 @@ class LoggerLink extends DebugLink {
         }
 
         if (requestBody) {
-          print("body: ${request?.body}\n");
+          print('body: ${request.body}\n');
         }
 
         print("=================\n");

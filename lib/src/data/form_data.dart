@@ -168,4 +168,7 @@ class FormData with Serializable {
 
     return formData;
   }
+
+  @override
+  String toString() => '$runtimeType(${toJson()['entries']})';
 }
