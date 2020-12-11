@@ -88,7 +88,7 @@ abstract class FileField {
     File file,
     String fileName,
     MediaType contentType,
-  }) = _FileField;
+  }) = FileFieldWithFile;
 
   /// Creates FileField from byte stream.
   factory FileField.fromStream({
@@ -96,7 +96,7 @@ abstract class FileField {
     @required int length,
     String fileName,
     MediaType contentType,
-  }) = _StreamFileField;
+  }) = FileFieldWithStream;
 
   /// This method is most commonly used to convert
   /// [FileField] to JSON in order to prepare it for caching.
@@ -143,10 +143,10 @@ class _FileDataField extends FileField {
   String toString() => "$runtimeType(${toJson()})";
 }
 
-class _FileField extends FileField {
+class FileFieldWithFile extends FileField {
   final File file;
 
-  _FileField({
+  FileFieldWithFile({
     @required this.file,
     String fileName,
     MediaType contentType,
@@ -171,11 +171,11 @@ class _FileField extends FileField {
       );
 }
 
-class _StreamFileField extends FileField {
+class FileFieldWithStream extends FileField {
   final Stream<List<int>> stream;
   final int length;
 
-  _StreamFileField({
+  FileFieldWithStream({
     @required this.stream,
     @required this.length,
     MediaType contentType,

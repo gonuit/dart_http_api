@@ -3,8 +3,9 @@ part of http_api;
 /// A class to create readable "multipart/form-data" streams.
 /// It can be used to submit forms and file uploads to http server.
 class FormData with Serializable {
-  // MapEntry<String, String | FileField>
-  /// Returns an [Iterable] allowing to go through all FormData entries.
+  /// Returns an [Iterable] allowing to go through all [FormData] entries.
+  ///
+  /// MapEntry<String, String | FileField>
   final List<MapEntry<String, dynamic>> entries = [];
 
   FormData();
@@ -17,25 +18,34 @@ class FormData with Serializable {
     }
   }
 
+  /// Appends a new value onto an existing key inside a FormData object,
+  /// or adds the key if it does not already exist.
+  ///
+  /// To append File with additional settings like: `filename`, you can use
+  /// [appendFile] method or pass [FileField] to [append] method.
   void append(String key, dynamic value) {
     ArgumentError.checkNotNull(key, 'key');
 
     if (value is File) {
       appendFile(key, value);
     } else if (value is num || value is bool) {
-      _appendValue(key, value.toString());
+      _addEntry(key, value.toString());
     } else if (value is String || value is FileField || value == null) {
-      _appendValue(key, value);
+      _addEntry(key, value);
     } else {
       throw ArgumentError.value(
         value,
         'value',
         'Type ${value.runtimeType} is not valid form data value type.\n'
-            'FormData supports: FileField, String, double, int, bool.',
+            'FormData supports: File, FileField, String, double, int, bool.',
       );
     }
   }
 
+  /// Appends a new file onto an existing key inside a FormData object,
+  /// or adds the key if it does not already exist.
+  /// In opposite to the [append] method,
+  /// it has additional settings related to the file.
   void appendFile(
     String key,
     File file, {
@@ -51,13 +61,14 @@ class FormData with Serializable {
       contentType: contentType,
     );
 
-    _appendValue(key, fileField);
+    _addEntry(key, fileField);
   }
 
-  void _appendValue(String key, dynamic value) {
+  void _addEntry(String key, dynamic value) {
     entries.add(MapEntry(key, value));
   }
 
+  /// Deletes a key/value pair from a FormData object.
   void delete(String key) {
     ArgumentError.checkNotNull(key, 'key');
 
@@ -114,11 +125,11 @@ class FormData with Serializable {
   /// Only file description will be included.
   Map<String, dynamic> toJson() {
     final serializedEntries = entries.map((entry) {
-      if (entry is FileField) {
+      if (entry.value is FileField) {
         final FileField value = entry.value;
-        return {entry.key: value.toJson()};
+        return [entry.key, value.toJson()];
       } else {
-        return {entry.key: entry.value};
+        return [entry.key, entry.value];
       }
     });
 
@@ -128,13 +139,13 @@ class FormData with Serializable {
     };
   }
 
-  /// Deserialize FormData from json.
+  /// Deserialize [FormData] from json.
   factory FormData.fromJson(dynamic json) {
     if (json == null ||
         !(json is Map) ||
-        json.type != DataType.formData.value ||
-        json.entries == null ||
-        !(json.entries is List)) {
+        json[_bodyTypeKey] != DataType.formData.value ||
+        json['entries'] == null ||
+        !(json['entries'] is Iterable)) {
       throw ArgumentError.value(
         json,
         'json',
@@ -142,6 +153,19 @@ class FormData with Serializable {
       );
     }
 
-    return FormData.fromEntries(json.entries);
+    final formData = FormData();
+
+    for (final entry in json['entries']) {
+      final key = entry[0];
+      final value = entry[1];
+
+      if (value is String) {
+        formData.append(key, value);
+      } else {
+        formData.append(key, FileField.fromJson(value));
+      }
+    }
+
+    return formData;
   }
 }
