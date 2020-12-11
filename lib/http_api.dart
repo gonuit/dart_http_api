@@ -11,8 +11,9 @@ import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:objectid/objectid.dart';
 
-/// ObjectId
+/// exports
 export 'package:objectid/objectid.dart' show ObjectId;
+export 'package:http_parser/http_parser.dart' show MediaType;
 
 /// BaseApi
 part './src/base_api.dart';

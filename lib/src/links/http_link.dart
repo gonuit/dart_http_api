@@ -90,9 +90,9 @@ class HttpLink extends ApiLink {
 
   @override
   @protected
-  Future<ApiResponse> next(ApiRequest apiRequest) async {
+  Future<ApiResponse> next(ApiRequest request) async {
     /// Builds a http request
-    final httpRequest = await buildHttpRequest(apiRequest);
+    final httpRequest = await buildHttpRequest(request);
 
     /// Sends a request
     final streamedResponse = await client.send(
@@ -106,7 +106,7 @@ class HttpLink extends ApiLink {
 
     /// Returns the api response
     return ApiResponse(
-      apiRequest,
+      request,
       headers: httpResponse.headers,
       isRedirect: httpResponse.isRedirect,
       persistentConnection: httpResponse.persistentConnection,

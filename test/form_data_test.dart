@@ -41,7 +41,7 @@ void main() {
         isA<FileField>(),
       );
 
-      expect(fileField.fileName, filename);
+      expect(fileField.filename, filename);
       expect(fileField.contentType, isNull);
       expect(fileField.file, equals(file));
     });
@@ -107,7 +107,7 @@ void main() {
             ['key2', 'true'],
             [
               'key3',
-              {'fileName': filename, 'contentType': null}
+              {'filename': filename, 'contentType': null}
             ]
           ]
         }),

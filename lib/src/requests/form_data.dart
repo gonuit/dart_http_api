@@ -57,7 +57,7 @@ class FormData with Serializable {
 
     final fileField = FileField(
       file: file,
-      fileName: filename,
+      filename: filename,
       contentType: contentType,
     );
 

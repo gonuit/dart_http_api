@@ -84,6 +84,10 @@ class LoggerLink extends DebugLink {
           print("label: $label\n");
         }
 
+        if (endpoint) {
+          print("endpoint: ${response.request.endpoint}\n");
+        }
+
         if (responseDuration) {
           final responseDuration =
               DateTime.now().difference(_durations[response.id]);

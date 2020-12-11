@@ -1,11 +1,11 @@
 part of http_api;
 
 class ApiResponse<T extends dynamic> {
-  final ApiRequest<T> apiRequest;
+  final ApiRequest<T> request;
 
   /// Id of current [ApiResponse].
   /// The same as related [ApiRequest] id.
-  ObjectId get id => apiRequest.id;
+  ObjectId get id => request.id;
 
   /// ApiRequest object creation timestamp.
   DateTime get createdAt => id.timestamp;
@@ -63,7 +63,7 @@ class ApiResponse<T extends dynamic> {
   String get body => _getEncodingFromHeaders(headers).decode(bodyBytes);
 
   ApiResponse(
-    this.apiRequest, {
+    this.request, {
     @required this.statusCode,
     this.bodyBytes,
     this.contentLength,
@@ -72,7 +72,7 @@ class ApiResponse<T extends dynamic> {
     this.isRedirect = false,
     this.persistentConnection = false,
   })  : received = DateTime.now(),
-        linkData = apiRequest.linkData,
+        linkData = request.linkData,
         headers = headers ?? <String, String>{};
 
   /// *************
@@ -81,7 +81,7 @@ class ApiResponse<T extends dynamic> {
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         "id": id.hexString,
-        "apiRequest": apiRequest.toJson(),
+        "request": request.toJson(),
         "bodyBytes": bodyBytes,
         "statusCode": statusCode,
         "reasonPhrase": reasonPhrase,
@@ -93,7 +93,7 @@ class ApiResponse<T extends dynamic> {
       };
 
   ApiResponse.fromJson(dynamic json)
-      : apiRequest = ApiRequest.fromJson(json["apiRequest"]),
+      : request = ApiRequest.fromJson(json["request"]),
         bodyBytes =
             Uint8List.fromList(List.castFrom<dynamic, int>(json["bodyBytes"])),
         statusCode = json["statusCode"],
@@ -105,7 +105,7 @@ class ApiResponse<T extends dynamic> {
         persistentConnection = json["persistentConnection"],
         received = DateTime.parse(json["received"]),
         linkData = <String, dynamic>{} {
-    linkData.addAll(apiRequest.linkData);
+    linkData.addAll(request.linkData);
   }
 
   String toString() => "$runtimeType(${toJson()})";

@@ -73,11 +73,11 @@ class DataType {
 /// so can be sent to API
 /// with [FormDataRequest]
 abstract class FileField {
-  final String fileName;
+  final String filename;
   final MediaType contentType;
 
   const FileField._({
-    this.fileName,
+    this.filename,
     this.contentType,
   });
 
@@ -86,7 +86,7 @@ abstract class FileField {
 
   factory FileField({
     File file,
-    String fileName,
+    String filename,
     MediaType contentType,
   }) = FileFieldWithFile;
 
@@ -94,7 +94,7 @@ abstract class FileField {
   factory FileField.fromStream({
     @required Stream<List<int>> stream,
     @required int length,
-    String fileName,
+    String filename,
     MediaType contentType,
   }) = FileFieldWithStream;
 
@@ -104,7 +104,7 @@ abstract class FileField {
   /// This method should not return a file, only data
   /// describing the file.
   Map<String, dynamic> toJson() => <String, dynamic>{
-        "fileName": fileName,
+        "filename": filename,
         "contentType": contentType,
       };
 
@@ -112,7 +112,7 @@ abstract class FileField {
   /// This constructor can be used for caching.
   factory FileField.fromJson(dynamic json) => _FileDataField(
         field: json["field"],
-        fileName: json["fileName"],
+        filename: json["filename"],
         contentType: json["contentType"],
       );
 
@@ -123,10 +123,10 @@ abstract class FileField {
 class _FileDataField extends FileField {
   _FileDataField({
     @required String field,
-    String fileName,
+    String filename,
     MediaType contentType,
   }) : super._(
-          fileName: fileName,
+          filename: filename,
           contentType: contentType,
         );
 
@@ -148,14 +148,14 @@ class FileFieldWithFile extends FileField {
 
   FileFieldWithFile({
     @required this.file,
-    String fileName,
+    String filename,
     MediaType contentType,
   })  : assert(
           file != null,
           "file argument cannot be null",
         ),
         super._(
-          fileName: fileName,
+          filename: filename,
           contentType: contentType,
         );
 
@@ -167,7 +167,7 @@ class FileFieldWithFile extends FileField {
         field,
         file.path,
         contentType: contentType,
-        filename: fileName,
+        filename: filename,
       );
 }
 
@@ -179,13 +179,13 @@ class FileFieldWithStream extends FileField {
     @required this.stream,
     @required this.length,
     MediaType contentType,
-    String fileName,
+    String filename,
   })  : assert(
           stream != null && length != null,
           "stream and length arguments cannot be null",
         ),
         super._(
-          fileName: fileName,
+          filename: filename,
           contentType: contentType,
         );
 
@@ -194,7 +194,7 @@ class FileFieldWithStream extends FileField {
         field,
         stream,
         length,
-        filename: fileName,
+        filename: filename,
         contentType: contentType,
       );
 }
