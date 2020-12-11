@@ -82,9 +82,7 @@ void main() {
       link: apiLink,
     );
 
-    final request = Request(endpoint: '/test');
-
-    await api.send(request);
+    await api.get('/test');
 
     expect(link1.requestNumber, equals(1));
     expect(link2.requestNumber, equals(2));
@@ -182,8 +180,8 @@ void main() {
         url: testUrl,
         link: link1.chain(link2).chain(link3).chain(link4).chain(httpLink),
       );
-      final request = Request(endpoint: '/test');
-      final response = await api.send(request);
+
+      final response = await api.get('/test');
 
       expect(response, isNull);
       expect(link1.called, isTrue);

@@ -1,7 +1,7 @@
 part of http_api;
 
-class Response<T extends dynamic> {
-  final Request<T> request;
+class Response {
+  final Request request;
 
   /// Id of current [Response].
   /// The same as related [Request] id.

@@ -44,12 +44,12 @@ class HttpLink extends ApiLink {
   /// Builds [FormDataRequest]
   Future<http.BaseRequest> _buildFormDataRequest(
     Uri url,
-    Request<FormData> request,
+    Request request,
   ) async {
     final formDataRequest = FormDataRequest(request.method.value, url)
       ..headers.addAll(request.headers);
 
-    final formData = request.body;
+    final FormData formData = request.body;
 
     await formDataRequest.setEntries(formData.entries);
 

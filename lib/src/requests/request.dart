@@ -2,7 +2,7 @@ part of http_api;
 
 // ignore_for_file: unnecessary_getters_setters
 
-class Request<T extends dynamic> {
+class Request {
   /// The id of current request.
   ///
   /// If you supply it by argument, try to make it unique
@@ -23,7 +23,7 @@ class Request<T extends dynamic> {
   String endpoint;
   HttpMethod method;
   Encoding encoding;
-  T body;
+  dynamic body;
 
   /// Here you can assign your data that will be passed to the next link
   final Map<String, dynamic> linkData = {};
