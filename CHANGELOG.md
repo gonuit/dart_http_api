@@ -1,4 +1,4 @@
-## [0.8.3-dev.9] 09 December 2020.
+## [0.8.3] 19 January 2021.
 - Added [FormData] class.
   - Removed `multipart` and `isMultipart` values from `ApiRequest`.
   - Added [FormData] serialization.
