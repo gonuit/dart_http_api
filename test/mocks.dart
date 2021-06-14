@@ -8,7 +8,7 @@ const testResponseHeaders = <String, String>{'authorization': 'token'};
 final Uri testUrl = Uri.parse("https://example.com/api");
 
 class MockFileField extends Mock implements FileField {
-  Future<http.MultipartFile> toMultipartFile() async {
+  Future<http.MultipartFile> toMultipartFile(String field) async {
     return null;
   }
 

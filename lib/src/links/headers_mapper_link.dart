@@ -1,4 +1,6 @@
-part of http_api;
+import 'dart:convert';
+
+import '../../http_api.dart';
 
 /// This [ApiLink] takes headers specified by [headersToMap] argument
 /// from response headers and then put to the next request headers.
@@ -42,7 +44,7 @@ class HeadersMapperLink extends ApiLink {
   void clear() => _headers.clear();
 
   @override
-  Future<ApiResponse> next(ApiRequest request) async {
+  Future<Response> next(Request request) async {
     request.headers.addAll(_headers);
     final response = await super.next(request);
     setHeaders(response.headers);

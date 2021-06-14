@@ -1,5 +1,9 @@
 part of http_api;
 
+mixin Serializable {
+  dynamic toJson();
+}
+
 class HttpMethod {
   final String _value;
 
@@ -40,38 +44,59 @@ class HttpMethod {
   }
 }
 
+class DataType {
+  final String _value;
+
+  /// Returns [String] that represents [DataType]
+  ///
+  /// example:
+  /// ```dart
+  /// DataType.formData.value == "FORM_DATA"
+  /// ```
+  String get value => _value;
+
+  const DataType._(this._value);
+
+  static const formData = DataType._("FORM_DATA");
+
+  factory DataType.fromString(String method) {
+    switch (method) {
+      case "FORM_DATA":
+        return formData;
+      default:
+        return null;
+    }
+  }
+}
+
 /// Represents File that can be attached to [BaseApiRequest]
 /// so can be sent to API
-/// with [MultipartRequest]
+/// with [FormDataRequest]
 abstract class FileField {
-  final String field;
-  final String fileName;
+  final String filename;
   final MediaType contentType;
 
   const FileField._({
-    @required this.field,
-    this.fileName,
+    this.filename,
     this.contentType,
-  }) : assert(field != null, "field argument cannot be null");
+  });
 
   /// Convert FileField to multipart file.
-  Future<http.MultipartFile> toMultipartFile();
+  Future<http.MultipartFile> toMultipartFile(final String field);
 
   factory FileField({
     File file,
-    String field,
-    String fileName,
+    String filename,
     MediaType contentType,
-  }) = _FileField;
+  }) = FileFieldWithFile;
 
   /// Creates FileField from byte stream.
   factory FileField.fromStream({
-    @required String field,
     @required Stream<List<int>> stream,
     @required int length,
-    String fileName,
+    String filename,
     MediaType contentType,
-  }) = _StreamFileField;
+  }) = FileFieldWithStream;
 
   /// This method is most commonly used to convert
   /// [FileField] to JSON in order to prepare it for caching.
@@ -79,8 +104,7 @@ abstract class FileField {
   /// This method should not return a file, only data
   /// describing the file.
   Map<String, dynamic> toJson() => <String, dynamic>{
-        "field": field,
-        "fileName": fileName,
+        "filename": filename,
         "contentType": contentType,
       };
 
@@ -88,7 +112,7 @@ abstract class FileField {
   /// This constructor can be used for caching.
   factory FileField.fromJson(dynamic json) => _FileDataField(
         field: json["field"],
-        fileName: json["fileName"],
+        filename: json["filename"],
         contentType: json["contentType"],
       );
 
@@ -99,16 +123,15 @@ abstract class FileField {
 class _FileDataField extends FileField {
   _FileDataField({
     @required String field,
-    String fileName,
+    String filename,
     MediaType contentType,
   }) : super._(
-          field: field,
-          fileName: fileName,
+          filename: filename,
           contentType: contentType,
         );
 
   @override
-  Future<http.MultipartFile> toMultipartFile() async {
+  Future<http.MultipartFile> toMultipartFile(final String field) async {
     throw ApiError(
       '$runtimeType cannot be converted to multipart file. '
       'This problem may occur when you try to send a FileField '
@@ -120,61 +143,58 @@ class _FileDataField extends FileField {
   String toString() => "$runtimeType(${toJson()})";
 }
 
-class _FileField extends FileField {
+class FileFieldWithFile extends FileField {
   final File file;
 
-  _FileField({
-    @required String field,
+  FileFieldWithFile({
     @required this.file,
-    String fileName,
+    String filename,
     MediaType contentType,
   })  : assert(
           file != null,
           "file argument cannot be null",
         ),
         super._(
-          field: field,
-          fileName: fileName,
+          filename: filename,
           contentType: contentType,
         );
 
   @override
 
   /// Convert FileField to multipart file
-  Future<http.MultipartFile> toMultipartFile() async =>
+  Future<http.MultipartFile> toMultipartFile(final String field) async =>
       http.MultipartFile.fromPath(
         field,
         file.path,
         contentType: contentType,
-        filename: fileName,
+        filename: filename,
       );
 }
 
-class _StreamFileField extends FileField {
+class FileFieldWithStream extends FileField {
   final Stream<List<int>> stream;
   final int length;
 
-  _StreamFileField({
-    @required String field,
+  FileFieldWithStream({
     @required this.stream,
     @required this.length,
     MediaType contentType,
-    String fileName,
+    String filename,
   })  : assert(
           stream != null && length != null,
           "stream and length arguments cannot be null",
         ),
         super._(
-          fileName: fileName,
+          filename: filename,
           contentType: contentType,
-          field: field,
         );
 
-  Future<http.MultipartFile> toMultipartFile() async => http.MultipartFile(
+  Future<http.MultipartFile> toMultipartFile(final String field) async =>
+      http.MultipartFile(
         field,
         stream,
         length,
-        filename: fileName,
+        filename: filename,
         contentType: contentType,
       );
 }

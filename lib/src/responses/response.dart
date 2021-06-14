@@ -1,11 +1,11 @@
 part of http_api;
 
-class ApiResponse {
-  final ApiRequest apiRequest;
+class Response {
+  final Request request;
 
-  /// Id of current [ApiResponse].
-  /// The same as related [ApiRequest] id.
-  ObjectId get id => apiRequest.id;
+  /// Id of current [Response].
+  /// The same as related [Request] id.
+  ObjectId get id => request.id;
 
   /// ApiRequest object creation timestamp.
   DateTime get createdAt => id.timestamp;
@@ -13,7 +13,7 @@ class ApiResponse {
   /// Here you can assing your data that will be passed to the next link
   final Map<String, dynamic> linkData;
 
-  /// Time when [ApiResponse] was created.
+  /// Time when [Response] was created.
   final DateTime received;
 
   /// Represent reponse success
@@ -62,8 +62,8 @@ class ApiResponse {
   /// [RFC 2616]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
   String get body => _getEncodingFromHeaders(headers).decode(bodyBytes);
 
-  ApiResponse(
-    this.apiRequest, {
+  Response(
+    this.request, {
     @required this.statusCode,
     this.bodyBytes,
     this.contentLength,
@@ -72,7 +72,7 @@ class ApiResponse {
     this.isRedirect = false,
     this.persistentConnection = false,
   })  : received = DateTime.now(),
-        linkData = apiRequest.linkData,
+        linkData = request.linkData,
         headers = headers ?? <String, String>{};
 
   /// *************
@@ -81,7 +81,7 @@ class ApiResponse {
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         "id": id.hexString,
-        "apiRequest": apiRequest.toJson(),
+        "request": request.toJson(),
         "bodyBytes": bodyBytes,
         "statusCode": statusCode,
         "reasonPhrase": reasonPhrase,
@@ -92,8 +92,8 @@ class ApiResponse {
         "received": received.toIso8601String(),
       };
 
-  ApiResponse.fromJson(dynamic json)
-      : apiRequest = ApiRequest.fromJson(json["apiRequest"]),
+  Response.fromJson(dynamic json)
+      : request = Request.fromJson(json["request"]),
         bodyBytes =
             Uint8List.fromList(List.castFrom<dynamic, int>(json["bodyBytes"])),
         statusCode = json["statusCode"],
@@ -105,7 +105,7 @@ class ApiResponse {
         persistentConnection = json["persistentConnection"],
         received = DateTime.parse(json["received"]),
         linkData = <String, dynamic>{} {
-    linkData.addAll(apiRequest.linkData);
+    linkData.addAll(request.linkData);
   }
 
   String toString() => "$runtimeType(${toJson()})";

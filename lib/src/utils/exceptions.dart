@@ -8,12 +8,28 @@ class ApiException implements Exception {
 
   String toString() {
     if (message != null) {
-      return "ApiException: $message";
+      return "ApiException($message)";
     }
-    return "ApiException occured.";
+    return "ApiException()";
   }
 
   const ApiException(this._message);
+}
+
+class RequestException extends ApiException {
+  final Response response;
+
+  static String getMessageFromResponse(Response response) {
+    final hasReasonPhrase = response.reasonPhrase?.isNotEmpty == true;
+    final reasonPhrase = hasReasonPhrase ? ' (${response.reasonPhrase})' : '';
+
+    return '${response.request.method.value} '
+        '${response.request.endpoint} '
+        '${response.statusCode}$reasonPhrase';
+  }
+
+  RequestException.fromResponse(this.response)
+      : super(getMessageFromResponse(response));
 }
 
 /// Base class for exceptions thrown from the http_api package.
@@ -24,9 +40,9 @@ class ApiError extends Error {
 
   String toString() {
     if (message != null) {
-      return "ApiError: $message";
+      return "ApiError($message)";
     }
-    return "ApiError occured.";
+    return "ApiError()";
   }
 
   ApiError(this._message) : super();

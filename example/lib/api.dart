@@ -21,13 +21,13 @@ class Api extends BaseApi with Cache {
   CacheManager createCacheManager() => InMemoryCache();
 
   Stream<ExamplePhotoModel> getPhotoWithCache() {
-    final request = ApiRequest(
+    final request = Request(
       key: const CacheKey("TEST"),
       endpoint: "/id/${129}/info",
     );
 
     final transformResponseToExamplePhotoModel =
-        StreamTransformer<ApiResponse, ExamplePhotoModel>.fromHandlers(
+        StreamTransformer<Response, ExamplePhotoModel>.fromHandlers(
       handleData: (response, sink) => sink.add(
         ExamplePhotoModel.fromJson(json.decode(response.body)),
       ),
@@ -40,8 +40,7 @@ class Api extends BaseApi with Cache {
   /// Implement api request methods
   Future<ExamplePhotoModel> getRandomPhoto() async {
     /// Use [send] method to make api request
-    final response =
-        await send(ApiRequest(endpoint: "/id/${Random().nextInt(50)}/info"));
+    final response = await get("/id/${Random().nextInt(50)}/info");
 
     return ExamplePhotoModel.fromJson(json.decode(response.body));
   }

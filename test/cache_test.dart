@@ -26,7 +26,7 @@ void main() {
   group("cacheAndNetwork method works correctly", () {
     test("Throws error when key is not provided to request", () async {
       reset(testApi.cache);
-      final request = ApiRequest(endpoint: '/test');
+      final request = Request(endpoint: '/test');
 
       expect(
         () async {
@@ -40,9 +40,9 @@ void main() {
       reset(testApi.cache);
 
       final key = CacheKey("TEST KEY");
-      final request = ApiRequest(key: key, endpoint: '/test');
+      final request = Request(key: key, endpoint: '/test');
 
-      final responses = <ApiResponse>[];
+      final responses = <Response>[];
       await for (final response in testApi.cacheAndNetwork(request)) {
         responses.add(response);
       }
@@ -54,7 +54,7 @@ void main() {
       reset(testApi.cache);
 
       final key = CacheKey("TEST KEY");
-      final request = ApiRequest(key: key, endpoint: '/test');
+      final request = Request(key: key, endpoint: '/test');
 
       final response = await testApi.send(request);
       verify(testApi.cache.write(key, any)).called(1);
@@ -63,8 +63,8 @@ void main() {
 
       when(testApi.cache.read(key)).thenReturn(response);
 
-      final request2 = ApiRequest(key: key, endpoint: '/test');
-      final responses = <ApiResponse>[];
+      final request2 = Request(key: key, endpoint: '/test');
+      final responses = <Response>[];
       await for (final response in testApi.cacheAndNetwork(request2)) {
         responses.add(response);
       }
@@ -78,7 +78,7 @@ void main() {
 
   group("cacheIfAvailable method works correctly", () {
     test("Throws error when key is not provided to request", () async {
-      final request = ApiRequest(endpoint: '/test');
+      final request = Request(endpoint: '/test');
 
       expect(
         () async {
@@ -93,7 +93,7 @@ void main() {
       testClient.sendCalledTimes = 0;
 
       final key = CacheKey("TEST KEY");
-      final request = ApiRequest(key: key, endpoint: '/test');
+      final request = Request(key: key, endpoint: '/test');
 
       when(testApi.cache.read(key)).thenReturn(null);
 
@@ -109,10 +109,10 @@ void main() {
       testClient.sendCalledTimes = 0;
 
       final key = CacheKey("TEST KEY");
-      final request = ApiRequest(key: key, endpoint: '/test');
+      final request = Request(key: key, endpoint: '/test');
 
       final bodyBytes = Encoding.getByName("utf-8").encode("");
-      final apiResponse = ApiResponse(
+      final apiResponse = Response(
         request,
         statusCode: 200,
         bodyBytes: bodyBytes,
@@ -136,17 +136,17 @@ void main() {
 
   test("shouldUpdateCache works correctly", () {
     final key = CacheKey("TEST KEY");
-    var request = ApiRequest(key: key, endpoint: '/test');
-    var apiResponse = ApiResponse(request, statusCode: 200);
+    var request = Request(key: key, endpoint: '/test');
+    var apiResponse = Response(request, statusCode: 200);
 
     expect(testApi.shouldUpdateCache(request, apiResponse), isTrue);
 
-    apiResponse = ApiResponse(request, statusCode: 400);
+    apiResponse = Response(request, statusCode: 400);
 
     expect(testApi.shouldUpdateCache(request, apiResponse), isFalse);
 
-    request = ApiRequest(endpoint: '/test');
-    apiResponse = ApiResponse(request, statusCode: 200);
+    request = Request(endpoint: '/test');
+    apiResponse = Response(request, statusCode: 200);
 
     expect(testApi.shouldUpdateCache(request, apiResponse), isFalse);
   });

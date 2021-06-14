@@ -6,7 +6,7 @@ class HttpLink extends ApiLink {
   @experimental
   Uri get apiUrl => _apiUrl;
 
-  Uri getUrlForRequest(ApiRequest request) {
+  Uri getUrlForRequest(Request request) {
     ArgumentError.checkNotNull(request, 'request');
     if (!attached) {
       throw ApiError(
@@ -31,45 +31,35 @@ class HttpLink extends ApiLink {
   }
 
   /// Builds http request from ApiRequest data
-  FutureOr<http.BaseRequest> buildHttpRequest(ApiRequest request) {
+  FutureOr<http.BaseRequest> buildHttpRequest(Request request) {
     final url = getUrlForRequest(request);
-    return request.isMultipart
-        ? _buildMultipartHttpRequest(url, request)
-        : _buildHttpRequest(url, request);
+
+    if (request.body is FormData) {
+      return _buildFormDataRequest(url, request);
+    } else {
+      return _buildHttpRequest(url, request);
+    }
   }
 
-  /// Builds [MultipartRequest]
-  Future<http.BaseRequest> _buildMultipartHttpRequest(
+  /// Builds [FormDataRequest]
+  Future<http.BaseRequest> _buildFormDataRequest(
     Uri url,
-    ApiRequest request,
+    Request request,
   ) async {
-    final multipartRequest = http.MultipartRequest(request.method.value, url)
+    final formDataRequest = FormDataRequest(request.method.value, url)
       ..headers.addAll(request.headers);
 
-    /// Assign body if it is map
-    if (request.body != null) {
-      if (request.body is Map) {
-        multipartRequest.fields.addAll(request.body.cast<String, String>());
-      } else {
-        throw ArgumentError(
-          'Invalid request body "${request.body}".\n'
-          'Multipart request body should be Map<String, String>',
-        );
-      }
-    }
+    final FormData formData = request.body;
 
-    /// Assign files to [MultipartRequest]
-    for (final fileField in request.fileFields) {
-      multipartRequest.files.add(await fileField.toMultipartFile());
-    }
+    await formDataRequest.setEntries(formData.entries);
 
-    return multipartRequest;
+    return formDataRequest;
   }
 
   /// Builds [Request]
   http.BaseRequest _buildHttpRequest(
     Uri url,
-    ApiRequest request,
+    Request request,
   ) {
     final httpRequest = http.Request(request.method.value, url);
 
@@ -100,9 +90,9 @@ class HttpLink extends ApiLink {
 
   @override
   @protected
-  Future<ApiResponse> next(ApiRequest apiRequest) async {
+  Future<Response> next(Request request) async {
     /// Builds a http request
-    final httpRequest = await buildHttpRequest(apiRequest);
+    final httpRequest = await buildHttpRequest(request);
 
     /// Sends a request
     final streamedResponse = await client.send(
@@ -115,8 +105,8 @@ class HttpLink extends ApiLink {
     );
 
     /// Returns the api response
-    return ApiResponse(
-      apiRequest,
+    return Response(
+      request,
       headers: httpResponse.headers,
       isRedirect: httpResponse.isRedirect,
       persistentConnection: httpResponse.persistentConnection,

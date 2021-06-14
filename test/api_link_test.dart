@@ -13,7 +13,7 @@ class TestLink extends ApiLink {
   bool get called => _called;
 
   @override
-  Future<ApiResponse> next(ApiRequest request) async {
+  Future<Response> next(Request request) async {
     _called = true;
     int linkCounter = request.linkData["linkCounter"] ?? 0;
     requestNumber = request.linkData["linkCounter"] = ++linkCounter;
@@ -40,7 +40,7 @@ class TestLink extends ApiLink {
 
 class BreakRequestPropagationLink extends ApiLink {
   @override
-  Future<ApiResponse> next(ApiRequest request) async {
+  Future<Response> next(Request request) async {
     return null;
   }
 }
@@ -82,9 +82,7 @@ void main() {
       link: apiLink,
     );
 
-    final apiRequest = ApiRequest(endpoint: '/test');
-
-    await api.send(apiRequest);
+    await api.get('/test');
 
     expect(link1.requestNumber, equals(1));
     expect(link2.requestNumber, equals(2));
@@ -182,8 +180,8 @@ void main() {
         url: testUrl,
         link: link1.chain(link2).chain(link3).chain(link4).chain(httpLink),
       );
-      final apiRequest = ApiRequest(endpoint: '/test');
-      final response = await api.send(apiRequest);
+
+      final response = await api.get('/test');
 
       expect(response, isNull);
       expect(link1.called, isTrue);

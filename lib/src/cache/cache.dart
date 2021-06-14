@@ -8,10 +8,10 @@ part of http_api;
 /// it should be handled by CacheManager implementation.
 abstract class CacheManager {
   /// Caches [response] under provided [key].
-  FutureOr<void> write(CacheKey key, ApiResponse response);
+  FutureOr<void> write(CacheKey key, Response response);
 
   /// Reads cache saved under provided [key].
-  FutureOr<ApiResponse> read(CacheKey key);
+  FutureOr<Response> read(CacheKey key);
 
   /// Clears cache saved under provided [key].
   FutureOr<void> clear(CacheKey key);
@@ -41,7 +41,7 @@ mixin Cache<T extends CacheManager> on BaseApi {
   ///  return request.key != null && response.ok;
   /// }
   /// ```
-  bool shouldUpdateCache(ApiRequest request, ApiResponse response) {
+  bool shouldUpdateCache(Request request, Response response) {
     return request.key != null && response.ok;
   }
 
@@ -53,7 +53,7 @@ mixin Cache<T extends CacheManager> on BaseApi {
   CacheManager get cache => _cache ??= createCacheManager();
 
   @override
-  Future<ApiResponse> send(ApiRequest request) async {
+  Future<Response> send(Request request) async {
     final networkResponse = await super.send(request);
 
     /// Save cache when response is successful and request contains a key.
@@ -72,7 +72,7 @@ mixin Cache<T extends CacheManager> on BaseApi {
     _cache.dispose();
   }
 
-  void _throwOnRequestWithoutCacheKey(ApiRequest request) {
+  void _throwOnRequestWithoutCacheKey(Request request) {
     if (request?.key == null) {
       throw ApiError(
         'CacheKey is required for requests with cache. '
@@ -83,7 +83,7 @@ mixin Cache<T extends CacheManager> on BaseApi {
 
   /// Retrieve response from the cache if available and then from the network.
   /// Returns `Stream<ApiResponse>` type.
-  Stream<ApiResponse> cacheAndNetwork(ApiRequest request) async* {
+  Stream<Response> cacheAndNetwork(Request request) async* {
     _throwOnRequestWithoutCacheKey(request);
 
     /// read cache
@@ -107,7 +107,7 @@ mixin Cache<T extends CacheManager> on BaseApi {
   }
 
   /// Retrieve response from the cache if available or fallback to the network.
-  Future<ApiResponse> cacheIfAvailable(ApiRequest request) async {
+  Future<Response> cacheIfAvailable(Request request) async {
     _throwOnRequestWithoutCacheKey(request);
 
     /// get cache

@@ -9,6 +9,7 @@ Simple yet powerful wrapper around http package. This package provides you a sim
 
 ## Why this package?
 - ⛓ [Interceptors / Middlewares](#apilinks-interceptors--middleware)
+- 📧 [FormData support](#formdata)
 - 💽 [Cache support](#cache)
 - 📱 [Works well with Flutter ♥️](#http_api-and-flutter-️)
 - 🛠 Easily expandable and customizable.
@@ -242,6 +243,25 @@ Default implementation:
 bool shouldUpdateCache(ApiRequest request, ApiResponse response) {
  return request.key != null && response.ok;
 }
+```
+
+## FormData
+
+```dart
+/// create [FormData] instance.
+final formData = FormData();
+
+/// append fields of your choice.
+formData.append('photo[visible]', true);
+formData.append('photo[type]', 'image/png');
+formData.append('photo[size]', 1920);
+
+/// You can also append files.
+File file = getImageFile();
+formData.appendFile('photo[file]', file, filename: "my_filename.png");
+
+/// Send files via api class.
+final response = await api.post("/photos/upload", body: formData);
 ```
 
 ## http_api and Flutter ♥️.

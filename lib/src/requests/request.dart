@@ -2,7 +2,7 @@ part of http_api;
 
 // ignore_for_file: unnecessary_getters_setters
 
-class ApiRequest {
+class Request {
   /// The id of current request.
   ///
   /// If you supply it by argument, try to make it unique
@@ -23,28 +23,20 @@ class ApiRequest {
   String endpoint;
   HttpMethod method;
   Encoding encoding;
-  bool multipart;
   dynamic body;
 
   /// Here you can assign your data that will be passed to the next link
   final Map<String, dynamic> linkData = {};
-  final List<FileField> fileFields = [];
   final Map<String, String> headers = {};
   final Map<String, dynamic> queryParameters = {};
 
-  /// If [BaseApiRequest] contains files or [multipart] property is set to true
-  /// [isMultipart] equals true
-  bool get isMultipart => multipart == true || fileFields.isNotEmpty;
-
-  ApiRequest({
+  Request({
     @required this.endpoint,
     this.method = HttpMethod.get,
     Map<String, String> headers,
-    List<FileField> fileFields,
     Map<String, dynamic> queryParameters,
     this.body,
     this.encoding,
-    this.multipart,
     DateTime createdAt,
     ObjectId id,
     this.key,
@@ -54,7 +46,6 @@ class ApiRequest {
           endpoint != null && method != null,
           "endpoint and method arguments cannot be null",
         ) {
-    if (fileFields != null) this.fileFields.addAll(fileFields);
     if (headers != null) this.headers.addAll(headers);
     if (queryParameters != null) this.queryParameters.addAll(queryParameters);
   }
@@ -63,30 +54,48 @@ class ApiRequest {
   /// SERIALIZATION
   /// *************
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        "id": id.hexString,
-        "key": key.value,
-        "endpoint": endpoint,
-        "body": body,
-        "encoding": encoding?.name,
-        "fileFields": <Map<String, dynamic>>[
-          for (final fileField in fileFields) fileField.toJson()
-        ],
-        "headers": headers,
-        "method": method.value,
-        "multipart": multipart,
-        "queryParameters": queryParameters,
-        "createdAt": createdAt.toIso8601String(),
-      };
+  Map<String, dynamic> toJson() {
+    final dynamic serializedBody = body != null && body is Serializable
+        ? (body as Serializable).toJson()
+        : body;
 
-  ApiRequest.fromJson(dynamic json)
+    return <String, dynamic>{
+      "id": id.hexString,
+      "key": key.value,
+      "endpoint": endpoint,
+      "body": serializedBody,
+      "encoding": encoding?.name,
+      "headers": headers,
+      "method": method.value,
+      "queryParameters": queryParameters,
+      "createdAt": createdAt.toIso8601String(),
+    };
+  }
+
+  static dynamic _getBodyType(dynamic body) {
+    if (body == null || !(body is Map)) {
+      return null;
+    } else {
+      return body[_bodyTypeKey];
+    }
+  }
+
+  static dynamic _bodyFromJson(dynamic body) {
+    if (body == null) return null;
+    if (_getBodyType(body) == DataType.formData.value) {
+      return FormData.fromJson(body);
+    } else {
+      return body;
+    }
+  }
+
+  Request.fromJson(dynamic json)
       : id = ObjectId.fromHexString(json["id"]),
         key = CacheKey(json["key"]),
         endpoint = json["endpoint"],
-        body = json["body"],
+        body = _bodyFromJson(json["body"]),
         encoding = Encoding.getByName(json["encoding"]),
         method = HttpMethod.fromString(json["method"]),
-        multipart = json["multipart"],
         createdAt = DateTime.parse(json["createdAt"]) {
     headers.addAll(
       Map.castFrom<String, dynamic, String, String>(json["headers"]),
