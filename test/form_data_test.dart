@@ -18,7 +18,7 @@ void main() {
       expect(entry.value, equals(value));
     }
 
-    FormData formData;
+    late FormData formData;
 
     setUp(() {
       formData = FormData();

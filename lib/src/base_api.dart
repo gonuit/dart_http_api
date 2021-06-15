@@ -12,8 +12,8 @@ abstract class BaseApi {
 
   BaseApi(
     this.url, {
-    ApiLink link,
-    Map<String, String> defaultHeaders,
+    ApiLink? link,
+    Map<String, String>? defaultHeaders,
   })  : defaultHeaders = defaultHeaders ?? <String, String>{},
         _link = link?._firstLink ?? HttpLink() {
     ArgumentError.checkNotNull(url, 'url');
@@ -22,7 +22,7 @@ abstract class BaseApi {
       throw ApiError("ApiLinks chain should contain HttpLink.");
     }
 
-    if (_link._firstWhere((apiLink) => apiLink.attached) != null) {
+    if (_link._firstWhere((apiLink) => apiLink!.attached) != null) {
       throw ApiError(
         "Cannot reattach already attached ApiLink to $runtimeType.",
       );
@@ -35,14 +35,14 @@ abstract class BaseApi {
   /// Get first link of provided type from current link chain.
   /// If ApiLink chain does not contain link of provided type,
   /// [null] will be returned.
-  T getFirstLinkOfType<T extends ApiLink>() =>
-      _link?._firstWhere((link) => link is T) as T;
+  T? getFirstLinkOfType<T extends ApiLink?>() =>
+      _link._firstWhere((link) => link is T) as T?;
 
-  ApiLink getFirstLinkWhere(bool Function(ApiLink link) test) =>
-      _link?._firstWhere(test);
+  ApiLink? getFirstLinkWhere(bool Function(ApiLink? link) test) =>
+      _link._firstWhere(test);
 
   void forEachLink(void Function(ApiLink) callback) =>
-      _link?._forEach(callback);
+      _link._forEach(callback);
 
   /// {@template http_api.base_api.send}
   /// Make API request by triggering [ApiLink]s [next] methods
@@ -62,12 +62,12 @@ abstract class BaseApi {
   /// {@macro http_api.base_api.send}
   Future<Response> get(
     String endpoint, {
-    Map<String, String> headers,
-    Map<String, dynamic> queryParameters,
-    Encoding encoding,
-    DateTime createdAt,
-    ObjectId id,
-    CacheKey key,
+    Map<String, String>? headers,
+    Map<String, dynamic>? queryParameters,
+    Encoding? encoding,
+    DateTime? createdAt,
+    ObjectId? id,
+    CacheKey? key,
   }) =>
       send(Request(
         endpoint: endpoint,
@@ -85,13 +85,13 @@ abstract class BaseApi {
   /// {@macro http_api.base_api.send}
   Future<Response> post(
     String endpoint, {
-    Map<String, String> headers,
-    Map<String, dynamic> queryParameters,
+    Map<String, String>? headers,
+    Map<String, dynamic>? queryParameters,
     dynamic body,
-    Encoding encoding,
-    DateTime createdAt,
-    ObjectId id,
-    CacheKey key,
+    Encoding? encoding,
+    DateTime? createdAt,
+    ObjectId? id,
+    CacheKey? key,
   }) =>
       send(Request(
         endpoint: endpoint,
@@ -110,13 +110,13 @@ abstract class BaseApi {
   /// {@macro http_api.base_api.send}
   Future<Response> put(
     String endpoint, {
-    Map<String, String> headers,
-    Map<String, dynamic> queryParameters,
+    Map<String, String>? headers,
+    Map<String, dynamic>? queryParameters,
     dynamic body,
-    Encoding encoding,
-    DateTime createdAt,
-    ObjectId id,
-    CacheKey key,
+    Encoding? encoding,
+    DateTime? createdAt,
+    ObjectId? id,
+    CacheKey? key,
   }) =>
       send(Request(
         endpoint: endpoint,
@@ -135,13 +135,13 @@ abstract class BaseApi {
   /// {@macro http_api.base_api.send}
   Future<Response> patch(
     String endpoint, {
-    Map<String, String> headers,
-    Map<String, dynamic> queryParameters,
+    Map<String, String>? headers,
+    Map<String, dynamic>? queryParameters,
     dynamic body,
-    Encoding encoding,
-    DateTime createdAt,
-    ObjectId id,
-    CacheKey key,
+    Encoding? encoding,
+    DateTime? createdAt,
+    ObjectId? id,
+    CacheKey? key,
   }) =>
       send(Request(
         endpoint: endpoint,
@@ -160,13 +160,13 @@ abstract class BaseApi {
   /// {@macro http_api.base_api.send}
   Future<Response> delete(
     String endpoint, {
-    Map<String, String> headers,
-    Map<String, dynamic> queryParameters,
+    Map<String, String>? headers,
+    Map<String, dynamic>? queryParameters,
     dynamic body,
-    Encoding encoding,
-    DateTime createdAt,
-    ObjectId id,
-    CacheKey key,
+    Encoding? encoding,
+    DateTime? createdAt,
+    ObjectId? id,
+    CacheKey? key,
   }) =>
       send(Request(
         endpoint: endpoint,
@@ -185,12 +185,12 @@ abstract class BaseApi {
   /// {@macro http_api.base_api.send}
   Future<Response> head(
     String endpoint, {
-    Map<String, String> headers,
-    Map<String, dynamic> queryParameters,
-    Encoding encoding,
-    DateTime createdAt,
-    ObjectId id,
-    CacheKey key,
+    Map<String, String>? headers,
+    Map<String, dynamic>? queryParameters,
+    Encoding? encoding,
+    DateTime? createdAt,
+    ObjectId? id,
+    CacheKey? key,
   }) =>
       send(Request(
         endpoint: endpoint,

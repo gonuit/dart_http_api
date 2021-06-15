@@ -39,7 +39,7 @@ class HttpMethod {
       case "HEAD":
         return head;
       default:
-        return null;
+        throw UnsupportedError('Method \'$method\' is not supported.');
     }
   }
 }
@@ -59,12 +59,12 @@ class DataType {
 
   static const formData = DataType._("FORM_DATA");
 
-  factory DataType.fromString(String method) {
-    switch (method) {
+  factory DataType.fromString(String dataType) {
+    switch (dataType) {
       case "FORM_DATA":
         return formData;
       default:
-        return null;
+        throw UnsupportedError('DataType \'$dataType\' is not supported.');
     }
   }
 }
@@ -73,8 +73,8 @@ class DataType {
 /// so can be sent to API
 /// with [FormDataRequest]
 abstract class FileField {
-  final String filename;
-  final MediaType contentType;
+  final String? filename;
+  final MediaType? contentType;
 
   const FileField._({
     this.filename,
@@ -82,20 +82,20 @@ abstract class FileField {
   });
 
   /// Convert FileField to multipart file.
-  Future<http.MultipartFile> toMultipartFile(final String field);
+  Future<http.MultipartFile?> toMultipartFile(final String field);
 
   factory FileField({
-    File file,
-    String filename,
-    MediaType contentType,
+    required File file,
+    String? filename,
+    MediaType? contentType,
   }) = FileFieldWithFile;
 
   /// Creates FileField from byte stream.
   factory FileField.fromStream({
-    @required Stream<List<int>> stream,
-    @required int length,
-    String filename,
-    MediaType contentType,
+    required Stream<List<int>> stream,
+    required int length,
+    String? filename,
+    MediaType? contentType,
   }) = FileFieldWithStream;
 
   /// This method is most commonly used to convert
@@ -103,7 +103,7 @@ abstract class FileField {
   ///
   /// This method should not return a file, only data
   /// describing the file.
-  Map<String, dynamic> toJson() => <String, dynamic>{
+  Map<String, dynamic>? toJson() => <String, dynamic>{
         "filename": filename,
         "contentType": contentType,
       };
@@ -122,9 +122,9 @@ abstract class FileField {
 
 class _FileDataField extends FileField {
   _FileDataField({
-    @required String field,
-    String filename,
-    MediaType contentType,
+    required String? field,
+    String? filename,
+    MediaType? contentType,
   }) : super._(
           filename: filename,
           contentType: contentType,
@@ -147,14 +147,10 @@ class FileFieldWithFile extends FileField {
   final File file;
 
   FileFieldWithFile({
-    @required this.file,
-    String filename,
-    MediaType contentType,
-  })  : assert(
-          file != null,
-          "file argument cannot be null",
-        ),
-        super._(
+    required this.file,
+    String? filename,
+    MediaType? contentType,
+  }) : super._(
           filename: filename,
           contentType: contentType,
         );
@@ -176,15 +172,11 @@ class FileFieldWithStream extends FileField {
   final int length;
 
   FileFieldWithStream({
-    @required this.stream,
-    @required this.length,
-    MediaType contentType,
-    String filename,
-  })  : assert(
-          stream != null && length != null,
-          "stream and length arguments cannot be null",
-        ),
-        super._(
+    required this.stream,
+    required this.length,
+    MediaType? contentType,
+    String? filename,
+  }) : super._(
           filename: filename,
           contentType: contentType,
         );

@@ -19,10 +19,10 @@ class Request {
   /// Identifies (groups) requests.
   ///
   /// Used for caching purposes - as cache key.
-  CacheKey key;
-  String endpoint;
+  CacheKey? key;
+  String? endpoint;
   HttpMethod method;
-  Encoding encoding;
+  Encoding? encoding;
   dynamic body;
 
   /// Here you can assign your data that will be passed to the next link
@@ -31,21 +31,17 @@ class Request {
   final Map<String, dynamic> queryParameters = {};
 
   Request({
-    @required this.endpoint,
+    required this.endpoint,
     this.method = HttpMethod.get,
-    Map<String, String> headers,
-    Map<String, dynamic> queryParameters,
+    Map<String, String>? headers,
+    Map<String, dynamic>? queryParameters,
     this.body,
     this.encoding,
-    DateTime createdAt,
-    ObjectId id,
+    DateTime? createdAt,
+    ObjectId? id,
     this.key,
   })  : createdAt = createdAt ?? DateTime.now(),
-        id = id ?? ObjectId(),
-        assert(
-          endpoint != null && method != null,
-          "endpoint and method arguments cannot be null",
-        ) {
+        id = id ?? ObjectId() {
     if (headers != null) this.headers.addAll(headers);
     if (queryParameters != null) this.queryParameters.addAll(queryParameters);
   }
@@ -61,7 +57,7 @@ class Request {
 
     return <String, dynamic>{
       "id": id.hexString,
-      "key": key.value,
+      "key": key!.value,
       "endpoint": endpoint,
       "body": serializedBody,
       "encoding": encoding?.name,

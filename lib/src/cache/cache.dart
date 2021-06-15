@@ -8,10 +8,10 @@ part of http_api;
 /// it should be handled by CacheManager implementation.
 abstract class CacheManager {
   /// Caches [response] under provided [key].
-  FutureOr<void> write(CacheKey key, Response response);
+  FutureOr<void> write(CacheKey? key, Response? response);
 
   /// Reads cache saved under provided [key].
-  FutureOr<Response> read(CacheKey key);
+  FutureOr<Response>? read(CacheKey? key);
 
   /// Clears cache saved under provided [key].
   FutureOr<void> clear(CacheKey key);
@@ -41,11 +41,11 @@ mixin Cache<T extends CacheManager> on BaseApi {
   ///  return request.key != null && response.ok;
   /// }
   /// ```
-  bool shouldUpdateCache(Request request, Response response) {
-    return request.key != null && response.ok;
+  bool shouldUpdateCache(Request request, Response? response) {
+    return request.key != null && response!.ok;
   }
 
-  CacheManager _cache;
+  CacheManager? _cache;
 
   /// Get cache manager.
   ///
@@ -69,11 +69,11 @@ mixin Cache<T extends CacheManager> on BaseApi {
   @override
   void dispose() {
     super.dispose();
-    _cache.dispose();
+    _cache!.dispose();
   }
 
   void _throwOnRequestWithoutCacheKey(Request request) {
-    if (request?.key == null) {
+    if (request.key == null) {
       throw ApiError(
         'CacheKey is required for requests with cache. '
         'Provide your ApiRequest instance with \'key\' argument.',

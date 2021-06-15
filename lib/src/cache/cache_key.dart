@@ -24,7 +24,7 @@ int _simpleHash(int value, [int seed = 0]) {
 
 @immutable
 class CacheKey {
-  final String value;
+  final String? value;
   const CacheKey(this.value);
 
   @override

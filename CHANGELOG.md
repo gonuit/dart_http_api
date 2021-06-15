@@ -1,3 +1,5 @@
+## [0.9.0-nullsafety.0] 15 June 2021.
+- Initial nullsafety migration
 ## [0.8.3] 19 January 2021.
 - Added [FormData] class.
   - Removed `multipart` and `isMultipart` values from `ApiRequest`.

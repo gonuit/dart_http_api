@@ -110,7 +110,7 @@ class FormDataRequest extends http.BaseRequest {
   final List<MapEntry<String, dynamic>> _fields = [];
 
   /// The list of files to upload for this request.
-  final _files = <http.MultipartFile>[];
+  final _files = <http.MultipartFile?>[];
 
   Future<void> setEntries(List<MapEntry<String, dynamic>> entries) async {
     if (isFinalized) {
@@ -156,7 +156,7 @@ class FormDataRequest extends http.BaseRequest {
       length += '--'.length +
           _boundaryLength +
           '\r\n'.length +
-          utf8.encode(_headerForFile(file)).length +
+          utf8.encode(_headerForFile(file!)).length +
           file.length +
           '\r\n'.length;
     }
@@ -165,7 +165,7 @@ class FormDataRequest extends http.BaseRequest {
   }
 
   @override
-  set contentLength(int value) {
+  set contentLength(int? value) {
     throw UnsupportedError(
       'Cannot set the contentLength property of '
       'multipart requests.',
@@ -198,7 +198,7 @@ class FormDataRequest extends http.BaseRequest {
 
     for (final file in _files) {
       yield separator;
-      yield utf8.encode(_headerForFile(file));
+      yield utf8.encode(_headerForFile(file!));
       yield* file.finalize();
       yield line;
     }
@@ -227,7 +227,7 @@ class FormDataRequest extends http.BaseRequest {
         'content-disposition: form-data; name="${_browserEncode(file.field)}"';
 
     if (file.filename != null) {
-      header = '$header; filename="${_browserEncode(file.filename)}"';
+      header = '$header; filename="${_browserEncode(file.filename!)}"';
     }
     return '$header\r\n\r\n';
   }

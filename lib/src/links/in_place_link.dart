@@ -2,17 +2,13 @@ part of http_api;
 
 class _InPlaceLink extends ApiLink {
   final NextHandler _next;
-  final VoidFunction _dispose;
+  final VoidFunction? _dispose;
 
   _InPlaceLink(
     final NextHandler next, {
-    final VoidFunction dispose,
-    final VoidFunction init,
-  })  : assert(
-          next != null,
-          'handler function cannot be null.',
-        ),
-        _dispose = dispose,
+    final VoidFunction? dispose,
+    final VoidFunction? init,
+  })  : _dispose = dispose,
         _next = next {
     /// call init if defined
     init?.call();

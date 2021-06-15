@@ -2,9 +2,9 @@ part of http_api;
 
 class HttpLink extends ApiLink {
   @experimental
-  Uri _apiUrl;
+  Uri? _apiUrl;
   @experimental
-  Uri get apiUrl => _apiUrl;
+  Uri? get apiUrl => _apiUrl;
 
   Uri getUrlForRequest(Request request) {
     ArgumentError.checkNotNull(request, 'request');
@@ -18,15 +18,15 @@ class HttpLink extends ApiLink {
       throw ApiException("Property `apiUrl` is not available.");
     }
 
-    final queryParameters = Map<String, dynamic>.from(apiUrl.queryParameters)
+    final queryParameters = Map<String, dynamic>.from(apiUrl!.queryParameters)
       ..addAll(request.queryParameters);
 
     return Uri(
-      scheme: apiUrl.scheme,
-      host: apiUrl.host,
-      path: apiUrl.path + request.endpoint,
+      scheme: apiUrl!.scheme,
+      host: apiUrl!.host,
+      path: apiUrl!.path + request.endpoint!,
       queryParameters: queryParameters.isNotEmpty ? queryParameters : null,
-      port: apiUrl.port,
+      port: apiUrl!.port,
     );
   }
 
@@ -63,8 +63,8 @@ class HttpLink extends ApiLink {
   ) {
     final httpRequest = http.Request(request.method.value, url);
 
-    if (request.headers != null) httpRequest.headers.addAll(request.headers);
-    if (request.encoding != null) httpRequest.encoding = request.encoding;
+    httpRequest.headers.addAll(request.headers);
+    if (request.encoding != null) httpRequest.encoding = request.encoding!;
     if (request.body != null) {
       if (request.body is String) {
         httpRequest.body = request.body;
@@ -86,7 +86,7 @@ class HttpLink extends ApiLink {
   http.Client get client => _client;
 
   /// ApiLink that closes link chain. Responsible for HTTP calls.
-  HttpLink([http.Client client]) : _client = client ?? http.Client();
+  HttpLink([http.Client? client]) : _client = client ?? http.Client();
 
   @override
   @protected

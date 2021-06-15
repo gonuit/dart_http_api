@@ -20,7 +20,10 @@ MediaType _getMediaTypeFromHeaders(Map<String, String> headers) {
 
 /// Returns the [Encoding] that corresponds to [charset].
 /// Defaults to `latin1`.
-Encoding _getEncodingFromCharset(String charset, [Encoding fallback = latin1]) {
+Encoding _getEncodingFromCharset(
+  String? charset, [
+  Encoding fallback = latin1,
+]) {
   if (charset == null) return fallback;
   return Encoding.getByName(charset) ?? fallback;
 }

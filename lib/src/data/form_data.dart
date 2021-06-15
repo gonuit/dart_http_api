@@ -49,8 +49,8 @@ class FormData with Serializable {
   void appendFile(
     String key,
     File file, {
-    MediaType contentType,
-    String filename,
+    MediaType? contentType,
+    String? filename,
   }) {
     ArgumentError.checkNotNull(key, 'key');
     ArgumentError.checkNotNull(file, 'file');

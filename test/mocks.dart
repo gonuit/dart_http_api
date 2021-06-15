@@ -1,6 +1,5 @@
 import 'package:http_api/http_api.dart';
 import 'package:http/http.dart' as http;
-import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 
 const testResponseHeaders = <String, String>{'authorization': 'token'};
@@ -8,12 +7,12 @@ const testResponseHeaders = <String, String>{'authorization': 'token'};
 final Uri testUrl = Uri.parse("https://example.com/api");
 
 class MockFileField extends Mock implements FileField {
-  Future<http.MultipartFile> toMultipartFile(String field) async {
+  Future<http.MultipartFile?> toMultipartFile(String field) async {
     return null;
   }
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic>? toJson() {
     return null;
   }
 }
@@ -43,9 +42,9 @@ class MockHttpClient extends Fake implements http.Client {
 
 class TestApi extends BaseApi {
   TestApi({
-    @required Uri url,
-    ApiLink link,
-    Map<String, String> defaultHeaders,
+    required Uri url,
+    ApiLink? link,
+    Map<String, String>? defaultHeaders,
   }) : super(
           url,
           link: link,
@@ -57,9 +56,9 @@ class MockedCacheManager extends Mock implements CacheManager {}
 
 class TestApiWithCache extends BaseApi with Cache {
   TestApiWithCache({
-    @required Uri url,
-    ApiLink link,
-    Map<String, String> defaultHeaders,
+    required Uri url,
+    ApiLink? link,
+    Map<String, String>? defaultHeaders,
   }) : super(
           url,
           link: link,

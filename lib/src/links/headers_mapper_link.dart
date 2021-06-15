@@ -26,7 +26,6 @@ class HeadersMapperLink extends ApiLink {
 
   /// Saves headers for later use
   void setHeaders(Map<String, String> headers) {
-    if (headers == null) return;
     for (final headerToMap in _headersToMap) {
       final value = headers[headerToMap];
       if (value == null) continue;

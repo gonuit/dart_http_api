@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'example_photo_model.g.dart';
 
-@JsonSerializable(nullable: false, checked: true)
+@JsonSerializable(checked: true)
 class ExamplePhotoModel {
   final String id;
   final String author;

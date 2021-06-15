@@ -16,7 +16,8 @@ class MyApp extends StatelessWidget {
         url: Uri.parse("https://picsum.photos"),
 
         /// Assign middleware by providing ApiLinks (to provide more than one middleware, chain them)
-        link: LoggerLink(responseDuration: true, endpoint: true).chain(HttpLink()),
+        link: LoggerLink(responseDuration: true, endpoint: true)
+            .chain(HttpLink()),
       ),
       child: MaterialApp(
         title: 'http_api example',
@@ -47,11 +48,11 @@ class HomeScreen extends StatelessWidget {
           child: ListView(
             padding: EdgeInsets.all(15),
             children: <Widget>[
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () => Navigator.of(context).pushNamed("basic"),
                 child: Text("Basic example"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () => Navigator.of(context).pushNamed("cache"),
                 child: Text("Cache example"),
               ),

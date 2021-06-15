@@ -53,7 +53,7 @@ class _CacheExampleState extends State<CacheExample> {
             if (_currentPhoto != null) const SizedBox(height: 15),
             if (_currentPhoto != null) Text("Author: ${_currentPhoto.author}"),
             const SizedBox(height: 15),
-            RaisedButton(
+            ElevatedButton(
               child: const Text("Fetch photo"),
               onPressed: _fetchPhoto,
             ),

@@ -19,8 +19,8 @@ abstract class ApiLink {
   /// ```
   factory ApiLink.next(
     final NextHandler next, {
-    final VoidFunction dispose,
-    final VoidFunction init,
+    final VoidFunction? dispose,
+    final VoidFunction? init,
   }) = _InPlaceLink;
 
   /// [ApiLink]s keeps reference to the first [ApiLink] in chain
@@ -28,11 +28,11 @@ abstract class ApiLink {
   ///
   /// Initialy set to this or null in release builds if `this` is a [DebugLink].
   /// Can be changed by [chain] method.
-  ApiLink get _firstLink =>
+  ApiLink? get _firstLink =>
       __firstLink ?? (isReleaseBuild && (this is DebugLink) ? null : this);
   @protected
-  ApiLink __firstLink;
-  ApiLink _nextLink;
+  ApiLink? __firstLink;
+  ApiLink? _nextLink;
   bool _disposed = false;
   bool get disposed => false;
   bool _attached = false;
@@ -41,19 +41,19 @@ abstract class ApiLink {
 
   /// calls [callback] for every link in chain
   void _forEach(void Function(ApiLink) callback) {
-    var lastLink = _firstLink ?? this;
+    ApiLink? lastLink = _firstLink ?? this;
     do {
-      callback(lastLink);
+      callback(lastLink!);
       lastLink = lastLink._nextLink;
     } while (lastLink != null);
   }
 
   /// Returns first [ApiLink] that matches provided test function.
-  ApiLink _firstWhere(bool test(ApiLink link)) {
-    var lastLink = _firstLink ?? this;
+  ApiLink? _firstWhere(bool test(ApiLink? link)) {
+    ApiLink? lastLink = _firstLink ?? this;
     do {
       if (test(lastLink)) return lastLink;
-      lastLink = lastLink._nextLink;
+      lastLink = lastLink!._nextLink;
     } while (lastLink != null);
     return null;
   }
@@ -84,13 +84,6 @@ abstract class ApiLink {
   /// throws [ApiError] when error occurs
   @nonVirtual
   ApiLink chain(ApiLink nextLink) {
-    if (nextLink == null) {
-      throw ApiError(
-        "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
-        "nextLink cannot be null",
-      );
-    }
-
     if (attached || nextLink.attached) {
       throw ApiError(
         "Cannot chain link $runtimeType with ${nextLink.runtimeType}\n"
@@ -132,7 +125,8 @@ abstract class ApiLink {
   /// in the next ApiLink in the chain (if present)
   @protected
   Future<Response> next(Request request) {
-    return _nextLink?.next(request);
+    // TODO: Verify nullability
+    return _nextLink!.next(request);
   }
 
   /// Called when API object has been disposed

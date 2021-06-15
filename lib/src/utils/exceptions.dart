@@ -7,10 +7,7 @@ class ApiException implements Exception {
   String get message => _message;
 
   String toString() {
-    if (message != null) {
-      return "ApiException($message)";
-    }
-    return "ApiException()";
+    return "ApiException($message)";
   }
 
   const ApiException(this._message);
@@ -39,10 +36,7 @@ class ApiError extends Error {
   String get message => _message;
 
   String toString() {
-    if (message != null) {
-      return "ApiError($message)";
-    }
-    return "ApiError()";
+    return "ApiError($message)";
   }
 
   ApiError(this._message) : super();

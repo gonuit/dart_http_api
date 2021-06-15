@@ -4,7 +4,7 @@ import '../../http_api.dart';
 ///
 /// {@macro http_api.debug_link}
 class LoggerLink extends DebugLink {
-  final String label;
+  final String? label;
   final bool endpoint;
   final bool responseBody;
   final bool responseHeaders;
@@ -23,14 +23,7 @@ class LoggerLink extends DebugLink {
     this.statusCode = false,
     this.countRequests = false,
     this.responseDuration = false,
-  }) : assert(requestBody != null &&
-            requestHeaders != null &&
-            responseBody != null &&
-            endpoint != null &&
-            responseHeaders != null &&
-            statusCode != null &&
-            responseDuration != null &&
-            countRequests != null);
+  });
 
   int _requestsCount = 0;
   int get requestsCount => _requestsCount;
@@ -58,7 +51,7 @@ class LoggerLink extends DebugLink {
         }
 
         if (requestHeaders) {
-          print("headers: ${request?.headers}\n");
+          print("headers: ${request.headers}\n");
         }
 
         if (requestBody) {
@@ -72,29 +65,29 @@ class LoggerLink extends DebugLink {
     })());
   }
 
-  void _printResponse(Response response) {
+  void _printResponse(Response? response) {
     /// print request only in debug mode
     assert((() {
-      if (responseBody || responseHeaders || statusCode || responseDuration) {
-        print("\n==== RESPONSE ====\n");
+      if (response != null) {
+        if (responseBody || responseHeaders || statusCode || responseDuration) {
+          print("\n==== RESPONSE ====\n");
 
-        print("request id: ${response.id.hexString}\n");
+          print("request id: ${response.id.hexString}\n");
 
-        if (label != null) {
-          print("label: $label\n");
-        }
+          if (label != null) {
+            print("label: $label\n");
+          }
 
-        if (endpoint) {
-          print("endpoint: ${response.request.endpoint}\n");
-        }
+          if (endpoint) {
+            print("endpoint: ${response.request.endpoint}\n");
+          }
 
-        if (responseDuration) {
-          final responseDuration =
-              DateTime.now().difference(_durations[response.id]);
-          print("response duration: ${responseDuration.inMilliseconds} ms\n");
-          _durations.remove(response.id);
-        }
-        if (response != null) {
+          if (responseDuration) {
+            final responseDuration =
+                DateTime.now().difference(_durations[response.id]!);
+            print("response duration: ${responseDuration.inMilliseconds} ms\n");
+            _durations.remove(response.id);
+          }
           if (responseHeaders) {
             print("headers: ${response.headers}\n");
           }

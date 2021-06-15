@@ -7,8 +7,8 @@ class TestLink extends ApiLink {
   final int id;
   TestLink(this.id);
 
-  int requestNumber;
-  int responseNumber;
+  int? requestNumber;
+  int? responseNumber;
   bool _called = false;
   bool get called => _called;
 
@@ -19,8 +19,6 @@ class TestLink extends ApiLink {
     requestNumber = request.linkData["linkCounter"] = ++linkCounter;
 
     final response = await super.next(request);
-
-    if (response == null) return response;
 
     linkCounter = response.linkData["linkCounter"];
     responseNumber = response.linkData["linkCounter"] = ++linkCounter;
@@ -41,12 +39,12 @@ class TestLink extends ApiLink {
 class BreakRequestPropagationLink extends ApiLink {
   @override
   Future<Response> next(Request request) async {
-    return null;
+    return Response(request, statusCode: 499);
   }
 }
 
 void main() {
-  ApiLink apiLink;
+  ApiLink? apiLink;
   final link1 = TestLink(1);
   final link2 = TestLink(2);
   final link3 = TestLink(3);
@@ -60,16 +58,16 @@ void main() {
   });
 
   test("Cannot chain ApiLinks after http link", () {
-    ApiError error;
+    ApiError? error;
     try {
-      apiLink.chain(TestLink(99));
+      apiLink!.chain(TestLink(99));
       // ignore: avoid_catching_errors
     } on ApiError catch (err) {
       error = err;
     }
     expect(error, isNotNull);
     expect(
-        error.message,
+        error!.message,
         equals(
           "Cannot chain link HttpLink with TestLink\n"
           "Adding link after http link will take no effect",
@@ -95,7 +93,7 @@ void main() {
   });
 
   test("Cannot reasing ApiLink chain to another api", () async {
-    ApiError error;
+    ApiError? error;
     try {
       TestApi(
         url: testUrl,
@@ -107,7 +105,7 @@ void main() {
     }
 
     expect(error, isNotNull);
-    expect(error.message,
+    expect(error!.message,
         equals("Cannot reattach already attached ApiLink to TestApi."));
   });
 
@@ -139,16 +137,16 @@ void main() {
   });
 
   test("Cannot chain ApiLinks after attaching to BaseApi", () {
-    ApiError error;
+    ApiError? error;
     try {
-      apiLink.chain(TestLink(99));
+      apiLink!.chain(TestLink(99));
       // ignore: avoid_catching_errors
     } on ApiError catch (err) {
       error = err;
     }
     expect(error, isNotNull);
     expect(
-        error.message,
+        error!.message,
         equals(
           "Cannot chain link HttpLink with TestLink\n"
           "You cannot chain links after attaching to BaseApi",
@@ -156,7 +154,7 @@ void main() {
   });
 
   test("Cannot attach ApiLinks chain without HttpLink", () {
-    ApiError error;
+    ApiError? error;
     try {
       TestApi(url: testUrl, link: TestLink(1).chain(TestLink(2)));
       // ignore: avoid_catching_errors
@@ -164,7 +162,7 @@ void main() {
       error = err;
     }
     expect(error, isNotNull);
-    expect(error.message, equals("ApiLinks chain should contain HttpLink."));
+    expect(error!.message, equals("ApiLinks chain should contain HttpLink."));
   });
 
   test(
@@ -183,7 +181,7 @@ void main() {
 
       final response = await api.get('/test');
 
-      expect(response, isNull);
+      expect(response.statusCode, 499);
       expect(link1.called, isTrue);
       expect(link2.called, isTrue);
       expect(link4.called, isFalse);

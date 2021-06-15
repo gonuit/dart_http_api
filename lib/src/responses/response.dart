@@ -19,25 +19,25 @@ class Response {
   /// Represent reponse success
   ///
   /// [statusCode] is in the range from `200` to `299`, inclusive.
-  bool get ok => statusCode >= 200 && statusCode <= 299;
+  bool get ok => statusCode! >= 200 && statusCode! <= 299;
 
   /// The HTTP status code for this response.
-  final int statusCode;
+  final int? statusCode;
 
   /// The reason phrase associated with the status code.
-  final String reasonPhrase;
+  final String? reasonPhrase;
 
   /// The size of the response body, in bytes.
   ///
   /// If the size of the request is not known in advance, this is `null`.
-  final int contentLength;
+  final int? contentLength;
 
   final Map<String, String> headers;
 
-  final bool isRedirect;
+  final bool? isRedirect;
 
   /// Whether the server requested that a persistent connection be maintained.
-  final bool persistentConnection;
+  final bool? persistentConnection;
 
   /// Represent redirect status.
   ///
@@ -50,7 +50,7 @@ class Response {
       statusCode == 308;
 
   /// The bytes comprising the body of this response.
-  final Uint8List bodyBytes;
+  final Uint8List? bodyBytes;
 
   /// The body of the response as a string.
   ///
@@ -60,15 +60,15 @@ class Response {
   /// [RFC 2616][].
   ///
   /// [RFC 2616]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
-  String get body => _getEncodingFromHeaders(headers).decode(bodyBytes);
+  String get body => _getEncodingFromHeaders(headers).decode(bodyBytes!);
 
   Response(
     this.request, {
-    @required this.statusCode,
+    required this.statusCode,
     this.bodyBytes,
     this.contentLength,
     this.reasonPhrase,
-    Map<String, String> headers,
+    Map<String, String>? headers,
     this.isRedirect = false,
     this.persistentConnection = false,
   })  : received = DateTime.now(),
