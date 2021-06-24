@@ -1,5 +1,39 @@
 part of http_api;
 
+class HttpProgressRequest extends http.Request {
+  OnProgress? onProgress;
+
+  HttpProgressRequest(
+    String method,
+    Uri url, {
+    this.onProgress,
+  }) : super(method, url);
+
+  @override
+  http.ByteStream finalize() {
+    super.finalize();
+    final byteStream = http.ByteStream.fromBytes(bodyBytes);
+
+    if (onProgress == null) {
+      return byteStream;
+    } else {
+      final total = contentLength;
+      var bytes = 0;
+
+      final progressTransformer =
+          StreamTransformer<List<int>, List<int>>.fromHandlers(
+        handleData: (data, sink) {
+          bytes += data.length;
+          onProgress!(bytes, total);
+          sink.add(data);
+        },
+      );
+      final stream = byteStream.transform(progressTransformer);
+      return http.ByteStream(stream);
+    }
+  }
+}
+
 class HttpLink extends ApiLink {
   @experimental
   Uri? _apiUrl;
@@ -46,8 +80,11 @@ class HttpLink extends ApiLink {
     Uri url,
     Request request,
   ) async {
-    final formDataRequest = FormDataRequest(request.method.value, url)
-      ..headers.addAll(request.headers);
+    final formDataRequest = FormDataRequest(
+      request.method.value,
+      url,
+      onProgress: request.onProgress,
+    )..headers.addAll(request.headers);
 
     final FormData formData = request.body;
 
@@ -61,7 +98,11 @@ class HttpLink extends ApiLink {
     Uri url,
     Request request,
   ) {
-    final httpRequest = http.Request(request.method.value, url);
+    final httpRequest = HttpProgressRequest(
+      request.method.value,
+      url,
+      onProgress: request.onProgress,
+    );
 
     httpRequest.headers.addAll(request.headers);
     if (request.encoding != null) httpRequest.encoding = request.encoding!;

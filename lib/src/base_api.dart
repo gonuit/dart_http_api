@@ -68,6 +68,7 @@ abstract class BaseApi {
     DateTime? createdAt,
     ObjectId? id,
     CacheKey? key,
+    OnProgress? onProgress,
   }) =>
       send(Request(
         endpoint: endpoint,
@@ -77,6 +78,7 @@ abstract class BaseApi {
         createdAt: createdAt,
         id: id,
         key: key,
+        onProgress: onProgress,
         method: HttpMethod.get,
       ));
 
@@ -92,6 +94,7 @@ abstract class BaseApi {
     DateTime? createdAt,
     ObjectId? id,
     CacheKey? key,
+    OnProgress? onProgress,
   }) =>
       send(Request(
         endpoint: endpoint,
@@ -102,6 +105,7 @@ abstract class BaseApi {
         createdAt: createdAt,
         id: id,
         key: key,
+        onProgress: onProgress,
         method: HttpMethod.post,
       ));
 
@@ -117,6 +121,7 @@ abstract class BaseApi {
     DateTime? createdAt,
     ObjectId? id,
     CacheKey? key,
+    OnProgress? onProgress,
   }) =>
       send(Request(
         endpoint: endpoint,
@@ -127,6 +132,7 @@ abstract class BaseApi {
         createdAt: createdAt,
         id: id,
         key: key,
+        onProgress: onProgress,
         method: HttpMethod.put,
       ));
 
@@ -142,6 +148,7 @@ abstract class BaseApi {
     DateTime? createdAt,
     ObjectId? id,
     CacheKey? key,
+    OnProgress? onProgress,
   }) =>
       send(Request(
         endpoint: endpoint,
@@ -152,6 +159,7 @@ abstract class BaseApi {
         createdAt: createdAt,
         id: id,
         key: key,
+        onProgress: onProgress,
         method: HttpMethod.patch,
       ));
 
@@ -167,6 +175,7 @@ abstract class BaseApi {
     DateTime? createdAt,
     ObjectId? id,
     CacheKey? key,
+    OnProgress? onProgress,
   }) =>
       send(Request(
         endpoint: endpoint,
@@ -177,6 +186,7 @@ abstract class BaseApi {
         createdAt: createdAt,
         id: id,
         key: key,
+        onProgress: onProgress,
         method: HttpMethod.delete,
       ));
 
@@ -191,6 +201,7 @@ abstract class BaseApi {
     DateTime? createdAt,
     ObjectId? id,
     CacheKey? key,
+    OnProgress? onProgress,
   }) =>
       send(Request(
         endpoint: endpoint,
@@ -200,6 +211,7 @@ abstract class BaseApi {
         createdAt: createdAt,
         id: id,
         key: key,
+        onProgress: onProgress,
         method: HttpMethod.head,
       ));
 

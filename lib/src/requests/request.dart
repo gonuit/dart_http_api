@@ -24,6 +24,7 @@ class Request {
   HttpMethod method;
   Encoding? encoding;
   dynamic body;
+  OnProgress? onProgress;
 
   /// Here you can assign your data that will be passed to the next link
   final Map<String, dynamic> linkData = {};
@@ -35,6 +36,7 @@ class Request {
     this.method = HttpMethod.get,
     Map<String, String>? headers,
     Map<String, dynamic>? queryParameters,
+    this.onProgress,
     this.body,
     this.encoding,
     DateTime? createdAt,

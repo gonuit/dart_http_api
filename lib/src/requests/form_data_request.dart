@@ -102,6 +102,7 @@ class FormDataRequest extends http.BaseRequest {
   static const int _boundaryLength = 70;
 
   static final Random _random = Random();
+  final OnProgress? onProgress;
 
   bool _finalized = false;
   bool get isFinalized => _finalized;
@@ -134,7 +135,11 @@ class FormDataRequest extends http.BaseRequest {
       ..addAll(fields);
   }
 
-  FormDataRequest(String method, Uri url) : super(method, url);
+  FormDataRequest(
+    String method,
+    Uri url, {
+    this.onProgress,
+  }) : super(method, url);
 
   /// The total length of the request body, in bytes.
   ///
@@ -181,7 +186,25 @@ class FormDataRequest extends http.BaseRequest {
     final boundary = _boundaryString();
     headers['Content-Type'] = 'multipart/form-data; boundary=$boundary';
     super.finalize();
-    return http.ByteStream(_finalize(boundary));
+
+    final byteStream = http.ByteStream(_finalize(boundary));
+    if (onProgress == null) {
+      return byteStream;
+    } else {
+      final total = contentLength;
+      var bytes = 0;
+
+      final progressTransformer =
+          StreamTransformer<List<int>, List<int>>.fromHandlers(
+        handleData: (data, sink) {
+          bytes += data.length;
+          onProgress!(bytes, total);
+          sink.add(data);
+        },
+      );
+      final stream = byteStream.transform(progressTransformer);
+      return http.ByteStream(stream);
+    }
   }
 
   Stream<List<int>> _finalize(String boundary) async* {
