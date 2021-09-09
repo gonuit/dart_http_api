@@ -41,8 +41,7 @@ abstract class BaseApi {
   ApiLink? getFirstLinkWhere(bool Function(ApiLink? link) test) =>
       _link._firstWhere(test);
 
-  void forEachLink(void Function(ApiLink) callback) =>
-      _link._forEach(callback);
+  void forEachLink(void Function(ApiLink) callback) => _link._forEach(callback);
 
   /// {@template http_api.base_api.send}
   /// Make API request by triggering [ApiLink]s [next] methods
