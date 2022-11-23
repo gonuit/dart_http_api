@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
+
+import 'package:http_api/http_api.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
-import 'package:http_api/http_api.dart';
 
 import 'mocks.dart';
 

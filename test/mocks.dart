@@ -1,5 +1,5 @@
-import 'package:http_api/http_api.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_api/http_api.dart';
 import 'package:mockito/mockito.dart';
 
 const testResponseHeaders = <String, String>{'authorization': 'token'};
