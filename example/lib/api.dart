@@ -3,19 +3,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:http_api/http_api.dart';
 
 import 'models/example_photo_model.dart';
 
 class Api extends BaseApi with Cache {
   Api({
-    @required Uri url,
-    ApiLink link,
-  }) : super(
-          url,
-          link: link,
-        );
+    required Uri url,
+    ApiLink? link,
+  }) : super(url, link: link);
 
   @override
   CacheManager createCacheManager() => InMemoryCache();

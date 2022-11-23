@@ -22,12 +22,12 @@ class ExamplePhotoModel {
   }
 
   const ExamplePhotoModel({
-    this.id,
-    this.author,
-    this.width,
-    this.height,
-    this.url,
-    this.downloadUrl,
+    required this.id,
+    required this.author,
+    required this.width,
+    required this.height,
+    required this.url,
+    required this.downloadUrl,
   });
 
   factory ExamplePhotoModel.fromJson(Map<String, dynamic> json) =>

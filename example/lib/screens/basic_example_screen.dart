@@ -10,7 +10,7 @@ class BasicExample extends StatefulWidget {
 }
 
 class _BasicExampleState extends State<BasicExample> {
-  ExamplePhotoModel _currentPhoto;
+  ExamplePhotoModel? _currentPhoto;
 
   void _fetchPhoto() async {
     final api = Provider.of<Api>(context, listen: false);
@@ -38,13 +38,13 @@ class _BasicExampleState extends State<BasicExample> {
               color: Colors.black12,
               child: _currentPhoto != null
                   ? Image.network(
-                      _currentPhoto.downloadUrl,
+                      _currentPhoto!.downloadUrl,
                       fit: BoxFit.cover,
                     )
                   : null,
             ),
             if (_currentPhoto != null) const SizedBox(height: 15),
-            if (_currentPhoto != null) Text("Author: ${_currentPhoto.author}"),
+            if (_currentPhoto != null) Text("Author: ${_currentPhoto!.author}"),
             const SizedBox(height: 15),
             ElevatedButton(
               child: const Text("Fetch photo"),
