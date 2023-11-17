@@ -241,7 +241,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.10.0-dev.1"
+    version: "0.10.0-dev.2"
   http_multi_server:
     dependency: transitive
     description:
