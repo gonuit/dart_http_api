@@ -1,4 +1,4 @@
-### 0.10.0-dev.1
+### 0.10.0-dev.2
 
 - Upgraded packages versions
 
@@ -76,7 +76,7 @@
 
 ### 0.4.0
 
-- `BaseApi` now uses Uri path from `url` argument (not only host) also port and queryParameters are coppied.
+- `BaseApi` now uses Uri path from `url` argument (not only host) also port and queryParameters are copied.
 - Added unit tests
 
 ### 0.3.0
