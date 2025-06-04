@@ -1,6 +1,6 @@
 name: http_api
 description: A simple yet powerful wrapper around http package with interceptors/middleware support, along with response caching.
-version: 0.10.0-dev.2
+version: 0.10.0-dev.3
 repository: https://github.com/gonuit/flutter_http_api
 homepage: https://github.com/gonuit/flutter_http_api
 issue_tracker: https://github.com/gonuit/flutter_http_api/issues
@@ -11,7 +11,7 @@ environment:
 dependencies:
   http: ^1.0.0
   meta: ^1.8.0
-  objectid: ^3.0.0
+  objectid: ^4.0.1
   http_parser: ^4.0.2
 
 dev_dependencies:

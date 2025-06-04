@@ -13,8 +13,12 @@ abstract class BaseApi {
   BaseApi(
     this.url, {
     ApiLink? link,
-    Map<String, String>? defaultHeaders,
-  })  : defaultHeaders = defaultHeaders ?? <String, String>{},
+    Map<String, String>? defaultHeaders = const <String, String>{
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+  })  : defaultHeaders =
+            Map<String, String>.unmodifiable(defaultHeaders ?? const {}),
         _link = link?._firstLink ?? HttpLink() {
     ArgumentError.checkNotNull(url, 'url');
 

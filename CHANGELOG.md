@@ -1,6 +1,7 @@
-### 0.10.0-dev.2
+### 0.10.0-dev.3
 
 - Upgraded packages versions
+- Updated default headers
 
 ### 0.9.0
 
