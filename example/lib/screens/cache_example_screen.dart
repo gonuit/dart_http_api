@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http_api_example/models/example_photo_model.dart';
 import 'package:provider/provider.dart';
 
 import '../api.dart';
+import '../models/example_photo_model.dart';
 
 class CacheExample extends StatefulWidget {
   @override
@@ -16,10 +16,11 @@ class _CacheExampleState extends State<CacheExample> {
     final api = Provider.of<Api>(context, listen: false);
 
     await for (final photo in api.getPhotoWithCache()) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _currentPhoto = photo;
         });
+      }
     }
   }
 

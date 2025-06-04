@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http_api/http_api.dart';
-import 'package:http_api_example/api.dart';
-import 'package:http_api_example/screens/basic_example_screen.dart';
-import 'package:http_api_example/screens/cache_example_screen.dart';
 import 'package:provider/provider.dart';
+
+import 'api.dart';
+import 'screens/basic_example_screen.dart';
+import 'screens/cache_example_screen.dart';
 
 void main() => runApp(MyApp());
 
