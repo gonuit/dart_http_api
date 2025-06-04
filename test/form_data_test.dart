@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:cross_file/cross_file.dart';
 import 'package:http_api/http_api.dart';
 import 'package:test/test.dart';
 
@@ -11,7 +10,7 @@ void main() {
     final key4 = 'key4';
 
     final filename = "my_file.png";
-    final file = File('./path/$filename');
+    final file = XFile('./path/$filename');
 
     mapEntryEquals(MapEntry<String, dynamic> entry, String key, dynamic value) {
       expect(entry.key, equals(key));

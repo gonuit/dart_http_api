@@ -85,7 +85,7 @@ abstract class FileField {
   Future<http.MultipartFile?> toMultipartFile(final String field);
 
   factory FileField({
-    required File file,
+    required XFile file,
     String? filename,
     MediaType? contentType,
   }) = FileFieldWithFile;
@@ -144,7 +144,7 @@ class _FileDataField extends FileField {
 }
 
 class FileFieldWithFile extends FileField {
-  final File file;
+  final XFile file;
 
   FileFieldWithFile({
     required this.file,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http_api_example/models/example_photo_model.dart';
 import 'package:provider/provider.dart';
 
 import '../api.dart';
+import '../models/example_photo_model.dart';
 
 class BasicExample extends StatefulWidget {
   @override

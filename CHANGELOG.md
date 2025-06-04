@@ -1,7 +1,8 @@
-### 0.10.0-dev.3
+### 0.10.0-dev.4
 
 - Upgraded packages versions
 - Updated default headers
+- Do not depend on dart:io
 
 ### 0.9.0
 

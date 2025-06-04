@@ -26,7 +26,7 @@ class FormData with Serializable {
   void append(String key, dynamic value) {
     ArgumentError.checkNotNull(key, 'key');
 
-    if (value is File) {
+    if (value is XFile) {
       appendFile(key, value);
     } else if (value is num || value is bool) {
       _addEntry(key, value.toString());
@@ -48,7 +48,7 @@ class FormData with Serializable {
   /// it has additional settings related to the file.
   void appendFile(
     String key,
-    File file, {
+    XFile file, {
     MediaType? contentType,
     String? filename,
   }) {
@@ -93,10 +93,10 @@ class FormData with Serializable {
 
   /// Returns an [Iterable] allowing to go through all
   /// files contained in this object.
-  Iterable<dynamic> get files sync* {
+  Iterable<XFile> get files sync* {
     for (final entry in entries) {
       final value = entry.value;
-      if (value is File) {
+      if (value is XFile) {
         yield value;
       }
     }
